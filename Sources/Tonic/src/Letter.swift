@@ -24,19 +24,7 @@ extension Letter: CustomStringConvertible{
 // staff
 public extension Letter{
 
-    /// 音名在自然音阶不考虑调性的情况下 (默认是C 大调) 中的索引位置。
-    /// C = 0, D = 1, E = 2, F = 3, G = 4, A = 5, B = 6
-    var letterIndex: Int {
-       switch self {
-       case .C: return 0
-       case .D: return 1
-       case .E: return 2
-       case .F: return 3
-       case .G: return 4
-       case .A: return 5
-       case .B: return 6
-       }
-   }
+
 
     // also the relative positon of the pitch
     var semitone: Int {
@@ -77,3 +65,21 @@ public extension Letter{
 // extension Letter {
 //     static let basicLetterList: [Letter] = [.C, .D, .E, .F, .G, .A, .B]
 // }
+
+
+// index
+extension Letter {
+    /// 音名在自然音阶不考虑调性的情况下 (默认是C 大调) 中的索引位置。
+    /// C = 0, D = 1, E = 2, F = 3, G = 4, A = 5, B = 6
+    var letterIndex: Int {
+       switch self {
+       case .C: return 0
+       case .D: return 1
+       case .E: return 2
+       case .F: return 3
+       case .G: return 4
+       case .A: return 5
+       case .B: return 6
+       }
+   }
+}

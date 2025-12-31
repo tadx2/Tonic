@@ -1,502 +1,205 @@
-// //
-// //  Interval.swift
-// //  test6
-// //
-// //  Created by 小汤汤 on 2025/5/2.
-// //
+//
+//  Interval.swift
+//  FantaChord
+//
+//  Created by 小汤汤 on 2025/9/2.
+//
 
+import Foundation
 
-// public enum Interval: Int, CaseIterable, Codable {
-//     /// Perfect Unison
-//     case P1
+/// Represents the interval between two notes.
+public struct Interval: Hashable, Sendable {
 
-//     /// Augmented Unison
-//     case A1
+    public let degreeInt: Int
+    public let semitones: Int
+    
+    public init(degree: Int, semitones: Int) {
+        self.degreeInt = degree
+        self.semitones = semitones
+    }
+}
 
-//     /// Diminished Second
-//     case d2
-
-//     /// Minor Second
-//     case m2
-
-//     /// Diminished Third
-//     case d3
-
-//     /// Major Second
-//     case M2
-
-//     /// Minor Third
-//     case m3
-
-//     /// Augmented Second
-//     case A2
-
-//     /// Major Third
-//     case M3
-
-//     /// Diminished Fourth
-//     case d4
-
-//     /// Perfect Fourth
-//     case P4
-
-//     /// Augmented Third
-//     case A3
-
-//     /// Augmented Fourth
-//     case A4
-
-//     /// Diminished Fifth
-//     case d5
-
-//     /// Perfect Fifth
-//     case P5
-
-//     /// Augmented Fifth
-//     case A5
-
-//     /// Diminished Sixth
-//     case d6
-
-//     /// Minor Sixth
-//     case m6
-
-//     /// Major Sixth
-//     case M6
-
-//     /// Augmented Sixth
-//     case A6
-
-//     /// Diminished Seventh
-//     case d7
-
-//     /// Minor Seventh
-//     case m7
-
-//     /// Major Seventh
-//     case M7
-
-//     /// Augmented Seventh
-//     case A7
-
-//     /// Diminished Octave
-//     case d8
-
-//     /// Perfect Octave
-//     case P8
-
-//     /// Diminished Ninth
-//     case d9
-
-//     /// Augmented Octave
-//     case A8
-
-//     /// Minor Ninth
-//     case m9
-
-//     /// Major Ninth
-//     case M9
-
-//     /// Augmented Ninth
-//     case A9
-
-//     /// Diminished Tenth
-//     case d10
-
-//     /// Minor Tenth
-//     case m10
-
-//     /// Major Tenth
-//     case M10
-
-//     /// Augmented Tenth
-//     case A10
-
-//     /// Diminished Eleventh
-//     case d11
-
-//     /// Perfect Eleventh
-//     case P11
-
-//     /// Augmented Eleventh
-//     case A11
-
-//     /// Diminished Twelfth
-//     case d12
-
-//     /// Perfect Twelfth
-//     case P12
-
-//     /// Augmented Twelfth
-//     case A12
-
-//     /// Diminished Thirteenth
-//     case d13
-
-//     /// Minor Thirteenth
-//     case m13
-
-//     /// Major Thirteenth
-//     case M13
-
-//     /// Augmented Thirteenth
-//     case A13
-
-//     /// Diminished Fourteenth
-//     case d14
-
-//     /// Minor Fourteenth
-//     case m14
-
-//     /// Major Fourteenth
-//     case M14
-
-//     /// Augmented Fourteenth
-//     case A14
-
-//     /// Diminished Fifteenth
-//     case d15
-
-//     /// Perfect Fifteenth
-//     case P15
-
-//     /// Augmented Fifteenth
-//     case A15
-
-//     /// Number of semitones the interval spans
-//     public var semitones: Int {
-//         switch self {
-//             case .P1: return 0
-//             case .d2: return 0
-//             case .A1: return 1
-//             case .m2: return 1
-//             case .M2: return 2
-//             case .d3: return 2
-//             case .m3: return 3
-//             case .A2: return 3
-//             case .M3: return 4
-//             case .d4: return 4
-//             case .P4: return 5
-//             case .A3: return 5
-//             case .A4: return 6
-//             case .d5: return 6
-//             case .P5: return 7
-//             case .d6: return 7
-//             case .m6: return 8
-//             case .A5: return 8
-//             case .d7: return 9
-//             case .M6: return 9
-//             case .A6: return 10
-//             case .m7: return 10
-//             case .M7: return 11
-//             case .d8: return 11
-//             case .P8: return 12
-//             case .A7: return 12
-//             case .d9: return 12
-//             case .A8: return 13
-//             case .m9: return 13
-//             case .M9: return 14
-//             case .d10: return 14
-//             case .A9: return 15
-//             case .m10: return 15
-//             case .d11: return 16
-//             case .M10: return 16
-//             case .P11: return 17
-//             case .A10: return 17
-//             case .d12: return 18
-//             case .A11: return 18
-//             case .P12: return 19
-//             case .d13: return 19
-//             case .m13: return 20
-//             case .A12: return 20
-//             case .d14: return 21
-//             case .M13: return 21
-//             case .m14: return 22
-//             case .A13: return 22
-//             case .d15: return 23
-//             case .M14: return 23
-//             case .P15: return 24
-//             case .A14: return 24
-//             case .A15: return 25
-//         }
-//     }
-
-//     /// Number of letters the interval spans
-//     var degree: Int {
-//         switch self {
-//             case .P1: return 1
-//             case .A1: return 1
-//             case .d2: return 2
-//             case .m2: return 2
-//             case .M2: return 2
-//             case .A2: return 2
-//             case .d3: return 3
-//             case .m3: return 3
-//             case .M3: return 3
-//             case .A3: return 3
-//             case .d4: return 4
-//             case .P4: return 4
-//             case .A4: return 4
-//             case .d5: return 5
-//             case .P5: return 5
-//             case .A5: return 5
-//             case .d6: return 6
-//             case .m6: return 6
-//             case .M6: return 6
-//             case .A6: return 6
-//             case .d7: return 7
-//             case .m7: return 7
-//             case .M7: return 7
-//             case .A7: return 7
-//             case .d8: return 8
-//             case .P8: return 8
-//             case .A8: return 8
-//             case .d9: return 9
-//             case .m9: return 9
-//             case .M9: return 9
-//             case .A9: return 9
-//             case .m10: return 10
-//             case .d10: return 10
-//             case .M10: return 10
-//             case .A10: return 10
-//             case .d11: return 11
-//             case .P11: return 11
-//             case .A11: return 11
-//             case .d12: return 12
-//             case .P12: return 12
-//             case .A12: return 12
-//             case .d13: return 13
-//             case .m13: return 13
-//             case .M13: return 13
-//             case .A13: return 13
-//             case .d14: return 14
-//             case .m14: return 14
-//             case .M14: return 14
-//             case .A14: return 14
-//             case .d15: return 15
-//             case .P15: return 15
-//             case .A15: return 15
-//         }
-//     }
-// }
-
-
-
-// extension Interval: CustomStringConvertible {
-//     /// Short version of the interval name
-//     public var description: String {
-//         switch self {
-//             case .P1: return "P1"
-//             case .A1: return "A1"
-//             case .d2: return "d2"
-//             case .m2: return "m2"
-//             case .A2: return "A2"
-//             case .M2: return "M2"
-//             case .d3: return "d3"
-//             case .m3: return "m3"
-//             case .M3: return "M3"
-//             case .A3: return "A3"
-//             case .d4: return "d4"
-//             case .P4: return "P4"
-//             case .A4: return "A4"
-//             case .d5: return "d5"
-//             case .P5: return "P5"
-//             case .A5: return "A5"
-//             case .d6: return "d6"
-//             case .m6: return "m6"
-//             case .M6: return "M6"
-//             case .A6: return "A6"
-//             case .d7: return "d7"
-//             case .m7: return "m7"
-//             case .M7: return "M7"
-//             case .A7: return "A7"
-//             case .d8: return "d8"
-//             case .P8: return "P8"
-//             case .A8: return "A8"
-//             case .d9: return "d9"
-//             case .m9: return "m9"
-//             case .M9: return "M9"
-//             case .A9: return "A9"
-//             case .d10: return "d10"
-//             case .m10: return "m10"
-//             case .M10: return "M10"
-//             case .A10: return "A10"
-//             case .d11: return "d11"
-//             case .d12: return "d12"
-//             case .P11: return "P11"
-//             case .A11: return "A11"
-//             case .P12: return "P12"
-//             case .A12: return "A12"
-//             case .d13: return "D13"
-//             case .m13: return "m13"
-//             case .M13: return "M13"
-//             case .A13: return "A13"
-//             case .d14: return "d14"
-//             case .m14: return "m14"
-//             case .M14: return "M14"
-//             case .A14: return "A14"
-//             case .d15: return "d15"
-//             case .P15: return "P15"
-//             case .A15: return "A15"
-//         }
-//     }
-
-//     /// Longer Description of the Interval name
-//     public var longDescription: String {
-//         switch self {
-//             case .P1: return "Perfect Unison"
-//             case .A1: return "Augmented Unison"
-//             case .d2: return "Diminished Second"
-//             case .m2: return "Minor Second"
-//             case .M2: return "Major Second"
-//             case .A2: return "Augmented Second"
-//             case .d3: return "Diminished Third"
-//             case .m3: return "Minor Third"
-//             case .M3: return "Major Third"
-//             case .A3: return "Augmented Third"
-//             case .d4: return "Diminished Fourth"
-//             case .P4: return "Perfect Fourth"
-//             case .A4: return "Augmented Fourth"
-//             case .d5: return "Diminished Fifth"
-//             case .P5: return "Perfect Fifth"
-//             case .A5: return "Augmented Fifth"
-//             case .d6: return "Diminished Sixth"
-//             case .m6: return "Minor Sixth"
-//             case .M6: return "Major Sixth"
-//             case .A6: return "Augmented Sixth"
-//             case .d7: return "Diminished Seventh"
-//             case .m7: return "Minor Seventh"
-//             case .M7: return "Major Seventh"
-//             case .A7: return "Augmented Seventh"
-//             case .d8: return "Diminished Octave"
-//             case .P8: return "Perfect Octave"
-//             case .A8: return "Augmented Octave"
-//             case .d9: return "Diminished Ninth"
-//             case .m9: return "Minor Ninth"
-//             case .M9: return "Major Ninth"
-//             case .A9: return "Augmented Ninth"
-//             case .d10: return "Diminished Tenth"
-//             case .m10: return "Minor Tenth"
-//             case .M10: return "Major Tenth"
-//             case .A10: return "Augmented Tenth"
-//             case .d11: return "Diminished Eleventh"
-//             case .P11: return "Perfect Eleventh"
-//             case .A11: return "Augmented Eleventh"
-//             case .d12: return "Diminished Twelfth"
-//             case .P12: return "Perfect Twelfth"
-//             case .A12: return "Augmented Twelfth"
-//             case .d13: return "Diminished Thirteenth"
-//             case .m13: return "Minor Thirteenth"
-//             case .M13: return "Major Thirteenth"
-//             case .A13: return "Augmented Thirteenth"
-//             case .d14: return "Diminished Fourteenth"
-//             case .m14: return "Minor Fourteenth"
-//             case .M14: return "Major Fourteenth"
-//             case .A14: return "Augmented Fourteenth"
-//             case .d15: return "Diminished Fifteenth"
-//             case .P15: return "Perfect Fifteenth"
-//             case .A15: return "Augmented Fifteenth"
-//         }
-//     }
-// }
-// extension Interval {
-//     /// 根据半音数创建一个Interval
-//     /// - Parameter semitones: 半音数
-//     /// - Returns: 对应的Interval，如果有多个匹配，返回最常用的一个
-//     public init(semitones: Int, degree: Int = 0) {
+// MARK: - CustomStringConvertible
+extension Interval: CustomStringConvertible {
+    
+    /// 大调音阶各度数对应的标准半音数（1度到13度）。
+    /// 用于计算音程性质（大、小、纯、增、减）。
+    /// 索引 0-6 对应 1-7 度，索引 7-9 对应 9, 11, 13 度。
+    public static let NormalizedSemitone = [0, 2, 4, 5, 7, 9, 11, 14, 17, 21]
+    
+    /// 计算实际半音数与标准大调/纯音程半音数之间的差异。
+    /// 结果归一化在 [-6, 6] 范围内，以处理八度翻转的情况（例如：增七度 A7 与 纯八度 P8 的关系）。
+    private var qualityDifference: Int {
+        // 将度数映射到 0-6 的基本音级索引
+        let diatonicIndex = (self.degreeInt - 1) % 7
+        // 获取该音级在大调中的标准半音数
+        let expectedMajorSemitones = Interval.NormalizedSemitone[diatonicIndex]
+        // 取当前音程半音数对 12 的余数，进行同音级比较
+        let actualSemitoneClass = self.semitones % 12
+        var diff = actualSemitoneClass - expectedMajorSemitones
         
-//         if degree == 0, semitones == 0 {
-//             self = .P1
-//         }
-//         // 2音
-//         else if degree == 1, semitones == 1{
-//             self = .m2
-//         }
-//         else if degree == 1, semitones == 2{
-//             self = .M2
-//         }
-//         else if degree == 2, semitones == 3{
-//             self = .m3
-//         }
-//         else if degree == 2, semitones == 4{
-//             self = .M3
-//         }
-//         // 4音
-//         else if degree == 3, semitones == 5{
-//             self = .P4
-//         }
-//         else if degree == 3, semitones == 6{
-//             self = .A4
-//         }
-//         // 5音
-//         else if degree == 4, semitones == 6{
-//             self = .d5
-//         }
-//         else if degree == 4, semitones == 7{
-//             self = .P5
-//         }
-//         else if degree == 4, semitones == 8{
-//             self = .A5
-//         }
-//         // 6音
-//         else if degree == 5, semitones == 8{
-//             self = .m6
-//         }
-//         else if degree == 5, semitones == 9{
-//             self = .M6
-//         }
-//         else if degree == 5, semitones == 10{
-//             self = .A6
-//         }
-//         // 7音
-//         else if degree == 6, semitones == 9{
-//             self = .d7
-//         }
-//         else if degree == 6, semitones == 10{
-//             self = .m7
-//         }
-//         else if degree == 6, semitones == 11{
-//             self = .M7
-//         }
-//         else if degree == 6, semitones == 12{
-//             self = .A7
-//         }
-//         // 9音
-//         else if degree == 7, semitones == 13{
-//             self = .m9
-//         }
-//         else if degree == 7, semitones == 14{
-//             self = .M9
-//         }
-//         else if degree == 7, semitones == 15{
-//             self = .A9
-//         }
-//         // 11音
-//         else if degree == 8, semitones == 16{
-//             self = .d11
-//         }
-//         else if degree == 8, semitones == 17{
-//             self = .P11
-//         }
-//         else if degree == 8, semitones == 18{
-//             self = .A11
-//         }
-//         // 13音
-//         else if degree == 9, semitones == 20{
-//             self = .m13
-//         }
-//         else if degree == 9, semitones == 21{
-//             self = .M13
-//         }
-//         else if degree == 9, semitones == 22{
-//             self = .A13
-//         }
+        // 归一化差异，确保在音圈上寻找最短路径
+        // 例如：实际 0 (C) 减去 标准 11 (B)，diff 为 -11，归一化后为 +1 (表示增一度或增八度方向)
+        while diff > 6 { diff -= 12 }
+        while diff < -6 { diff += 12 }
         
+        return diff
+    }
+    
+    /// 音程的完整文本描述（例如："P1", "m2", "M3", "A4", "d5"）。
+    public var description: String {
+        let diff = self.qualityDifference
+        var element: String = ""
         
-//         else{
-//             self = .P1
-//         }
-//     }
-// }
+        // 获取归一化后的基本度数 (1-7)
+        let normalizedDegree = (self.degreeInt - 1) % 7 + 1
+        
+        // 判断是纯音程系列（1, 4, 5）还是大小音程系列（2, 3, 6, 7）
+        if [1, 4, 5].contains(normalizedDegree) {
+            // 纯音程系列：P(纯), A(增), d(减)
+            if diff == 0 {
+                element = "P"
+            } else if diff > 0 {
+                element = String(repeating: "A", count: diff)
+            } else if diff < 0 {
+                element = String(repeating: "d", count: -diff)
+            }
+        } else {
+            // 大小音程系列：M(大), m(小), A(增), d(减)
+            if diff == 0 {
+                element = "M"
+            } else if diff == -1 {
+                element = "m"
+            } else if diff < -1 {
+                element = String(repeating: "d", count: -diff - 1)
+            } else if diff > 0 {
+                element = String(repeating: "A", count: diff)
+            }
+        }
+        
+        return element + String(self.degreeInt)
+    }
+    
+    /// 带升降号修饰的度数描述（例如："1", "♭2", "3", "♯4", "♭5"）。
+    var descriptionNumber: String {
+        let diff = self.qualityDifference
+        var element: String = ""
+        
+        // 根据与标准大调音阶的差异添加升降号
+        if diff == 0 {
+            element = ""
+        } else if diff > 0 {
+            element = String(repeating: "♯", count: diff)
+        } else if diff < 0 {
+            element = String(repeating: "♭", count: -diff)
+        }
+    
+        return element + String(self.degreeInt)
+    }
+}
 
+// MARK: - Common Intervals in Chord
+extension Interval {
 
+    //        5音index:4    9音index:7
+    //              ｜        ｜
+    // [0, 2, 4, 5, 7, 9, 11, 14, 17, 21] <- 检查用的rawDNA
+    //        |           ｜           ｜
+    //     3音 index:2  7音 index:6   13音 index:9
+    
+    // MARK: Unison
+    /// Perfect Unison (P1)
+    public static let P1 = Interval(degree: 1, semitones: 0) // 纯一度
+
+    // MARK: Seconds
+    /// Diminished Second (d2) - Enharmonically P1
+    public static let d2 = Interval(degree: 2, semitones: 0) // 减二度
+    /// Minor Second (m2)
+    public static let m2 = Interval(degree: 2, semitones: 1) // 小二度
+    /// Major Second (M2)
+    public static let M2 = Interval(degree: 2, semitones: 2) // 大二度 <- M2
+    /// Augmented Second (A2)
+    public static let A2 = Interval(degree: 2, semitones: 3) // 增二度
+
+    // MARK: Thirds
+    /// Diminished Third (d3)
+    public static let d3 = Interval(degree: 3, semitones: 2) // 减三度
+    /// Minor Third (m3)
+    public static let m3 = Interval(degree: 3, semitones: 3) // 小三度
+    /// Major Third (M3)
+    public static let M3 = Interval(degree: 3, semitones: 4) // 大三度 <- M3
+    /// Augmented Third (A3)
+    public static let A3 = Interval(degree: 3, semitones: 5) // 增三度
+
+    // MARK: Fourths
+    /// Diminished Fourth (d4)
+    public static let d4 = Interval(degree: 4, semitones: 4) // 减四度
+    /// Perfect Fourth (P4)
+    public static let P4 = Interval(degree: 4, semitones: 5) // 纯四度 <- P4
+    /// Augmented Fourth (A4) - Tritone
+    public static let A4 = Interval(degree: 4, semitones: 6) // 增四度 (三全音)
+
+    // MARK: Fifths
+    /// Diminished Fifth (d5) - Tritone
+    public static let d5 = Interval(degree: 5, semitones: 6) // 减五度 (三全音)
+    /// Perfect Fifth (P5)
+    public static let P5 = Interval(degree: 5, semitones: 7) // 纯五度 <- P5
+    /// Augmented Fifth (A5)
+    public static let A5 = Interval(degree: 5, semitones: 8) // 增五度
+
+    // MARK: Sixths
+    /// Diminished Sixth (d6)
+    public static let d6 = Interval(degree: 6, semitones: 7 ) // 减六度
+    /// Minor Sixth (m6)
+    public static let m6 = Interval(degree: 6, semitones: 8 ) // 小六度
+    /// Major Sixth (M6)
+    public static let M6 = Interval(degree: 6, semitones: 9 ) // 大六度 <- M6
+    /// Augmented Sixth (A6)
+    public static let A6 = Interval(degree: 6, semitones: 10) // 增六度
+
+    // MARK: Sevenths
+    /// Diminished Seventh (d7)
+    public static let d7 = Interval(degree: 7, semitones: 9 ) // 减七度
+    /// Minor Seventh (m7)
+    public static let m7 = Interval(degree: 7, semitones: 10) // 小七度
+    /// Major Seventh (M7)
+    public static let M7 = Interval(degree: 7, semitones: 11) // 大七度 <- M7
+    /// Augmented Seventh (A7)
+    public static let A7 = Interval(degree: 7, semitones: 12) // 增七度
+    
+    // MARK: Octaves
+    /// Perfect Octave (P8)
+    public static let P8 = Interval(degree: 8, semitones: 12) // 纯八度 <- P8
+    
+    // MARK: Ninths
+    /// Diminished Ninth (d9)
+    public static let d9 = Interval(degree: 9, semitones: 12) // 减九度
+    /// Minor Ninth (m9)
+    public static let m9 = Interval(degree: 9, semitones: 13) // 小九度
+    /// Major Ninth (M9)
+    public static let M9 = Interval(degree: 9, semitones: 14) // 大九度 <- M9
+    /// Augmented Ninth (A9)
+    public static let A9 = Interval(degree: 9, semitones: 15) // 增九度
+
+    // MARK: Elevenths
+    /// Diminished Eleventh (d11)
+    public static let d11 = Interval(degree: 11, semitones: 16) // 减十一度
+    /// Perfect Eleventh (P11)
+    public static let P11 = Interval(degree: 11, semitones: 17) // 纯十一度 <- P11
+    /// Augmented Eleventh (A11)
+    public static let A11 = Interval(degree: 11, semitones: 18) // 增十一度
+    
+    // MARK: Thirteenths
+    /// Diminished Thirteenth (d13)
+    public static let d13 = Interval(degree: 13, semitones: 19) // 减十三度
+    /// Minor Thirteenth (m13)
+    public static let m13 = Interval(degree: 13, semitones: 20) // 小十三度
+    /// Major Thirteenth (M13)
+    public static let M13 = Interval(degree: 13, semitones: 21) // 大十三度 <- M13
+    /// Augmented Thirteenth (A13)
+    public static let A13 = Interval(degree: 13, semitones: 22) // 增十三度
+    
+    // MARK: Fifteenths
+    /// Perfect Fifteenth (P15)
+    public static let P15 = Interval(degree: 15, semitones: 24) // 纯十五度 <- P15
+}

@@ -191,45 +191,45 @@ struct NoteTests {
     
     /// 测试音符加减音程的运算
     /// 验证是否正确处理了音名进位、八度变化和升降号计算
-    @Test("Interval Arithmetic")
-    func testIntervalArithmetic() {
-        let c4 = Note(letter: .C, accidental: 0, octave: 4)
-
-        // 1. 大三度 (M3): C4 + M3 -> E4
-        let e4 = c4 + .M3
-        #expect(e4.letter == .E)
-        #expect(e4.accidental == 0)
-        #expect(e4.octave == 4)
-        #expect(e4.pitch == 64)
-
-        // 2. 小三度 (m3): C4 + m3 -> Eb4
-        let eb4 = c4 + .m3
-        #expect(eb4.letter == .E)
-        #expect(eb4.accidental == -1) // 降号
-        #expect(eb4.octave == 4)
-
-        // 3. 纯五度 (P5): C4 + P5 -> G4
-        let g4 = c4 + .P5
-        #expect(g4.letter == .G)
-        #expect(g4.accidental == 0)
-
-        // 4. 大六度 (M6): C4 + M6 -> A4
-        let a4 = c4 + .M6
-        #expect(a4.letter == .A)
-
-        // 5. 纯八度 (P8): C4 + P8 -> C5 (跨八度)
-        let c5 = c4 + .P8
-        #expect(c5.letter == .C)
-        #expect(c5.octave == 5)
-
-        // 6. 减法: E4 - M3 -> C4
-        let c4_back = e4 - .M3
-        #expect(c4_back == c4)
-        
-        // 7. 减法: G4 - P5 -> C4
-        let c4_back2 = g4 - .P5
-        #expect(c4_back2 == c4)
-    }
+//    @Test("Interval Arithmetic")
+//    func testIntervalArithmetic() {
+//        let c4 = Note(letter: .C, accidental: 0, octave: 4)
+//
+//        // 1. 大三度 (M3): C4 + M3 -> E4
+//        let e4 = c4 + .M3
+//        #expect(e4.letter == .E)
+//        #expect(e4.accidental == 0)
+//        #expect(e4.octave == 4)
+//        #expect(e4.pitch == 64)
+//
+//        // 2. 小三度 (m3): C4 + m3 -> Eb4
+//        let eb4 = c4 + .m3
+//        #expect(eb4.letter == .E)
+//        #expect(eb4.accidental == -1) // 降号
+//        #expect(eb4.octave == 4)
+//
+//        // 3. 纯五度 (P5): C4 + P5 -> G4
+//        let g4 = c4 + .P5
+//        #expect(g4.letter == .G)
+//        #expect(g4.accidental == 0)
+//
+//        // 4. 大六度 (M6): C4 + M6 -> A4
+//        let a4 = c4 + .M6
+//        #expect(a4.letter == .A)
+//
+//        // 5. 纯八度 (P8): C4 + P8 -> C5 (跨八度)
+//        let c5 = c4 + .P8
+//        #expect(c5.letter == .C)
+//        #expect(c5.octave == 5)
+//
+//        // 6. 减法: E4 - M3 -> C4
+//        let c4_back = e4 - .M3
+//        #expect(c4_back == c4)
+//        
+//        // 7. 减法: G4 - P5 -> C4
+//        let c4_back2 = g4 - .P5
+//        #expect(c4_back2 == c4)
+//    }
 
     // MARK: - 7. Formatting
     

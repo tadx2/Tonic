@@ -9,9 +9,10 @@ import Foundation
 /// MIDI 音高 (Pitch)
 ///
 /// 使用整数表示 MIDI 音高，范围通常为 0-127。
-typealias Pitch = Int
+public typealias PitchInt = Int
 
-extension Pitch {
+extension PitchInt {
+    
     /// 是否为黑键
     var isBlack: Bool {
         let m = self % 12

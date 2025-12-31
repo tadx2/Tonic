@@ -142,38 +142,38 @@ public extension Note {
     ///   - lhs: 起始音符
     ///   - rhs: 要加上的音程
     /// - Returns: 计算后的目标音符，保持正确的音名和升降号。
-    static func + (lhs: Note, rhs: NoteInterval) -> Note {
-        let degreeIndex = rhs.degree - 1
-        let newLetterIndexSum = lhs.letter.letterIndex + degreeIndex
-        let newLetterIndex = newLetterIndexSum % 7
-        let octaveChange = newLetterIndexSum / 7
-        let newOctave = lhs.octave + octaveChange
-
-        let newLetter = Letter.allCases[newLetterIndex]
-
-        let targetPitch = lhs.pitch + rhs.semitones
-        let naturalTargetNote = Note(letter: newLetter, accidental: 0, octave: newOctave)
-        let newaccidental: Accidental = targetPitch - naturalTargetNote.pitch
-
-        return Note(letter: newLetter, accidental: newaccidental, octave: newOctave)
-    }
+//    static func + (lhs: Note, rhs: NoteInterval) -> Note {
+//        let degreeIndex = rhs.degree - 1
+//        let newLetterIndexSum = lhs.letter.letterIndex + degreeIndex
+//        let newLetterIndex = newLetterIndexSum % 7
+//        let octaveChange = newLetterIndexSum / 7
+//        let newOctave = lhs.octave + octaveChange
+//
+//        let newLetter = Letter.allCases[newLetterIndex]
+//
+//        let targetPitch = lhs.pitch + rhs.semitones
+//        let naturalTargetNote = Note(letter: newLetter, accidental: 0, octave: newOctave)
+//        let newaccidental: Accidental = targetPitch - naturalTargetNote.pitch
+//
+//        return Note(letter: newLetter, accidental: newaccidental, octave: newOctave)
+//    }
 
     /// 音符减去一个音程。
-    static func - (lhs: Note, rhs: NoteInterval) -> Note {
-        let degreeIndex = rhs.degree - 1
-        let newLetterIndexDiff = lhs.letter.letterIndex - degreeIndex
-        let newLetterIndex = (newLetterIndexDiff % 7 + 7) % 7
-        let octaveChange = Int(floor(Double(newLetterIndexDiff) / 7.0))
-        let newOctave = lhs.octave + octaveChange
-
-        let newLetter = Letter.allCases[newLetterIndex]
-
-        let targetPitch = lhs.pitch - rhs.semitones
-        let naturalTargetNote = Note(letter: newLetter, accidental: 0, octave: newOctave)
-        let newaccidental: Accidental = targetPitch - naturalTargetNote.pitch
-
-        return Note(letter: newLetter, accidental: newaccidental, octave: newOctave)
-    }
+//    static func - (lhs: Note, rhs: NoteInterval) -> Note {
+//        let degreeIndex = rhs.degree - 1
+//        let newLetterIndexDiff = lhs.letter.letterIndex - degreeIndex
+//        let newLetterIndex = (newLetterIndexDiff % 7 + 7) % 7
+//        let octaveChange = Int(floor(Double(newLetterIndexDiff) / 7.0))
+//        let newOctave = lhs.octave + octaveChange
+//
+//        let newLetter = Letter.allCases[newLetterIndex]
+//
+//        let targetPitch = lhs.pitch - rhs.semitones
+//        let naturalTargetNote = Note(letter: newLetter, accidental: 0, octave: newOctave)
+//        let newaccidental: Accidental = targetPitch - naturalTargetNote.pitch
+//
+//        return Note(letter: newLetter, accidental: newaccidental, octave: newOctave)
+//    }
 }
 
 // MARK: - Formatting & Description
@@ -220,7 +220,7 @@ extension Note {
     ]
     
     /// 五度圈下行音符序列 (C, F, Bb, Eb, Ab, Db, Gb, B, E, A, D, G)
-    static let NoteFifthCircleDefault: [Note] = [
+    public static let NoteFifthCircleDefault: [Note] = [
         Note(letter: .C, accidental: 0),
         Note(letter: .F, accidental: 0),
         Note(letter: .B, accidental: -1),

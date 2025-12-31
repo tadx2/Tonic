@@ -67,7 +67,7 @@ struct PitchTests {
     
     @Test("Pitch as Int")
     func testPitchAsInt() {
-        let p: Pitch = 60
+        let p: PitchInt = 60
         #expect(p + 1 == 61)
         #expect(p - 12 == 48)
         #expect(p < 72)

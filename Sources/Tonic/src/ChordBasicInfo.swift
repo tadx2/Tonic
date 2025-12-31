@@ -5,17 +5,16 @@
 //  Created by 小汤汤 on 2025/4/22.
 //
 
-import Foundation
 
-struct ChordBasicInfo: Codable, Hashable {
+public struct ChordBasicInfo: Codable, Hashable, Sendable {
     var DNA: [Int?]
     var sysName: String
     var handName: String
     var firstClass: String
-    var secondClass: String
+    public var secondClass: String
     var priority: Int
-    var cnNameString: String
-    var enNameString: String
+    public var cnNameString: String
+    public var enNameString: String
 }
 
 // priority: 5 属于调内和弦 dim和弦
@@ -24,7 +23,8 @@ struct ChordBasicInfo: Codable, Hashable {
 // priority: 2 含（b5/#5）的和弦，一般不会这样去标记。这样标记可能会让
 // priority: 1 含（bb7）的和弦
 
-let ChordBasicMap: [ChordBasicInfo] = [
+let ChordBasicInfoList: [ChordBasicInfo] = [
+    
     //
     // 3th chord
     // 3th chord basic
