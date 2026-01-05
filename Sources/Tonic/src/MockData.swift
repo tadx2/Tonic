@@ -106,19 +106,19 @@ struct MockNote{
     static let B4bbbb = Note(letter: .B, accidental: -4, octave: 4)
 }
 
-public struct MockChordRaw{
-    
-    // 三和弦
-    public static let C4_M   = ChordRaw( rootNote: MockNote.C4, dnaRaw: MockRawDNA.xM )
-    public static let C4_m   = ChordRaw( rootNote: MockNote.C4, dnaRaw: MockRawDNA.xm )
-    public static let C4_dim = ChordRaw( rootNote: MockNote.C4, dnaRaw: MockRawDNA.xdim )
-    
-    // 七和弦
-    public static let C4_M7   = ChordRaw( rootNote: MockNote.C4, dnaRaw: MockRawDNA.xM7  )
-    public static let C4_m7   = ChordRaw( rootNote: MockNote.C4, dnaRaw: MockRawDNA.xm7 )
-    public static let C4_dim7 = ChordRaw( rootNote: MockNote.C4, dnaRaw: MockRawDNA.xdim7 )
-    public static let C4_7falt5 = ChordRaw( rootNote: MockNote.C4, dnaRaw: MockRawDNA.xm7falt5 )
-}
+//public struct MockChordRaw{
+//    
+//    // 三和弦
+//    public static let C4_M   = ChordRaw( rootNote: MockNote.C4, dnaRaw: MockRawDNA.xM )
+//    public static let C4_m   = ChordRaw( rootNote: MockNote.C4, dnaRaw: MockRawDNA.xm )
+//    public static let C4_dim = ChordRaw( rootNote: MockNote.C4, dnaRaw: MockRawDNA.xdim )
+//    
+//    // 七和弦
+//    public static let C4_M7   = ChordRaw( rootNote: MockNote.C4, dnaRaw: MockRawDNA.xM7  )
+//    public static let C4_m7   = ChordRaw( rootNote: MockNote.C4, dnaRaw: MockRawDNA.xm7 )
+//    public static let C4_dim7 = ChordRaw( rootNote: MockNote.C4, dnaRaw: MockRawDNA.xdim7 )
+//    public static let C4_7falt5 = ChordRaw( rootNote: MockNote.C4, dnaRaw: MockRawDNA.xm7falt5 )
+//}
 
 
 public struct MockChord{

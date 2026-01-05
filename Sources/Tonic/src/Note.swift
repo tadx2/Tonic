@@ -21,7 +21,7 @@ public struct Note: Identifiable, Sendable {
     ///
     /// 计算公式：(octave + 1) * 12 + semitone + accidental
     /// 例如：C4 = (4 + 1) * 12 + 0 + 0 = 60
-    public var pitch: Int {
+    public var pitch: PitchInt {
         (octave + 1) * 12 + letter.semitone + accidental
     }
 
@@ -142,21 +142,21 @@ public extension Note {
     ///   - lhs: 起始音符
     ///   - rhs: 要加上的音程
     /// - Returns: 计算后的目标音符，保持正确的音名和升降号。
-//    static func + (lhs: Note, rhs: NoteInterval) -> Note {
-//        let degreeIndex = rhs.degree - 1
-//        let newLetterIndexSum = lhs.letter.letterIndex + degreeIndex
-//        let newLetterIndex = newLetterIndexSum % 7
-//        let octaveChange = newLetterIndexSum / 7
-//        let newOctave = lhs.octave + octaveChange
-//
-//        let newLetter = Letter.allCases[newLetterIndex]
-//
-//        let targetPitch = lhs.pitch + rhs.semitones
-//        let naturalTargetNote = Note(letter: newLetter, accidental: 0, octave: newOctave)
-//        let newaccidental: Accidental = targetPitch - naturalTargetNote.pitch
-//
-//        return Note(letter: newLetter, accidental: newaccidental, octave: newOctave)
-//    }
+    static func + (lhs: Note, rhs: Interval) -> Note {
+        let degreeIndex = rhs.degreeInt - 1
+        let newLetterIndexSum = lhs.letter.letterIndex + degreeIndex
+        let newLetterIndex = newLetterIndexSum % 7
+        let octaveChange = newLetterIndexSum / 7
+        let newOctave = lhs.octave + octaveChange
+
+        let newLetter = Letter.allCases[newLetterIndex]
+
+        let targetPitch = lhs.pitch + rhs.semitones
+        let naturalTargetNote = Note(letter: newLetter, accidental: 0, octave: newOctave)
+        let newaccidental: Accidental = targetPitch - naturalTargetNote.pitch
+
+        return Note(letter: newLetter, accidental: newaccidental, octave: newOctave)
+    }
 
     /// 音符减去一个音程。
 //    static func - (lhs: Note, rhs: NoteInterval) -> Note {

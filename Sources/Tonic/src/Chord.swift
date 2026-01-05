@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Chord.swift
 //  Tonic
 //
 //  Created by 小汤汤 on 12/31/25.
@@ -8,140 +8,140 @@
 import Foundation
 
 public struct Chord {
-    public let chordRaw: ChordRaw
-    public let voicing: Voicing?
-
-    // voicing == nil 表示没有voicing 表示原位
-    public init(chordRaw: ChordRaw, voicing: Voicing? = nil ) {
-        self.chordRaw = chordRaw
+    
+    // RootNote
+    public var rootNote: Note
+    
+    // intervals
+    public var rawIntervals: [Interval] // 原始的interval
+    public var finalIntervals: [Interval] { // 考虑到sus与six的情况后的interval
+        var intervals = [.P1] + rawIntervals
+        
+        if let isSus {
+            intervals.removeAll(where: { $0.degreeInt == 3 })
+            intervals.append(isSus ? .M2 : .P4)
+        }
+        
+        if isSix == true {
+            intervals.removeAll(where: { $0.degreeInt == 7 })
+            intervals.append(.M6)
+        }
+        
+        return intervals
+    }
+    
+    // Voicing
+    public var voicing: Voicing?
+    
+    // Sus & Six 6和弦本质上是对七音的替换
+    public var isSus: Bool? = nil
+    public var isSix: Bool? = nil
+    
+    // 根据音程构造和弦
+    public init(rootNote: Note = Note(), intervals: [Interval] = [.M3, .P5], voicing: Voicing? = nil, isSus: Bool? = nil, isSix: Bool? = nil) {
+        self.rootNote = rootNote
+        self.rawIntervals = intervals
         self.voicing = voicing
+        self.isSus = isSus
+        self.isSix = isSix
+    }
+    
+    // 根据预设构造和弦
+    public init(rootNote: Note = Note(), basicChordType: ChordTraidType = .major, voicing: Voicing? = nil, isSus: Bool? = nil, isSix: Bool? = nil) {
+        self.rootNote = rootNote
+        self.rawIntervals = basicChordType.intervals
+        self.voicing = voicing
+        self.isSus = isSus
+        self.isSix = isSix
     }
 }
 
-extension Chord {
 
-    /// 获取经过 voicing 过滤后的音符列表
-    /// - 如果有 voicing，返回 voicing 指定的音符（包括八度调整）
-    /// - 如果没有 voicing（nil），返回和弦的所有原位音符
-    public var filterVoicedNote: [Note] {
+extension Chord {
+ 
+    public func getNoteAll() -> [Note: Interval] {
+        var notes: [Note: Interval] = [:]
+        
         if let voicing = voicing {
-            // 有 voicing，根据 voicing.position 获取指定的音符
-            return voicing.position.compactMap { (degree, octaveDiff) in
-                // 从 chordRaw 获取对应度数的音符
-                if var note = chordRaw.getNote(by: degree) {
-                    // 调整八度
+            for (degree, octaveDiff) in voicing.position {
+                // Normalize degree to 0-6 to match 1, 8, 15... or 2, 9...
+                let targetDegreeIndex = (degree - 1) % 7
+                
+                // Find matching interval in finalIntervals
+                // We pick the last match if multiple exist to be consistent with "coverage" logic, 
+                // though usually there's only one per pitch class.
+                if let interval = finalIntervals.first(where: { ($0.degreeInt - 1) % 7 == targetDegreeIndex }) {
+                    var note = rootNote + interval
                     note.octave += octaveDiff
-                    return note
+                    notes[note] = interval
                 }
-                return nil
             }
         } else {
-            // 没有 voicing，返回所有原位音符
-            return chordRaw.inUsedDegreeInt.compactMap { degree in
-                chordRaw.getNote(by: degree)
+            for interval in finalIntervals {
+                let note = rootNote + interval
+                notes[note] = interval
             }
         }
+        
+        return notes
     }
-
-    /// 获取经过 voicing 过滤后的音高集合
-    public var filterVoicedPitches: Set<PitchInt> {
-        Set(filterVoicedNote.map { $0.pitch })
-    }
-
-    /// 获取经过 voicing 过滤后的音程字典
-    /// - Returns: 字典，键为音高，值为音程描述字符串
-    public func getFilteredPitchIntervalDict() -> [PitchInt: String] {
-        let notes = filterVoicedNote
+    
+    // 根据 getNoteAll() 的返回数据 生成  [PitchInt: String]  PitchInt 为note 的pitch，String 为 interval的description（音程名）
+    public func getPitchIntIntervalDescription() -> [PitchInt: String] {
         var result: [PitchInt: String] = [:]
-
-        for note in notes {
-            // 找到对应的度数
-            if let degree = chordRaw.inUsedDegreeInt.first(where: { degree in
-                if let dnaIndex = degree.chordDnaRawIndex,
-                   let dna = chordRaw.dnaRaw[dnaIndex] {
-                    return (dna + chordRaw.rootNote.pitch) % 12 == note.pitch % 12
-                }
-                return false
-            }),
-               let interval = chordRaw.getInterval(chordDegreeInt: degree) {
-                result[note.pitch] = interval.description
-            }
+        for (note, interval) in getNoteAll() {
+            result[note.pitch] = interval.description
         }
-
         return result
     }
-
-    /// 获取经过 voicing 过滤后的音名字典
-    /// - Returns: 字典，键为音高，值为音名字符串
-    public func getFilteredPitchNoteNameDict() -> [PitchInt: String] {
-        let notes = filterVoicedNote
+    
+    // 根据 getNoteAll() 的返回数据 生成  [PitchInt: String]  PitchInt 为note 的pitch，String 为 interval的descriptionNumber（音程数字名）
+    public func getPitchIntIntervalDescriptionNumber() -> [PitchInt: String] {
         var result: [PitchInt: String] = [:]
-
-        for note in notes {
-            result[note.pitch] = note.name
+        for (note, interval) in getNoteAll() {
+            result[note.pitch] = interval.descriptionNumber
         }
-
         return result
     }
-
-    /// 获取经过 voicing 过滤后的数字音名字典
-    /// - Returns: 字典，键为音高，值为数字音名字符串
-    public func getFilteredPitchNumberNoteNameDict() -> [PitchInt: String] {
-        let notes = filterVoicedNote
+    
+    // 根据 getNoteAll() 的返回数据 生成  [PitchInt: String]  PitchInt 为note 的pitch，String 为 note的description（音名）
+    public func getPitchIntNoteDescription() -> [PitchInt: String] {
         var result: [PitchInt: String] = [:]
-
-        for note in notes {
-            // 找到对应的度数
-            if let degree = chordRaw.inUsedDegreeInt.first(where: { degree in
-                if let dnaIndex = degree.chordDnaRawIndex,
-                   let dna = chordRaw.dnaRaw[dnaIndex] {
-                    return (dna + chordRaw.rootNote.pitch) % 12 == note.pitch % 12
-                }
-                return false
-            }),
-               let numberNoteName = chordRaw.getNumberNoteName(by: degree) {
-                result[note.pitch] = numberNoteName
-            }
+        for (note, _) in getNoteAll() {
+            result[note.pitch] = note.description
         }
-
         return result
     }
+    
+    // 返回所有 和弦note 的 pitch
+    public func getPitchIntList() -> [PitchInt] {
+        return getNoteAll().keys.map { $0.pitch }.sorted()
+    }
+    
+    // 返回所有 和弦note 的 pitch(set形式)
+    public func getPitchIntSet() -> Set<PitchInt> {
+        return Set(getNoteAll().keys.map { $0.pitch })
+    }
+    
 }
 
-
-// 预设
 extension Chord {
-
-    /// 和弦类型枚举
-    public enum ChordBasicType: String {
-        case triad   = "3th_chord"      // 三和弦
-        case seventh = "7th_chord"    // 七和弦
-        case sixth   = "6th_chord"      // 六和弦
+    /// Get all available degree integers of the current chord
+    public func getChordDegreeIntAll() -> [ChordDegreeInt] {
+        return finalIntervals.map { $0.degreeInt }
     }
 
-    /// 获取指定类型的所有和弦
-    /// - Parameters:
-    ///   - rootNote: 根音
-    ///   - chordClass: 和弦类型，如果为 nil 则返回所有和弦
-    /// - Returns: 和弦数组
-    public static func getChordList(rootNote: Note, type: ChordBasicType? = nil) -> [Chord] {
-        let filteredList: [ChordBasicInfo]
-
-        if let type {
-            filteredList = ChordBasicInfoList.filter { $0.firstClass == type.rawValue }
-        } else {
-            filteredList = ChordBasicInfoList
-        }
-
-        return filteredList.map { basicInfo in
-            // 将 DNA 填充到 10 个元素（ChordRaw 需要 10 个元素来容纳扩展音）
-            var paddedDNA = basicInfo.DNA
-            while paddedDNA.count < 10 {
-                paddedDNA.append(nil)
+    /// Check if the voicing type can be applied to this chord
+    public func canApplyVoicing(by voicingType: VoicingType) -> Bool {
+        let availableDegrees = getChordDegreeIntAll()
+        let voicing = voicingType.voicing
+        for (degree, _) in voicing.position {
+            let targetDegreeIndex = (degree - 1) % 7
+            // Check if availableDegrees contains a degree matching this degree (mod 7)
+            if !availableDegrees.contains(where: { ($0 - 1) % 7 == targetDegreeIndex }) {
+                return false
             }
-
-            let chordRaw = ChordRaw(rootNote: rootNote, dnaRaw: paddedDNA)
-            return Chord(chordRaw: chordRaw)
         }
+        return true
     }
 }

@@ -7,21 +7,38 @@
 
 import Foundation
 
-// degree 代表用这个和弦的第几个音
+// degreeInt 代表用这个和弦的第几个音
 // octaveDiff 代表这个音所在的octave 与 rootNote所在的octave的相对位置
-public typealias VoicingPosition = [(degree: ChordDegreeInt, octaveDiff: Int)]
+public typealias VoicingPosition = [(degreeInt: ChordDegreeInt, octaveDiff: Int)]
 
-public struct Voicing {
-    public let cnName: String // 中文名
-    public let enName: String // 英文名
+public struct Voicing: Equatable {
+    public let name: String // 英文名
     public let position: VoicingPosition // 位置数据
-    public let chordType: String // 哪些和弦可以用这个voicing "3th_basic" & "7th_basic"
 
-    public init(cnName: String, enName: String, position: VoicingPosition, chordType: String) {
-        self.cnName = cnName
-        self.enName = enName
+    public init(name: String, position: VoicingPosition) {
+        self.name = name
         self.position = position
-        self.chordType = chordType
+    }
+
+    public static func == (lhs: Voicing, rhs: Voicing) -> Bool {
+        guard lhs.name == rhs.name, lhs.position.count == rhs.position.count else { return false }
+        for (left, right) in zip(lhs.position, rhs.position) {
+            if left.degreeInt != right.degreeInt || left.octaveDiff != right.octaveDiff {
+                return false
+            }
+        }
+        return true
+    }
+
+    /// 返回排序后的度数序列。
+    /// 排序规则：首先比较 octaveDiff，如果相同则比较 degreeInt，均从小到大排列。
+    public var sortedPosition: [ChordDegreeInt] {
+        position.sorted {
+            if $0.octaveDiff != $1.octaveDiff {
+                return $0.octaveDiff < $1.octaveDiff
+            }
+            return $0.degreeInt < $1.degreeInt
+        }.map { $0.degreeInt }
     }
 }
 
@@ -42,7 +59,7 @@ public enum VoicingType: CaseIterable {
     case seventhThirdInversion       // 七和弦第三转位 (密集排列): 7-1-3-5
     case seventhDrop2                // 七和弦 Drop2: 5-1-3-7
     case seventhDrop3                // 七和弦 Drop3: 3-1-5-7
-    case seventhDrop2And4            // 七和弦 Drop2&4: 1-5-7-3
+    case seventhDrop2And3            // 七和弦 Drop2&4: 1-5-7-3
 
     // MARK: - Shell Voicings (3-7 Voicings)
     case shellVoicingA               // Shell Voicing A型: 1-3-7 (根音位置)
@@ -56,213 +73,178 @@ public enum VoicingType: CaseIterable {
         // MARK: - 三和弦 Voicings
         case .triadRootPosition:
             return Voicing(
-                cnName: "三和弦根音位置",
-                enName: "Triad Root Position",
+                name: "Triad Root Position",
                 position: [
-                    (degree: 1, octaveDiff: 0),
-                    (degree: 3, octaveDiff: 0),
-                    (degree: 5, octaveDiff: 0)
-                ],
-                chordType: "3th_basic"
+                    (degreeInt: 1, octaveDiff: 0),
+                    (degreeInt: 3, octaveDiff: 0),
+                    (degreeInt: 5, octaveDiff: 0)
+                ]
             )
 
         case .triadFirstInversion:
             return Voicing(
-                cnName: "三和弦第一转位",
-                enName: "Triad First Inversion",
+                name: "Triad First Inversion",
                 position: [
-                    (degree: 3, octaveDiff: 0),
-                    (degree: 5, octaveDiff: 0),
-                    (degree: 1, octaveDiff: 1)
-                ],
-                chordType: "3th_basic"
+                    (degreeInt: 3, octaveDiff: 0),
+                    (degreeInt: 5, octaveDiff: 0),
+                    (degreeInt: 1, octaveDiff: 1)
+                ]
             )
 
         case .triadSecondInversion:
             return Voicing(
-                cnName: "三和弦第二转位",
-                enName: "Triad Second Inversion",
+                name: "Triad Second Inversion",
                 position: [
-                    (degree: 5, octaveDiff: 0),
-                    (degree: 1, octaveDiff: 1),
-                    (degree: 3, octaveDiff: 1)
-                ],
-                chordType: "3th_basic"
+                    (degreeInt: 5, octaveDiff: 0),
+                    (degreeInt: 1, octaveDiff: 1),
+                    (degreeInt: 3, octaveDiff: 1)
+                ]
             )
 
         case .triadDrop2:
             return Voicing(
-                cnName: "三和弦Drop2",
-                enName: "Triad Drop2",
+                name: "Triad Drop 2",
                 position: [
-                    (degree: 3, octaveDiff: -1),
-                    (degree: 1, octaveDiff: 0),
-                    (degree: 5, octaveDiff: 0)
-                ],
-                chordType: "3th_basic"
+                    (degreeInt: 3, octaveDiff: -1),
+                    (degreeInt: 1, octaveDiff: 0),
+                    (degreeInt: 5, octaveDiff: 0)
+                ]
             )
 
         case .triadRootlessA:
             return Voicing(
-                cnName: "三和弦无根音A",
-                enName: "Triad Rootless A",
+                name: "Triad Rootless A",
                 position: [
-                    (degree: 3, octaveDiff: 0),
-                    (degree: 5, octaveDiff: 0)
-                ],
-                chordType: "3th_basic"
+                    (degreeInt: 3, octaveDiff: 0),
+                    (degreeInt: 5, octaveDiff: 0)
+                ]
             )
 
         case .triadRootlessB:
             return Voicing(
-                cnName: "三和弦无根音B",
-                enName: "Triad Rootless B",
+                name: "Triad Rootless B",
                 position: [
-                    (degree: 5, octaveDiff: -1),
-                    (degree: 3, octaveDiff: 0)
-                ],
-                chordType: "3th_basic"
+                    (degreeInt: 5, octaveDiff: -1),
+                    (degreeInt: 3, octaveDiff: 0)
+                ]
             )
 
         // MARK: - 七和弦 Voicings
         case .seventhRootPosition:
             return Voicing(
-                cnName: "七和弦根音位置",
-                enName: "Seventh Root Position",
+                name: "Seventh Root Position",
                 position: [
-                    (degree: 1, octaveDiff: 0),
-                    (degree: 3, octaveDiff: 0),
-                    (degree: 5, octaveDiff: 0),
-                    (degree: 7, octaveDiff: 0)
-                ],
-                chordType: "7th_basic"
+                    (degreeInt: 1, octaveDiff: 0),
+                    (degreeInt: 3, octaveDiff: 0),
+                    (degreeInt: 5, octaveDiff: 0),
+                    (degreeInt: 7, octaveDiff: 0)
+                ]
             )
 
         case .seventhFirstInversion:
             return Voicing(
-                cnName: "七和弦第一转位",
-                enName: "Seventh First Inversion",
+                name: "Seventh First Inversion",
                 position: [
-                    (degree: 3, octaveDiff: 0),
-                    (degree: 5, octaveDiff: 0),
-                    (degree: 7, octaveDiff: 0),
-                    (degree: 1, octaveDiff: 1)
-                ],
-                chordType: "7th_basic"
+                    (degreeInt: 3, octaveDiff: 0),
+                    (degreeInt: 5, octaveDiff: 0),
+                    (degreeInt: 7, octaveDiff: 0),
+                    (degreeInt: 1, octaveDiff: 1)
+                ]
             )
 
         case .seventhSecondInversion:
             return Voicing(
-                cnName: "七和弦第二转位",
-                enName: "Seventh Second Inversion",
+                name: "Seventh Second Inversion",
                 position: [
-                    (degree: 5, octaveDiff: 0),
-                    (degree: 7, octaveDiff: 0),
-                    (degree: 1, octaveDiff: 1),
-                    (degree: 3, octaveDiff: 1)
-                ],
-                chordType: "7th_basic"
+                    (degreeInt: 5, octaveDiff: 0),
+                    (degreeInt: 7, octaveDiff: 0),
+                    (degreeInt: 1, octaveDiff: 1),
+                    (degreeInt: 3, octaveDiff: 1)
+                ]
             )
 
         case .seventhThirdInversion:
             return Voicing(
-                cnName: "七和弦第三转位",
-                enName: "Seventh Third Inversion",
+                name: "Seventh Third Inversion",
                 position: [
-                    (degree: 7, octaveDiff: 0),
-                    (degree: 1, octaveDiff: 1),
-                    (degree: 3, octaveDiff: 1),
-                    (degree: 5, octaveDiff: 1)
-                ],
-                chordType: "7th_basic"
+                    (degreeInt: 7, octaveDiff: 0),
+                    (degreeInt: 1, octaveDiff: 1),
+                    (degreeInt: 3, octaveDiff: 1),
+                    (degreeInt: 5, octaveDiff: 1)
+                ]
             )
 
         case .seventhDrop2:
             return Voicing(
-                cnName: "七和弦Drop2",
-                enName: "Seventh Drop2",
+                name: "Seventh Drop 2",
                 position: [
-                    (degree: 1, octaveDiff: 0),
-                    (degree: 3, octaveDiff: 0),
-                    (degree: 5, octaveDiff: -1),
-                    (degree: 7, octaveDiff: 0)
-                ],
-                chordType: "7th_basic"
+                    (degreeInt: 5, octaveDiff: -1),
+                    (degreeInt: 1, octaveDiff: 0),
+                    (degreeInt: 3, octaveDiff: 0),
+                    (degreeInt: 7, octaveDiff: 0)
+                ]
             )
 
         case .seventhDrop3:
             return Voicing(
-                cnName: "七和弦Drop3",
-                enName: "Seventh Drop3",
+                name: "Seventh Drop 3",
                 position: [
-                    (degree: 1, octaveDiff: 0),
-                    (degree: 3, octaveDiff: -1),
-                    (degree: 5, octaveDiff: 0),
-                    (degree: 7, octaveDiff: 0)
-                ],
-                chordType: "7th_basic"
+                    (degreeInt: 3, octaveDiff: -1),
+                    (degreeInt: 1, octaveDiff: 0),
+                    (degreeInt: 5, octaveDiff: 0),
+                    (degreeInt: 7, octaveDiff: 0)
+                ]
             )
 
-        case .seventhDrop2And4:
+        case .seventhDrop2And3:
             return Voicing(
-                cnName: "七和弦Drop2&3",
-                enName: "Seventh Drop2&3",
+                name: "Seventh Drop 2&3",
                 position: [
-                    (degree: 1, octaveDiff: 0),
-                    (degree: 3, octaveDiff: -1),
-                    (degree: 5, octaveDiff: -1),
-                    (degree: 7, octaveDiff: 0)
-                ],
-                chordType: "7th_basic"
+                    (degreeInt: 3, octaveDiff: -1),
+                    (degreeInt: 5, octaveDiff: -1),
+                    (degreeInt: 1, octaveDiff: 0),
+                    (degreeInt: 7, octaveDiff: 0)
+                ]
             )
 
         // MARK: - Shell Voicings
         case .shellVoicingA:
             return Voicing(
-                cnName: "Shell和声A型",
-                enName: "Shell Voicing A",
+                name: "Shell Voicing A",
                 position: [
-                    (degree: 1, octaveDiff: 0),
-                    (degree: 3, octaveDiff: 0),
-                    (degree: 7, octaveDiff: 0)
-                ],
-                chordType: "7th_basic"
+                    (degreeInt: 1, octaveDiff: 0),
+                    (degreeInt: 3, octaveDiff: 0),
+                    (degreeInt: 7, octaveDiff: 0)
+                ]
             )
 
         case .shellVoicingB:
             return Voicing(
-                cnName: "Shell和声B型",
-                enName: "Shell Voicing B",
+                name: "Shell Voicing B",
                 position: [
-                    (degree: 1, octaveDiff: 0),
-                    (degree: 7, octaveDiff: 0),
-                    (degree: 3, octaveDiff: 1)
-                ],
-                chordType: "7th_basic"
+                    (degreeInt: 1, octaveDiff: 0),
+                    (degreeInt: 7, octaveDiff: 0),
+                    (degreeInt: 3, octaveDiff: 1)
+                ]
             )
 
         case .shellVoicingA_Rootless:
             return Voicing(
-                cnName: "无根Shell和声A型",
-                enName: "Rootless Shell Voicing A",
+                name: "Rootless Shell Voicing A",
                 position: [
-                    (degree: 3, octaveDiff: 0),
-                    (degree: 7, octaveDiff: 0)
-                ],
-                chordType: "7th_basic"
+                    (degreeInt: 3, octaveDiff: 0),
+                    (degreeInt: 7, octaveDiff: 0)
+                ]
             )
 
         case .shellVoicingB_Rootless:
             return Voicing(
-                cnName: "无根Shell和声B型",
-                enName: "Rootless Shell Voicing B",
+                name: "Rootless Shell Voicing B",
                 position: [
-                    (degree: 3, octaveDiff: 0),
-                    (degree: 7, octaveDiff: -1)
-                ],
-                chordType: "7th_basic"
+                    (degreeInt: 7, octaveDiff: -1),
+                    (degreeInt: 3, octaveDiff: 0)
+                ]
             )
-
         }
     }
 }

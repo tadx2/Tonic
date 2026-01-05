@@ -7,14 +7,12 @@
 
 import Foundation
 
-/// Represents the interval between two notes.
-public struct Interval: Hashable, Sendable {
-
+public struct Interval: Sendable, Equatable, Hashable {
     public let degreeInt: Int
     public let semitones: Int
     
-    public init(degree: Int, semitones: Int) {
-        self.degreeInt = degree
+    public init(degreeInt: Int, semitones: Int) {
+        self.degreeInt = degreeInt
         self.semitones = semitones
     }
 }
@@ -81,7 +79,7 @@ extension Interval: CustomStringConvertible {
     }
     
     /// 带升降号修饰的度数描述（例如："1", "♭2", "3", "♯4", "♭5"）。
-    var descriptionNumber: String {
+    public var descriptionNumber: String {
         let diff = self.qualityDifference
         var element: String = ""
         
@@ -94,112 +92,87 @@ extension Interval: CustomStringConvertible {
             element = String(repeating: "♭", count: -diff)
         }
     
-        return element + String(self.degreeInt)
+        return String(self.degreeInt) + element 
     }
 }
 
 // MARK: - Common Intervals in Chord
 extension Interval {
-
-    //        5音index:4    9音index:7
-    //              ｜        ｜
-    // [0, 2, 4, 5, 7, 9, 11, 14, 17, 21] <- 检查用的rawDNA
-    //        |           ｜           ｜
-    //     3音 index:2  7音 index:6   13音 index:9
     
     // MARK: Unison
-    /// Perfect Unison (P1)
-    public static let P1 = Interval(degree: 1, semitones: 0) // 纯一度
-
+    public static let P1 = Interval(degreeInt: 1, semitones:  0) // Perfect Unison
+    
     // MARK: Seconds
-    /// Diminished Second (d2) - Enharmonically P1
-    public static let d2 = Interval(degree: 2, semitones: 0) // 减二度
-    /// Minor Second (m2)
-    public static let m2 = Interval(degree: 2, semitones: 1) // 小二度
-    /// Major Second (M2)
-    public static let M2 = Interval(degree: 2, semitones: 2) // 大二度 <- M2
-    /// Augmented Second (A2)
-    public static let A2 = Interval(degree: 2, semitones: 3) // 增二度
+    public static let d2 = Interval(degreeInt: 2, semitones: 0)
+    public static let m2 = Interval(degreeInt: 2, semitones: 1)
+    public static let M2 = Interval(degreeInt: 2, semitones: 2)
+    public static let A2 = Interval(degreeInt: 2, semitones: 3)
 
     // MARK: Thirds
-    /// Diminished Third (d3)
-    public static let d3 = Interval(degree: 3, semitones: 2) // 减三度
-    /// Minor Third (m3)
-    public static let m3 = Interval(degree: 3, semitones: 3) // 小三度
-    /// Major Third (M3)
-    public static let M3 = Interval(degree: 3, semitones: 4) // 大三度 <- M3
-    /// Augmented Third (A3)
-    public static let A3 = Interval(degree: 3, semitones: 5) // 增三度
+    public static let d3 = Interval(degreeInt: 3, semitones: 2)
+    public static let m3 = Interval(degreeInt: 3, semitones: 3)
+    public static let M3 = Interval(degreeInt: 3, semitones: 4)
+    public static let A3 = Interval(degreeInt: 3, semitones: 5)
 
     // MARK: Fourths
-    /// Diminished Fourth (d4)
-    public static let d4 = Interval(degree: 4, semitones: 4) // 减四度
-    /// Perfect Fourth (P4)
-    public static let P4 = Interval(degree: 4, semitones: 5) // 纯四度 <- P4
-    /// Augmented Fourth (A4) - Tritone
-    public static let A4 = Interval(degree: 4, semitones: 6) // 增四度 (三全音)
+    public static let d4 = Interval(degreeInt: 4, semitones: 4) //
+    public static let P4 = Interval(degreeInt: 4, semitones: 5) //
+    public static let A4 = Interval(degreeInt: 4, semitones: 6) // Tritone
 
     // MARK: Fifths
-    /// Diminished Fifth (d5) - Tritone
-    public static let d5 = Interval(degree: 5, semitones: 6) // 减五度 (三全音)
-    /// Perfect Fifth (P5)
-    public static let P5 = Interval(degree: 5, semitones: 7) // 纯五度 <- P5
-    /// Augmented Fifth (A5)
-    public static let A5 = Interval(degree: 5, semitones: 8) // 增五度
+    public static let d5 = Interval(degreeInt: 5, semitones: 6) // Tritone
+    public static let P5 = Interval(degreeInt: 5, semitones: 7)
+    public static let A5 = Interval(degreeInt: 5, semitones: 8)
 
     // MARK: Sixths
-    /// Diminished Sixth (d6)
-    public static let d6 = Interval(degree: 6, semitones: 7 ) // 减六度
-    /// Minor Sixth (m6)
-    public static let m6 = Interval(degree: 6, semitones: 8 ) // 小六度
-    /// Major Sixth (M6)
-    public static let M6 = Interval(degree: 6, semitones: 9 ) // 大六度 <- M6
-    /// Augmented Sixth (A6)
-    public static let A6 = Interval(degree: 6, semitones: 10) // 增六度
+    public static let d6 = Interval(degreeInt: 6, semitones: 7 )
+    public static let m6 = Interval(degreeInt: 6, semitones: 8 )
+    public static let M6 = Interval(degreeInt: 6, semitones: 9 )
+    public static let A6 = Interval(degreeInt: 6, semitones: 10)
 
     // MARK: Sevenths
-    /// Diminished Seventh (d7)
-    public static let d7 = Interval(degree: 7, semitones: 9 ) // 减七度
-    /// Minor Seventh (m7)
-    public static let m7 = Interval(degree: 7, semitones: 10) // 小七度
-    /// Major Seventh (M7)
-    public static let M7 = Interval(degree: 7, semitones: 11) // 大七度 <- M7
-    /// Augmented Seventh (A7)
-    public static let A7 = Interval(degree: 7, semitones: 12) // 增七度
+    public static let d7 = Interval(degreeInt: 7, semitones: 9 )
+    public static let m7 = Interval(degreeInt: 7, semitones: 10)
+    public static let M7 = Interval(degreeInt: 7, semitones: 11)
+    public static let A7 = Interval(degreeInt: 7, semitones: 12)
     
-    // MARK: Octaves
-    /// Perfect Octave (P8)
-    public static let P8 = Interval(degree: 8, semitones: 12) // 纯八度 <- P8
+    // MARK: Octaves     -> Degree = 1
+    public static let  P8 = Interval(degreeInt: 8, semitones: 12)
     
-    // MARK: Ninths
-    /// Diminished Ninth (d9)
-    public static let d9 = Interval(degree: 9, semitones: 12) // 减九度
-    /// Minor Ninth (m9)
-    public static let m9 = Interval(degree: 9, semitones: 13) // 小九度
-    /// Major Ninth (M9)
-    public static let M9 = Interval(degree: 9, semitones: 14) // 大九度 <- M9
-    /// Augmented Ninth (A9)
-    public static let A9 = Interval(degree: 9, semitones: 15) // 增九度
+    // MARK: Ninths      -> Degree = 2
+    public static let  d9 = Interval(degreeInt: 9, semitones: 12)
+    public static let  m9 = Interval(degreeInt: 9, semitones: 13)
+    public static let  M9 = Interval(degreeInt: 9, semitones: 14)
+    public static let  A9 = Interval(degreeInt: 9, semitones: 15)
+    
+    // MARK: Tenths      -> Degree = 3
+    public static let d10 = Interval(degreeInt: 10, semitones: 14)
+    public static let m10 = Interval(degreeInt: 10, semitones: 15)
+    public static let M10 = Interval(degreeInt: 10, semitones: 16)
+    public static let A10 = Interval(degreeInt: 10, semitones: 17)
 
-    // MARK: Elevenths
-    /// Diminished Eleventh (d11)
-    public static let d11 = Interval(degree: 11, semitones: 16) // 减十一度
-    /// Perfect Eleventh (P11)
-    public static let P11 = Interval(degree: 11, semitones: 17) // 纯十一度 <- P11
-    /// Augmented Eleventh (A11)
-    public static let A11 = Interval(degree: 11, semitones: 18) // 增十一度
+    // MARK: Elevenths   -> Degree = 4
+    public static let d11 = Interval(degreeInt: 11, semitones: 16)
+    public static let P11 = Interval(degreeInt: 11, semitones: 17)
+    public static let A11 = Interval(degreeInt: 11, semitones: 18)
     
-    // MARK: Thirteenths
-    /// Diminished Thirteenth (d13)
-    public static let d13 = Interval(degree: 13, semitones: 19) // 减十三度
-    /// Minor Thirteenth (m13)
-    public static let m13 = Interval(degree: 13, semitones: 20) // 小十三度
-    /// Major Thirteenth (M13)
-    public static let M13 = Interval(degree: 13, semitones: 21) // 大十三度 <- M13
-    /// Augmented Thirteenth (A13)
-    public static let A13 = Interval(degree: 13, semitones: 22) // 增十三度
+    // MARK: Twelfth     -> Degree = 5
+    public static let d12 = Interval(degreeInt: 12, semitones: 18)
+    public static let P12 = Interval(degreeInt: 12, semitones: 19)
+    public static let A12 = Interval(degreeInt: 12, semitones: 20)
     
-    // MARK: Fifteenths
-    /// Perfect Fifteenth (P15)
-    public static let P15 = Interval(degree: 15, semitones: 24) // 纯十五度 <- P15
+    // MARK: Thirteenths -> Degree = 6
+    public static let d13 = Interval(degreeInt: 13, semitones: 19)
+    public static let m13 = Interval(degreeInt: 13, semitones: 20)
+    public static let M13 = Interval(degreeInt: 13, semitones: 21)
+    public static let A13 = Interval(degreeInt: 13, semitones: 22)
+    
+    // MARK: Fourteenth  -> Degree = 7
+    public static let d14 = Interval(degreeInt: 14, semitones: 21)
+    public static let m14 = Interval(degreeInt: 14, semitones: 22)
+    public static let M14 = Interval(degreeInt: 14, semitones: 23)
+    public static let A14 = Interval(degreeInt: 14, semitones: 24)
+    
+    // MARK: Fifteenths  -> Degree = 1
+    public static let P15 = Interval(degreeInt: 15, semitones: 24)
 }
