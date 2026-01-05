@@ -9,24 +9,6 @@ public typealias ChordDegreeInt = Int
 
 extension ChordDegreeInt {
     
-    // 度数在 chordDnaRaw 的中 index 位置
-    var chordDnaRawIndex: Int? {
-        let degree = self % 14
-
-        switch degree {
-        case 1...7:
-            return degree - 1
-        case 9:
-            return 7
-        case 11:
-            return 8
-        case 13:
-            return 9
-        default:
-            return nil
-        }
-    }
-    
     // 自然大调中度数与根音的半音数距离
     // - 计算度数所在的八度（octave）
     // - 确定基础度数（1-7）
@@ -56,5 +38,9 @@ extension ChordDegreeInt {
         }
 
         return octave * 12 + semitones
+    }
+    
+    var normalizedDegree: Int {
+        self % 14
     }
 }

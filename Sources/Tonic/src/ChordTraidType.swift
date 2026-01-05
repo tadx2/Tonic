@@ -11,7 +11,7 @@ public enum ChordTraidType: String, CaseIterable, Codable, Sendable {
     case major, majorAugFifth, majorFlatFifth
     case minor, minorAugFifth, minorFlatFifth
     
-    public var intervals: [Interval] {
+    public var intervals: Set<Interval> {
         switch self {
         case .major:            return [.M3, .P5]
         case .majorAugFifth:    return [.M3, .A5]

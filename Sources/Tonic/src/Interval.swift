@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Interval: Sendable, Equatable, Hashable {
+public struct Interval: Sendable, Hashable{
     public let degreeInt: Int
     public let semitones: Int
     

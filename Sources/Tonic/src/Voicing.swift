@@ -7,38 +7,25 @@
 
 import Foundation
 
-// degreeInt 代表用这个和弦的第几个音
-// octaveDiff 代表这个音所在的octave 与 rootNote所在的octave的相对位置
-public typealias VoicingPosition = [(degreeInt: ChordDegreeInt, octaveDiff: Int)]
-
 public struct Voicing: Equatable {
     public let name: String // 英文名
-    public let position: VoicingPosition // 位置数据
+    public let position: Set<Position> // 位置数据
 
-    public init(name: String, position: VoicingPosition) {
+    public init(name: String, position: Set<Position>) {
         self.name = name
         self.position = position
     }
+}
 
-    public static func == (lhs: Voicing, rhs: Voicing) -> Bool {
-        guard lhs.name == rhs.name, lhs.position.count == rhs.position.count else { return false }
-        for (left, right) in zip(lhs.position, rhs.position) {
-            if left.degreeInt != right.degreeInt || left.octaveDiff != right.octaveDiff {
-                return false
-            }
+extension Voicing {
+    public struct Position: Hashable {
+        public var degreeInt: ChordDegreeInt
+        public var octaveDiff: Int
+        
+        public init(degreeInt: ChordDegreeInt, octaveDiff: Int) {
+            self.degreeInt = degreeInt
+            self.octaveDiff = octaveDiff
         }
-        return true
-    }
-
-    /// 返回排序后的度数序列。
-    /// 排序规则：首先比较 octaveDiff，如果相同则比较 degreeInt，均从小到大排列。
-    public var sortedPosition: [ChordDegreeInt] {
-        position.sorted {
-            if $0.octaveDiff != $1.octaveDiff {
-                return $0.octaveDiff < $1.octaveDiff
-            }
-            return $0.degreeInt < $1.degreeInt
-        }.map { $0.degreeInt }
     }
 }
 
@@ -75,9 +62,9 @@ public enum VoicingType: CaseIterable {
             return Voicing(
                 name: "Triad Root Position",
                 position: [
-                    (degreeInt: 1, octaveDiff: 0),
-                    (degreeInt: 3, octaveDiff: 0),
-                    (degreeInt: 5, octaveDiff: 0)
+                    .init(degreeInt: 1, octaveDiff: 0),
+                    .init(degreeInt: 3, octaveDiff: 0),
+                    .init(degreeInt: 5, octaveDiff: 0)
                 ]
             )
 
@@ -85,9 +72,9 @@ public enum VoicingType: CaseIterable {
             return Voicing(
                 name: "Triad First Inversion",
                 position: [
-                    (degreeInt: 3, octaveDiff: 0),
-                    (degreeInt: 5, octaveDiff: 0),
-                    (degreeInt: 1, octaveDiff: 1)
+                    .init(degreeInt: 3, octaveDiff: 0),
+                    .init(degreeInt: 5, octaveDiff: 0),
+                    .init(degreeInt: 1, octaveDiff: 1)
                 ]
             )
 
@@ -95,9 +82,9 @@ public enum VoicingType: CaseIterable {
             return Voicing(
                 name: "Triad Second Inversion",
                 position: [
-                    (degreeInt: 5, octaveDiff: 0),
-                    (degreeInt: 1, octaveDiff: 1),
-                    (degreeInt: 3, octaveDiff: 1)
+                    .init(degreeInt: 5, octaveDiff: 0),
+                    .init(degreeInt: 1, octaveDiff: 1),
+                    .init(degreeInt: 3, octaveDiff: 1)
                 ]
             )
 
@@ -105,9 +92,9 @@ public enum VoicingType: CaseIterable {
             return Voicing(
                 name: "Triad Drop 2",
                 position: [
-                    (degreeInt: 3, octaveDiff: -1),
-                    (degreeInt: 1, octaveDiff: 0),
-                    (degreeInt: 5, octaveDiff: 0)
+                    .init(degreeInt: 3, octaveDiff: -1),
+                    .init(degreeInt: 1, octaveDiff: 0),
+                    .init(degreeInt: 5, octaveDiff: 0)
                 ]
             )
 
@@ -115,8 +102,8 @@ public enum VoicingType: CaseIterable {
             return Voicing(
                 name: "Triad Rootless A",
                 position: [
-                    (degreeInt: 3, octaveDiff: 0),
-                    (degreeInt: 5, octaveDiff: 0)
+                    .init(degreeInt: 3, octaveDiff: 0),
+                    .init(degreeInt: 5, octaveDiff: 0)
                 ]
             )
 
@@ -124,8 +111,8 @@ public enum VoicingType: CaseIterable {
             return Voicing(
                 name: "Triad Rootless B",
                 position: [
-                    (degreeInt: 5, octaveDiff: -1),
-                    (degreeInt: 3, octaveDiff: 0)
+                    .init(degreeInt: 5, octaveDiff: -1),
+                    .init(degreeInt: 3, octaveDiff: 0)
                 ]
             )
 
@@ -134,10 +121,10 @@ public enum VoicingType: CaseIterable {
             return Voicing(
                 name: "Seventh Root Position",
                 position: [
-                    (degreeInt: 1, octaveDiff: 0),
-                    (degreeInt: 3, octaveDiff: 0),
-                    (degreeInt: 5, octaveDiff: 0),
-                    (degreeInt: 7, octaveDiff: 0)
+                    .init(degreeInt: 1, octaveDiff: 0),
+                    .init(degreeInt: 3, octaveDiff: 0),
+                    .init(degreeInt: 5, octaveDiff: 0),
+                    .init(degreeInt: 7, octaveDiff: 0)
                 ]
             )
 
@@ -145,10 +132,10 @@ public enum VoicingType: CaseIterable {
             return Voicing(
                 name: "Seventh First Inversion",
                 position: [
-                    (degreeInt: 3, octaveDiff: 0),
-                    (degreeInt: 5, octaveDiff: 0),
-                    (degreeInt: 7, octaveDiff: 0),
-                    (degreeInt: 1, octaveDiff: 1)
+                    .init(degreeInt: 3, octaveDiff: 0),
+                    .init(degreeInt: 5, octaveDiff: 0),
+                    .init(degreeInt: 7, octaveDiff: 0),
+                    .init(degreeInt: 1, octaveDiff: 1)
                 ]
             )
 
@@ -156,10 +143,10 @@ public enum VoicingType: CaseIterable {
             return Voicing(
                 name: "Seventh Second Inversion",
                 position: [
-                    (degreeInt: 5, octaveDiff: 0),
-                    (degreeInt: 7, octaveDiff: 0),
-                    (degreeInt: 1, octaveDiff: 1),
-                    (degreeInt: 3, octaveDiff: 1)
+                    .init(degreeInt: 5, octaveDiff: 0),
+                    .init(degreeInt: 7, octaveDiff: 0),
+                    .init(degreeInt: 1, octaveDiff: 1),
+                    .init(degreeInt: 3, octaveDiff: 1)
                 ]
             )
 
@@ -167,10 +154,10 @@ public enum VoicingType: CaseIterable {
             return Voicing(
                 name: "Seventh Third Inversion",
                 position: [
-                    (degreeInt: 7, octaveDiff: 0),
-                    (degreeInt: 1, octaveDiff: 1),
-                    (degreeInt: 3, octaveDiff: 1),
-                    (degreeInt: 5, octaveDiff: 1)
+                    .init(degreeInt: 7, octaveDiff: 0),
+                    .init(degreeInt: 1, octaveDiff: 1),
+                    .init(degreeInt: 3, octaveDiff: 1),
+                    .init(degreeInt: 5, octaveDiff: 1)
                 ]
             )
 
@@ -178,10 +165,10 @@ public enum VoicingType: CaseIterable {
             return Voicing(
                 name: "Seventh Drop 2",
                 position: [
-                    (degreeInt: 5, octaveDiff: -1),
-                    (degreeInt: 1, octaveDiff: 0),
-                    (degreeInt: 3, octaveDiff: 0),
-                    (degreeInt: 7, octaveDiff: 0)
+                    .init(degreeInt: 5, octaveDiff: -1),
+                    .init(degreeInt: 1, octaveDiff: 0),
+                    .init(degreeInt: 3, octaveDiff: 0),
+                    .init(degreeInt: 7, octaveDiff: 0)
                 ]
             )
 
@@ -189,10 +176,10 @@ public enum VoicingType: CaseIterable {
             return Voicing(
                 name: "Seventh Drop 3",
                 position: [
-                    (degreeInt: 3, octaveDiff: -1),
-                    (degreeInt: 1, octaveDiff: 0),
-                    (degreeInt: 5, octaveDiff: 0),
-                    (degreeInt: 7, octaveDiff: 0)
+                    .init(degreeInt: 3, octaveDiff: -1),
+                    .init(degreeInt: 1, octaveDiff: 0),
+                    .init(degreeInt: 5, octaveDiff: 0),
+                    .init(degreeInt: 7, octaveDiff: 0)
                 ]
             )
 
@@ -200,10 +187,10 @@ public enum VoicingType: CaseIterable {
             return Voicing(
                 name: "Seventh Drop 2&3",
                 position: [
-                    (degreeInt: 3, octaveDiff: -1),
-                    (degreeInt: 5, octaveDiff: -1),
-                    (degreeInt: 1, octaveDiff: 0),
-                    (degreeInt: 7, octaveDiff: 0)
+                    .init(degreeInt: 3, octaveDiff: -1),
+                    .init(degreeInt: 5, octaveDiff: -1),
+                    .init(degreeInt: 1, octaveDiff: 0),
+                    .init(degreeInt: 7, octaveDiff: 0)
                 ]
             )
 
@@ -212,9 +199,9 @@ public enum VoicingType: CaseIterable {
             return Voicing(
                 name: "Shell Voicing A",
                 position: [
-                    (degreeInt: 1, octaveDiff: 0),
-                    (degreeInt: 3, octaveDiff: 0),
-                    (degreeInt: 7, octaveDiff: 0)
+                    .init(degreeInt: 1, octaveDiff: 0),
+                    .init(degreeInt: 3, octaveDiff: 0),
+                    .init(degreeInt: 7, octaveDiff: 0)
                 ]
             )
 
@@ -222,9 +209,9 @@ public enum VoicingType: CaseIterable {
             return Voicing(
                 name: "Shell Voicing B",
                 position: [
-                    (degreeInt: 1, octaveDiff: 0),
-                    (degreeInt: 7, octaveDiff: 0),
-                    (degreeInt: 3, octaveDiff: 1)
+                    .init(degreeInt: 1, octaveDiff: 0),
+                    .init(degreeInt: 7, octaveDiff: 0),
+                    .init(degreeInt: 3, octaveDiff: 1)
                 ]
             )
 
@@ -232,8 +219,8 @@ public enum VoicingType: CaseIterable {
             return Voicing(
                 name: "Rootless Shell Voicing A",
                 position: [
-                    (degreeInt: 3, octaveDiff: 0),
-                    (degreeInt: 7, octaveDiff: 0)
+                    .init(degreeInt: 3, octaveDiff: 0),
+                    .init(degreeInt: 7, octaveDiff: 0)
                 ]
             )
 
@@ -241,8 +228,8 @@ public enum VoicingType: CaseIterable {
             return Voicing(
                 name: "Rootless Shell Voicing B",
                 position: [
-                    (degreeInt: 7, octaveDiff: -1),
-                    (degreeInt: 3, octaveDiff: 0)
+                    .init(degreeInt: 7, octaveDiff: -1),
+                    .init(degreeInt: 3, octaveDiff: 0)
                 ]
             )
         }
