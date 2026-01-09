@@ -7,13 +7,58 @@
 
 import Foundation
 
-public struct Voicing: Equatable {
-    public let name: String // 英文名
-    public let position: Set<Position> // 位置数据
+public struct Voicing: Equatable, Hashable{
+    public let nameEN: String  // 英文名
+    public let nameShort: String
+    public var position: Set<Position>  // 位置数据
 
-    public init(name: String, position: Set<Position>) {
-        self.name = name
+    public init(
+        nameEN: String, nameShort: String,
+        position: Set<Position>
+    ) {
+        self.nameEN = nameEN
         self.position = position
+        self.nameShort = nameShort
+    }
+
+    public var voicingActiveDegree: Set<Set<ChordDegreeInt>> {
+        // 拿到 voicingOriChordDegree 如果是 [1，3，5，7]
+        // 3音可以被 2/4 替换 7音可以被 6音替换
+        // 则可以生成
+        // 替换6音的情况：[1，3，5，7] ， [1，3，5，6]
+        // 替换2音的情况：[1，2，5，7] ， [1，2，5，6]
+        // 替换4音的情况：[1，4，5，7] ， [1，4，5，6]
+
+        // Voicing 原本有哪些 Chord Degree 组成一个集合
+        let voicingOriChordDegree = Set(self.position.map { $0.degreeInt })
+
+        // 基础度数：移除可能发生变化的 3 音和 7 音
+        let baseDegrees = voicingOriChordDegree.subtracting([3, 7])
+
+        // 3 音的可能变体：如果有 3，则可以是 [3, 2, 4]；如果没有，则为空
+        let thirdVariants: [ChordDegreeInt] = voicingOriChordDegree.contains(3) ? [3, 2, 4] : []
+
+        // 7 音的可能变体：如果有 7，则可以是 [7, 6]；如果没有，则为空
+        let seventhVariants: [ChordDegreeInt] = voicingOriChordDegree.contains(7) ? [7, 6] : []
+
+        var result: Set<Set<ChordDegreeInt>> = []
+
+        // 构建组合
+        // 如果 variants 不为空，就遍历它的选项。如果为空，就视为 "无变化/无添加"（即当前循环只执行一次：nil）
+        let thirdLoop: [ChordDegreeInt?] = thirdVariants.isEmpty ? [nil] : thirdVariants.map { $0 }
+        let seventhLoop: [ChordDegreeInt?] =
+            seventhVariants.isEmpty ? [nil] : seventhVariants.map { $0 }
+
+        for t in thirdLoop {
+            for s in seventhLoop {
+                var currentSet = baseDegrees
+                if let tVal = t { currentSet.insert(tVal) }
+                if let sVal = s { currentSet.insert(sVal) }
+                result.insert(currentSet)
+            }
+        }
+
+        return result
     }
 }
 
@@ -21,7 +66,7 @@ extension Voicing {
     public struct Position: Hashable {
         public var degreeInt: ChordDegreeInt
         public var octaveDiff: Int
-        
+
         public init(degreeInt: ChordDegreeInt, octaveDiff: Int) {
             self.degreeInt = degreeInt
             self.octaveDiff = octaveDiff
@@ -31,205 +76,217 @@ extension Voicing {
 
 // MARK: - VoicingType 枚举
 public enum VoicingType: CaseIterable {
-    // MARK: - 三和弦 Voicings (Triad Voicings)
-    case triadRootPosition           // 三和弦根音位置 (密集排列): 1-3-5
-    case triadFirstInversion         // 三和弦第一转位 (密集排列): 3-5-1
-    case triadSecondInversion        // 三和弦第二转位 (密集排列): 5-1-3
-    case triadDrop2                  // 三和弦 Drop2 (开放排列): 3-1-5
-    case triadRootlessA              // 三和弦无根音 (只有三音和五音): 3-5
-    case triadRootlessB              // 三和弦无根音 (只有三音和五音): 5-3
 
-    // MARK: - 七和弦 Voicings (Seventh Chord Voicings)
-    case seventhRootPosition         // 七和弦根音位置 (密集排列): 1-3-5-7
-    case seventhFirstInversion       // 七和弦第一转位 (密集排列): 3-5-7-1
-    case seventhSecondInversion      // 七和弦第二转位 (密集排列): 5-7-1-3
-    case seventhThirdInversion       // 七和弦第三转位 (密集排列): 7-1-3-5
-    case seventhDrop2                // 七和弦 Drop2: 5-1-3-7
-    case seventhDrop3                // 七和弦 Drop3: 3-1-5-7
-    case seventhDrop2And3            // 七和弦 Drop2&4: 1-5-7-3
+    // MARK: - 三个音的和弦 Voicings Basic
+    case threeNoteRootPosition
+    case threeNoteFirstInversion
+    case threeNoteSecondInversion
+    case threeNoteDrop2
 
-    // MARK: - Shell Voicings (3-7 Voicings)
-    case shellVoicingA               // Shell Voicing A型: 1-3-7 (根音位置)
-    case shellVoicingB               // Shell Voicing B型: 1-7-3 (三音在上方八度)
-    case shellVoicingA_Rootless      // Rootless Shell Voicing A型: 3-7
-    case shellVoicingB_Rootless      // Rootless Shell Voicing B型: 7-3 (三音在上方八度)
+    // MARK: - 四个音的和弦 Voicings Basic
+    case fourNoteRootPosition
+    case fourNoteFirstInversion
+    case fourNoteSecondInversion
+    case fourNoteThirdInversion
+    case fourNoteDrop2
+    case fourNoteDrop3
+    case fourNoteDrop2And3
+
+    // MARK: - 四个音的和弦 Voicings Shell
+    case fourNoteShellVoicingA
+    case fourNoteShellVoicingB
+    case fourNoteShellVoicingA_Rootless
+    case fourNoteShellVoicingB_Rootless
 
     // 返回对应的 Voicing 实例
     public var voicing: Voicing {
         switch self {
-        // MARK: - 三和弦 Voicings
-        case .triadRootPosition:
+
+        // MARK: - 三个音的和弦 Voicings
+        case .threeNoteRootPosition:
             return Voicing(
-                name: "Triad Root Position",
+                nameEN: "Traid Root Position ",
+                nameShort: "Traid.RP",
+
                 position: [
                     .init(degreeInt: 1, octaveDiff: 0),
                     .init(degreeInt: 3, octaveDiff: 0),
-                    .init(degreeInt: 5, octaveDiff: 0)
+                    .init(degreeInt: 5, octaveDiff: 0),
                 ]
             )
 
-        case .triadFirstInversion:
+        case .threeNoteFirstInversion:
             return Voicing(
-                name: "Triad First Inversion",
+                nameEN: "Traid First Inversion",
+                nameShort: "Traid.Inv.1",
+
                 position: [
                     .init(degreeInt: 3, octaveDiff: 0),
                     .init(degreeInt: 5, octaveDiff: 0),
-                    .init(degreeInt: 1, octaveDiff: 1)
+                    .init(degreeInt: 1, octaveDiff: 1),
                 ]
             )
 
-        case .triadSecondInversion:
+        case .threeNoteSecondInversion:
             return Voicing(
-                name: "Triad Second Inversion",
+                nameEN: "Traid Second Inversion",
+                nameShort: "Traid.Inv.2",
+
                 position: [
                     .init(degreeInt: 5, octaveDiff: 0),
                     .init(degreeInt: 1, octaveDiff: 1),
-                    .init(degreeInt: 3, octaveDiff: 1)
+                    .init(degreeInt: 3, octaveDiff: 1),
                 ]
             )
 
-        case .triadDrop2:
+        case .threeNoteDrop2:
             return Voicing(
-                name: "Triad Drop 2",
+                nameEN: "Traid Drop 2ed Note",
+                nameShort: "Traid.Drop2",
+
                 position: [
                     .init(degreeInt: 3, octaveDiff: -1),
                     .init(degreeInt: 1, octaveDiff: 0),
-                    .init(degreeInt: 5, octaveDiff: 0)
+                    .init(degreeInt: 5, octaveDiff: 0),
                 ]
             )
 
-        case .triadRootlessA:
+        // MARK: - 4个音的和弦 Voicings
+        case .fourNoteRootPosition:
             return Voicing(
-                name: "Triad Rootless A",
-                position: [
-                    .init(degreeInt: 3, octaveDiff: 0),
-                    .init(degreeInt: 5, octaveDiff: 0)
-                ]
-            )
+                nameEN: "Seventh Root Position",
+                nameShort: "Seventh.RP",
 
-        case .triadRootlessB:
-            return Voicing(
-                name: "Triad Rootless B",
-                position: [
-                    .init(degreeInt: 5, octaveDiff: -1),
-                    .init(degreeInt: 3, octaveDiff: 0)
-                ]
-            )
-
-        // MARK: - 七和弦 Voicings
-        case .seventhRootPosition:
-            return Voicing(
-                name: "Seventh Root Position",
                 position: [
                     .init(degreeInt: 1, octaveDiff: 0),
                     .init(degreeInt: 3, octaveDiff: 0),
                     .init(degreeInt: 5, octaveDiff: 0),
-                    .init(degreeInt: 7, octaveDiff: 0)
+                    .init(degreeInt: 7, octaveDiff: 0),
                 ]
             )
 
-        case .seventhFirstInversion:
+        case .fourNoteFirstInversion:
             return Voicing(
-                name: "Seventh First Inversion",
+                nameEN: "Seventh First Inversion",
+                nameShort: "Seventh.Inv.1",
+
                 position: [
                     .init(degreeInt: 3, octaveDiff: 0),
                     .init(degreeInt: 5, octaveDiff: 0),
                     .init(degreeInt: 7, octaveDiff: 0),
-                    .init(degreeInt: 1, octaveDiff: 1)
+                    .init(degreeInt: 1, octaveDiff: 1),
                 ]
             )
 
-        case .seventhSecondInversion:
+        case .fourNoteSecondInversion:
             return Voicing(
-                name: "Seventh Second Inversion",
+                nameEN: "Seventh Second Inversion",
+                nameShort: "Seventh.Inv.2",
+
                 position: [
                     .init(degreeInt: 5, octaveDiff: 0),
                     .init(degreeInt: 7, octaveDiff: 0),
                     .init(degreeInt: 1, octaveDiff: 1),
-                    .init(degreeInt: 3, octaveDiff: 1)
+                    .init(degreeInt: 3, octaveDiff: 1),
                 ]
             )
 
-        case .seventhThirdInversion:
+        case .fourNoteThirdInversion:
             return Voicing(
-                name: "Seventh Third Inversion",
+                nameEN: "Seventh Third Inversion",
+                nameShort: "Seventh.Inv.3",
+
                 position: [
                     .init(degreeInt: 7, octaveDiff: 0),
                     .init(degreeInt: 1, octaveDiff: 1),
                     .init(degreeInt: 3, octaveDiff: 1),
-                    .init(degreeInt: 5, octaveDiff: 1)
+                    .init(degreeInt: 5, octaveDiff: 1),
                 ]
             )
 
-        case .seventhDrop2:
+        case .fourNoteDrop2:
             return Voicing(
-                name: "Seventh Drop 2",
+                nameEN: "Drop 2ed Note",
+                nameShort: "Seventh.Drop2",
+
                 position: [
                     .init(degreeInt: 5, octaveDiff: -1),
                     .init(degreeInt: 1, octaveDiff: 0),
                     .init(degreeInt: 3, octaveDiff: 0),
-                    .init(degreeInt: 7, octaveDiff: 0)
+                    .init(degreeInt: 7, octaveDiff: 0),
                 ]
             )
 
-        case .seventhDrop3:
+        case .fourNoteDrop3:
             return Voicing(
-                name: "Seventh Drop 3",
+                nameEN: "Seventh Drop 3rd Note",
+                nameShort: "Seventh.Drop3",
+
                 position: [
                     .init(degreeInt: 3, octaveDiff: -1),
                     .init(degreeInt: 1, octaveDiff: 0),
                     .init(degreeInt: 5, octaveDiff: 0),
-                    .init(degreeInt: 7, octaveDiff: 0)
+                    .init(degreeInt: 7, octaveDiff: 0),
                 ]
             )
 
-        case .seventhDrop2And3:
+        case .fourNoteDrop2And3:
             return Voicing(
-                name: "Seventh Drop 2&3",
+                nameEN: "Seventh Drop 2ed&3rd Note",
+                nameShort: "Seventh.Drop2&3",
+
                 position: [
                     .init(degreeInt: 3, octaveDiff: -1),
                     .init(degreeInt: 5, octaveDiff: -1),
                     .init(degreeInt: 1, octaveDiff: 0),
-                    .init(degreeInt: 7, octaveDiff: 0)
+                    .init(degreeInt: 7, octaveDiff: 0),
                 ]
             )
 
         // MARK: - Shell Voicings
-        case .shellVoicingA:
+        case .fourNoteShellVoicingA:
             return Voicing(
-                name: "Shell Voicing A",
+                nameEN: "Shell Voicing type A",
+                nameShort: "Shell",
+
                 position: [
                     .init(degreeInt: 1, octaveDiff: 0),
                     .init(degreeInt: 3, octaveDiff: 0),
-                    .init(degreeInt: 7, octaveDiff: 0)
+                    .init(degreeInt: 7, octaveDiff: 0),
                 ]
             )
 
-        case .shellVoicingB:
+        case .fourNoteShellVoicingB:
             return Voicing(
-                name: "Shell Voicing B",
+                nameEN: "Shell Voicing type B",
+                nameShort: "Shell",
+
                 position: [
                     .init(degreeInt: 1, octaveDiff: 0),
                     .init(degreeInt: 7, octaveDiff: 0),
-                    .init(degreeInt: 3, octaveDiff: 1)
+                    .init(degreeInt: 3, octaveDiff: 1),
                 ]
             )
 
-        case .shellVoicingA_Rootless:
+        case .fourNoteShellVoicingA_Rootless:
             return Voicing(
-                name: "Rootless Shell Voicing A",
+                nameEN: "Rootless Shell Voicing A",
+                nameShort: "Rootless Shell",
+
                 position: [
                     .init(degreeInt: 3, octaveDiff: 0),
-                    .init(degreeInt: 7, octaveDiff: 0)
+                    .init(degreeInt: 7, octaveDiff: 0),
                 ]
             )
 
-        case .shellVoicingB_Rootless:
+        case .fourNoteShellVoicingB_Rootless:
             return Voicing(
-                name: "Rootless Shell Voicing B",
+                nameEN: "Rootless Shell Voicing B",
+                nameShort: "Rootless Shell",
+
                 position: [
                     .init(degreeInt: 7, octaveDiff: -1),
-                    .init(degreeInt: 3, octaveDiff: 0)
+                    .init(degreeInt: 3, octaveDiff: 0),
                 ]
             )
         }

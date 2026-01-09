@@ -1,772 +1,806 @@
 //
-//  Chord.swift
-//  fantachord
+//  File.swift
+//  Tonic
 //
-//  Created by 小汤汤 on 2025/4/22.
+//  Created by 小汤汤 on 1/5/26.
 //
 
+import Foundation
 
-public struct ChordBasicInfo: Codable, Hashable, Sendable {
-    var DNA: [Int?]
-    var sysName: String
-    var handName: String
-    var firstClass: String
-    public var secondClass: String
-    var priority: Int
-    public var cnNameString: String
-    public var enNameString: String
+public struct ChordBasicInfo {
+     public var baseName: String
+     public var baseNameAddition: [Interval]  // 基础和弦中需要特别说明的音
+     public var shortName: String?
+     public var cnName: String?
+     public var enName: String?
+     public var intervals: Set<Interval>
+     public var isDiatonic: Bool
+
+     public var basicType: BasicType
+
+     public enum BasicType {
+          case triad, triadSus2, triadSus4
+          case seventh, seventhSus2, seventhSus4
+          case sixth, sixthSus2, sixthSus4
+
+          public var isTriad: Bool {
+               switch self {
+               case .triad, .triadSus2, .triadSus4:
+                    return true
+               default:
+                    return false
+               }
+          }
+
+          public var isSeventh: Bool {
+               switch self {
+               case .seventh, .seventhSus2, .seventhSus4:
+                    return true
+               default:
+                    return false
+               }
+          }
+
+          public var isSixth: Bool {
+               switch self {
+               case .sixth, .sixthSus2, .sixthSus4:
+                    return true
+               default:
+                    return false
+               }
+          }
+
+          public var isSus: Bool {
+               switch self {
+               case .triadSus2, .triadSus4,
+                    .seventhSus2, .seventhSus4,
+                    .sixthSus2, .sixthSus4:
+                    return true
+               default:
+                    return false
+               }
+          }
+
+          public var isSus2: Bool {
+               switch self {
+               case .triadSus2, .seventhSus2, .sixthSus2:
+                    return true
+               default:
+                    return false
+               }
+          }
+
+          public var isSus4: Bool {
+               switch self {
+               case .triadSus4, .seventhSus4, .sixthSus4:
+                    return true
+               default:
+                    return false
+               }
+          }
+     }
+
+     public init(
+          baseName: String, baseNameAddition: [Interval] = [], shortName: String? = nil,
+          cnName: String? = nil, enName: String? = nil, intervals: Set<Interval>,
+          basicType: BasicType, isDiatonic: Bool = false
+     ) {
+          self.baseName = baseName
+          self.baseNameAddition = baseNameAddition
+          self.shortName = (shortName != nil) ? shortName : baseName
+          self.intervals = intervals
+          self.cnName = cnName
+          self.enName = enName
+          self.basicType = basicType
+          self.isDiatonic = isDiatonic
+     }
+
 }
 
-// priority: 5 属于调内和弦 dim和弦
-// priority: 4 属于替代性质的，但不属于常用调内和弦，如比较常用,sus2,sus4和弦，6和弦，aug和弦
-// priority: 3 不常用的sus2,sus4和弦
-// priority: 2 含（b5/#5）的和弦，一般不会这样去标记。这样标记可能会让
-// priority: 1 含（bb7）的和弦
+extension ChordBasicInfo {
+     // 把 baseName 与 baseNameAddition 组成一个新的名字
+     // 例如 baseName: "M", baseNameAddition: [.d5],
+     // 返回 M(b5)
+     // 注意，baseNameAddition 有，在baseName后面添加一个数字音名（Interval.descriptionNumber）. 有就加括号，没有就不要加。
+     public var baseNameFull: String {
+          if baseNameAddition.isEmpty {
+               return baseName
+          }
+          let additions = baseNameAddition.map { $0.descriptionNumber }.joined()
+          return "\(baseName)(\(additions))"
+     }
+}
 
-let ChordBasicInfoList: [ChordBasicInfo] = [
-    
-    //
-    // 3th chord
-    // 3th chord basic
-    //
-    
-    ChordBasicInfo(
-        DNA: [0, nil, 4, nil, 7, nil, nil],
-        sysName: "M",
-        handName: "",
-        firstClass: "3th_chord",
-        secondClass: "3th_basic",
-        priority: 5,
-        cnNameString: "大三",
-        enNameString: "major triad"
-    ),
-    
-    ChordBasicInfo(
-        DNA: [0, nil, 4, nil, 8, nil, nil],
-        sysName: "aug",
-        handName: "+",
-        firstClass: "3th_chord",
-        secondClass: "3th_basic",
-        priority: 4,
-        cnNameString: "增三",
-        enNameString: "augmented triad"
-    ),
-    
-    ChordBasicInfo(
-        DNA: [0, nil, 4, nil, 6, nil, nil],
-        sysName: "M(♭5)",
-        handName: "M(♭5)",
-        firstClass: "3th_chord",
-        secondClass: "3th_basic",
-        priority: 2,
-        cnNameString: "大三减五",
-        enNameString: "major triad flat five"
-    ),
-    
-    ChordBasicInfo(
-        DNA: [0, nil, 3, nil, 7, nil, nil],
-        sysName: "m",
-        handName: "-",
-        firstClass: "3th_chord",
-        secondClass: "3th_basic",
-        priority: 5,
-        cnNameString: "小三",
-        enNameString: "minor triad"
-    ),
-    
-    ChordBasicInfo(
-        DNA: [0, nil, 3, nil, 8, nil, nil],
-        sysName: "m(♯5)",
-        handName: "m+",
-        firstClass: "3th_chord",
-        secondClass: "3th_basic",
-        priority: 2,
-        cnNameString: "小三增五",
-        enNameString: "minor augmented triad"
-    ),
-    
-    ChordBasicInfo(
-        DNA: [0, nil, 3, nil, 6, nil, nil],
-        sysName: "dim",
-        handName: "°",
-        firstClass: "3th_chord",
-        secondClass: "3th_basic",
-        priority: 5,
-        cnNameString: "减三",
-        enNameString: "diminished triad"
-    ),
-    
-    //
-    // 3th chord
-    // 3th chord sus2
-    //
-    ChordBasicInfo(
-        DNA: [0, 2, nil, nil, 7, nil, nil],
-        sysName: "sus2",
-        handName: "sus2",
-        firstClass: "3th_chord",
-        secondClass: "3th_sus2",
-        priority: 4,
-        cnNameString: "挂二",
-        enNameString: "suspended 2 chord"
-    ),
-    
-    ChordBasicInfo(
-        DNA: [0, 2, nil, nil, 6, nil, nil],
-        sysName: "sus2(♭5)",
-        handName: "sus2(♭5)",
-        firstClass: "3th_chord",
-        secondClass: "3th_sus2",
-        priority: 2,
-        cnNameString: "挂二减五",
-        enNameString: "suspended 2 diminished 5 chord"
-    ),
-    
-    ChordBasicInfo(
-        DNA: [0, 2, nil, nil, 8, nil, nil],
-        sysName: "sus2(♯5)",
-        handName: "sus2(♯5)",
-        firstClass: "3th_chord",
-        secondClass: "3th_sus2",
-        priority: 2,
-        cnNameString: "挂二增五",
-        enNameString: "suspended 2 augmented 5 chord"
-    ),
-    
-    //
-    // 3th chord
-    // 3th chord sus4
-    //
-    
-    ChordBasicInfo(
-        DNA: [0, nil, nil, 5, 7, nil, nil],
-        sysName: "sus4",
-        handName: "sus4",
-        firstClass: "3th_chord",
-        secondClass: "3th_sus4",
-        priority: 4,
-        cnNameString: "挂四",
-        enNameString: "suspended 4 chord"
-    ),
-    
-    ChordBasicInfo(
-        DNA: [0, nil, nil, 5, 6, nil, nil],
-        sysName: "sus4(♭5)",
-        handName: "sus4(♭5)",
-        firstClass: "3th_chord",
-        secondClass: "3th_sus4",
-        priority: 2,
-        cnNameString: "挂四减五",
-        enNameString: "suspended 4 diminished 5 chord"
-    ),
-    
-    ChordBasicInfo(
-        DNA: [0, nil, nil, 5, 8, nil, nil],
-        sysName: "sus4(♯5)",
-        handName: "sus4(♯5)",
-        firstClass: "3th_chord",
-        secondClass: "3th_sus4",
-        priority: 2,
-        cnNameString: "挂四增五",
-        enNameString: "suspended 4 augmented 5 chord"
-    ),
-    
-    //
-    // 7th chord
-    // 7th chord
-    //
-    
-    // 7-1-1
-    ChordBasicInfo(
-        DNA: [0, nil, 4, nil, 7, nil, 11],
-        sysName: "M7",
-        handName: "△",
-        firstClass: "7th_chord",
-        secondClass: "7th_basic",
-        priority: 5,
-        cnNameString: "大七",
-        enNameString: "major 7th chord"
-    ),
-    
-    // 7-1-2
-    ChordBasicInfo(
-        DNA: [0, nil, 4, nil, 7, nil, 10],
-        sysName: "7",
-        handName: "7",
-        firstClass: "7th_chord",
-        secondClass: "7th_basic",
-        priority: 5,
-        cnNameString: "属七",
-        enNameString: "dominant 7th chord"
-    ),
-    
-    // 7-1-3
-    ChordBasicInfo(
-        DNA: [0, nil, 4, nil, 7, nil, 9],
-        sysName: "M(𝄫7)",
-        handName: "M(𝄫7)",
-        firstClass: "7th_chord",
-        secondClass: "7th_basic",
-        priority: 1,
-        cnNameString: "大三加重减七",
-        enNameString: "major triad double flat 7th chord"
-    ),
-    
-    // 7-1-4
-    ChordBasicInfo(
-        DNA: [0, nil, 4, nil, 6, nil, 11],
-        sysName: "M7(♭5)",
-        handName: "△(♭5)",
-        firstClass: "7th_chord",
-        secondClass: "7th_basic",
-        priority: 2,
-        cnNameString: "大七减五",
-        enNameString: "major 7th flat 5th chord"
-    ),
-    
-    // 7-1-5
-    ChordBasicInfo(
-        DNA: [0, nil, 4, nil, 6, nil, 10],
-        sysName: "7(♭5)",
-        handName: "7(♭5)",
-        firstClass: "7th_chord",
-        secondClass: "7th_basic",
-        priority: 2,
-        cnNameString: "属七减五",
-        enNameString: "dominant 7th flat 5th chord"
-    ),
-    
-    // 7-1-6
-    ChordBasicInfo(
-        DNA: [0, nil, 4, nil, 6, nil, 9],
-        sysName: "M(♭5 𝄫7)",
-        handName: "M(♭5 𝄫7)",
-        firstClass: "7th_chord",
-        secondClass: "7th_basic",
-        priority: 1,
-        cnNameString: "大三减五重减七",
-        enNameString: "major flat 5th double flat 7th chord"
-    ),
-    
-    // 7-1-7
-    ChordBasicInfo(
-        DNA: [0, nil, 4, nil, 8, nil, 11],
-        sysName: "M7(♯5)",
-        handName: "△(♯5)",
-        firstClass: "7th_chord",
-        secondClass: "7th_basic",
-        priority: 2,
-        cnNameString: "大七增五",
-        enNameString: "major 7th sharp 5th chord"
-    ),
-    
-    // 7-1-8
-    ChordBasicInfo(
-        DNA: [0, nil, 4, nil, 8, nil, 10],
-        sysName: "7(♯5)",
-        handName: "7(♯5)",
-        firstClass: "7th_chord",
-        secondClass: "7th_basic",
-        priority: 2,
-        cnNameString: "属七增五",
-        enNameString: "dominant 7th sharp 5th chord"
-    ),
-    
-    // 7-1-9
-    ChordBasicInfo(
-        DNA: [0, nil, 4, nil, 8, nil, 9],
-        sysName: "M(♯5 𝄫7)",
-        handName: "M(♯5 𝄫7)",
-        firstClass: "7th_chord",
-        secondClass: "7th_basic",
-        priority: 1,
-        cnNameString: "大三增五重减七",
-        enNameString: "major sharp 5th double flat 7th chord"
-    ),
-    
-    // 7-1-10
-    ChordBasicInfo(
-        DNA: [0, nil, 3, nil, 7, nil, 11],
-        sysName: "mM7",
-        handName: "mM7",
-        firstClass: "7th_chord",
-        secondClass: "7th_basic",
-        priority: 4,
-        cnNameString: "小大七",
-        enNameString: "minor major 7th chord"
-    ),
-    
-    // 7-1-11
-    ChordBasicInfo(
-        DNA: [0, nil, 3, nil, 7, nil, 10],
-        sysName: "m7",
-        handName: "-7",
-        firstClass: "7th_chord",
-        secondClass: "7th_basic",
-        priority: 5,
-        cnNameString: "小七",
-        enNameString: "minor 7th chord"
-    ),
-    
-    // 7-1-12
-    ChordBasicInfo(
-        DNA: [0, nil, 3, nil, 7, nil, 9],
-        sysName: "m(𝄫7)",
-        handName: "-(𝄫7)",
-        firstClass: "7th_chord",
-        secondClass: "7th_basic",
-        priority: 1,
-        cnNameString: "小三加重减七",
-        enNameString: "minor triad double flat 7th chord"
-    ),
-    
-    // 7-1-13
-    ChordBasicInfo(
-        DNA: [0, nil, 3, nil, 6, nil, 11],
-        sysName: "mM7(♭5)",
-        handName: "mM7(♭5)",
-        firstClass: "7th_chord",
-        secondClass: "7th_basic",
-        priority: 2,
-        cnNameString: "小大七减五",
-        enNameString: "minor major 7th flat 5th chord"
-    ),
-    
-    // 7-1-14
-    ChordBasicInfo(
-        DNA: [0, nil, 3, nil, 6, nil, 10],
-        sysName: "m7(♭5)",
-        handName: "ø7",
-        firstClass: "7th_chord",
-        secondClass: "7th_basic",
-        priority: 2,
-        cnNameString: "半减七",
-        enNameString: "half-diminished 7th chord"
-    ),
-    
-    // 7-1-15
-    ChordBasicInfo(
-        DNA: [0, nil, 3, nil, 6, nil, 9],
-        sysName: "dim7",
-        handName: "°7",
-        firstClass: "7th_chord",
-        secondClass: "7th_basic",
-        priority: 5,
-        cnNameString: "减七",
-        enNameString: "diminished 7th chord"
-    ),
-    
-    // 7-1-16
-    ChordBasicInfo(
-        DNA: [0, nil, 3, nil, 8, nil, 11],
-        sysName: "mM7(♯5)",
-        handName: "mM7(♯5)",
-        firstClass: "7th_chord",
-        secondClass: "7th_basic",
-        priority: 2,
-        cnNameString: "小大七增五",
-        enNameString: "minor major 7th sharp 5th chord"
-    ),
-    
-    // 7-1-17
-    ChordBasicInfo(
-        DNA: [0, nil, 3, nil, 8, nil, 10],
-        sysName: "m7(♯5)",
-        handName: "-7(♯5)",
-        firstClass: "7th_chord",
-        secondClass: "7th_basic",
-        priority: 2,
-        cnNameString: "小七增五",
-        enNameString: "minor 7th sharp 5th chord"
-    ),
-    
-    // 7-1-18
-    ChordBasicInfo(
-        DNA: [0, nil, 3, nil, 8, nil, 9],
-        sysName: "m(♯5 𝄫7)",
-        handName: "-(♯5 𝄫7)",
-        firstClass: "7th_chord",
-        secondClass: "7th_basic",
-        priority: 1,
-        cnNameString: "小三增五重减七",
-        enNameString: "minor sharp 5th double flat 7th chord"
-    ),
-    
-    //
-    // 7th chord
-    // 7th sus2 chord
-    //
-    
-    // 7-2-1
-    ChordBasicInfo(
-        DNA: [0, 2, nil, nil, 7, nil, 11],
-        sysName: "M7sus2",
-        handName: "△sus2",
-        firstClass: "7th_chord",
-        secondClass: "7th_sus2",
-        priority: 4,
-        cnNameString: "大七挂二",
-        enNameString: "major 7th suspended 2nd chord"
-    ),
-    
-    // 7-2-2
-    ChordBasicInfo(
-        DNA: [0, 2, nil, nil, 7, nil, 10],
-        sysName: "7sus2",
-        handName: "7sus2",
-        firstClass: "7th_chord",
-        secondClass: "7th_sus2",
-        priority: 4,
-        cnNameString: "属七挂二",
-        enNameString: "dominant 7th suspended 2nd chord"
-    ),
-    
-    // 7-2-3
-    ChordBasicInfo(
-        DNA: [0, 2, nil, nil, 7, nil, 9],
-        sysName: "sus2(𝄫7)",
-        handName: "sus2(𝄫7)",
-        firstClass: "7th_chord",
-        secondClass: "7th_sus2",
-        priority: 1,
-        cnNameString: "重减七挂二",
-        enNameString: "suspended 2nd double flat 7th chord"
-    ),
-    
-    // 7-2-4
-    ChordBasicInfo(
-        DNA: [0, 2, nil, nil, 6, nil, 11],
-        sysName: "M7sus2(♭5)",
-        handName: "△sus2(♭5)",
-        firstClass: "7th_chord",
-        secondClass: "7th_sus2",
-        priority: 2,
-        cnNameString: "大七挂二减五",
-        enNameString: "major 7th suspended 2nd flat 5th chord"
-    ),
-    
-    // 7-2-5
-    ChordBasicInfo(
-        DNA: [0, 2, nil, nil, 6, nil, 10],
-        sysName: "7sus2(♭5)",
-        handName: "7sus2(♭5)",
-        firstClass: "7th_chord",
-        secondClass: "7th_sus2",
-        priority: 2,
-        cnNameString: "属七挂二减五",
-        enNameString: "dominant 7th suspended 2nd flat 5th chord"
-    ),
-    
-    // 7-2-6
-    ChordBasicInfo(
-        DNA: [0, 2, nil, nil, 6, nil, 9],
-        sysName: "sus2(♭5 𝄫7)",
-        handName: "sus2(♭5 𝄫7)",
-        firstClass: "7th_chord",
-        secondClass: "7th_sus2",
-        priority: 1,
-        cnNameString: "减七挂二减五",
-        enNameString: "suspended 2nd flat 5th double flat 7th chord"
-    ),
-    
-    // 7-2-7
-    ChordBasicInfo(
-        DNA: [0, 2, nil, nil, 8, nil, 11],
-        sysName: "M7sus2(♯5)",
-        handName: "△sus2(♯5)",
-        firstClass: "7th_chord",
-        secondClass: "7th_sus2",
-        priority: 2,
-        cnNameString: "大七挂二增五",
-        enNameString: "major 7th suspended 2nd sharp 5th chord"
-    ),
-    
-    // 7-2-8
-    ChordBasicInfo(
-        DNA: [0, 2, nil, nil, 8, nil, 10],
-        sysName: "7sus2(♯5)",
-        handName: "7sus2(♯5)",
-        firstClass: "7th_chord",
-        secondClass: "7th_sus2",
-        priority: 2,
-        cnNameString: "属七挂二增五",
-        enNameString: "dominant 7th suspended 2nd sharp 5th chord"
-    ),
-    
-    // 7-2-9
-    ChordBasicInfo(
-        DNA: [0, 2, nil, nil, 8, nil, 9],
-        sysName: "sus2(♯5 𝄫7)",
-        handName: "sus2(♯5 𝄫7)",
-        firstClass: "7th_chord",
-        secondClass: "7th_sus2",
-        priority: 1,
-        cnNameString: "减七挂二增五",
-        enNameString: "suspended 2nd sharp 5th double flat 7th chord"
-    ),
-    
-    //
-    // 7th chord
-    // 7th sus4 chord
-    //
-    
-    // 7-3-1
-    ChordBasicInfo(
-        DNA: [0, nil, nil, 5, 7, nil, 11],
-        sysName: "M7sus4",
-        handName: "△sus4",
-        firstClass: "7th_chord",
-        secondClass: "7th_sus4",
-        priority: 4,
-        cnNameString: "大七挂四",
-        enNameString: "major 7th suspended 4th chord"
-    ),
-    
-    // 7-3-2
-    ChordBasicInfo(
-        DNA: [0, nil, nil, 5, 7, nil, 10],
-        sysName: "7sus4",
-        handName: "7sus4",
-        firstClass: "7th_chord",
-        secondClass: "7th_sus4",
-        priority: 4,
-        cnNameString: "属七挂四",
-        enNameString: "dominant 7th suspended 4th chord"
-    ),
+public protocol ChordType {
+     var info: ChordBasicInfo { get }
+}
 
-    // 7-3-3
-    ChordBasicInfo(
-        DNA: [0, nil, nil, 5, 7, nil, 9],
-        sysName: "sus4(𝄫7)",
-        handName: "sus4(𝄫7)",
-        firstClass: "7th_chord",
-        secondClass: "7th_sus4",
-        priority: 1,
-        cnNameString: "重减七挂四",
-        enNameString: "suspended 4th double flat 7th chord"
-    ),
+//
+public enum ChordTypeAdvance: CaseIterable, ChordType {
+     case majorSixNinth
+     case major9
+     case dominant9
+     case minor9
+     case major11
+     case dominant11
+     case minor11
+     case major13
+     case dominant13
+     case minor13
+     case major7Sharp11
+     case dominant7Sharp11
+     case dominant7Flat9
+     case dominant7Sharp9
 
-    // 7-3-4
-    ChordBasicInfo(
-        DNA: [0, nil, nil, 5, 6, nil, 11],
-        sysName: "M7sus4(♭5)",
-        handName: "△sus4(♭5)",
-        firstClass: "7th_chord",
-        secondClass: "7th_sus4",
-        priority: 2,
-        cnNameString: "大七挂四减五",
-        enNameString: "major 7th suspended 4th flat 5th chord"
-    ),
+     public var info: ChordBasicInfo {
+          switch self {
+          case .majorSixNinth:
+               return ChordBasicInfo(
+                    baseName: "69",
+                    cnName: "六九",
+                    enName: "six nine",
+                    intervals: [.M3, .P5, .M6, .M9],
+                    basicType: .sixth)
+          case .major9:
+               return ChordBasicInfo(
+                    baseName: "M9",
+                    cnName: "大九",
+                    enName: "major 9th",
+                    intervals: [.M3, .P5, .M7, .M9],
+                    basicType: .seventh)
+          case .dominant9:
+               return ChordBasicInfo(
+                    baseName: "9",
+                    cnName: "属九",
+                    enName: "dominant 9th",
+                    intervals: [.M3, .P5, .m7, .M9],
+                    basicType: .seventh)
+          case .minor9:
+               return ChordBasicInfo(
+                    baseName: "m9",
+                    cnName: "小九",
+                    enName: "minor 9th",
+                    intervals: [.m3, .P5, .m7, .M9],
+                    basicType: .seventh)
+          case .major11:
+               return ChordBasicInfo(
+                    baseName: "M11",
+                    cnName: "大十一",
+                    enName: "major 11th",
+                    intervals: [.M3, .P5, .M7, .M9, .P11],
+                    basicType: .seventh)
+          case .dominant11:
+               return ChordBasicInfo(
+                    baseName: "11",
+                    cnName: "属十一",
+                    enName: "dominant 11th",
+                    intervals: [.M3, .P5, .m7, .M9, .P11],
+                    basicType: .seventh)
+          case .minor11:
+               return ChordBasicInfo(
+                    baseName: "m11",
+                    cnName: "小十一",
+                    enName: "minor 11th",
+                    intervals: [.m3, .P5, .m7, .M9, .P11],
+                    basicType: .seventh)
+          case .major13:
+               return ChordBasicInfo(
+                    baseName: "M13",
+                    cnName: "大十三",
+                    enName: "major 13th",
+                    intervals: [.M3, .P5, .M7, .M9, .M13],
+                    basicType: .seventh)
+          case .dominant13:
+               return ChordBasicInfo(
+                    baseName: "13",
+                    cnName: "属十三",
+                    enName: "dominant 13th",
+                    intervals: [.M3, .P5, .m7, .M9, .M13],
+                    basicType: .seventh)
+          case .minor13:
+               return ChordBasicInfo(
+                    baseName: "m13",
+                    cnName: "小十三",
+                    enName: "minor 13th",
+                    intervals: [.m3, .P5, .m7, .M9, .M13],
+                    basicType: .seventh)
+          case .major7Sharp11:
+               return ChordBasicInfo(
+                    baseName: "M7",
+                    baseNameAddition: [.A11],
+                    cnName: "大七升十一",
+                    enName: "major 7th sharp 11th",
+                    intervals: [.M3, .P5, .M7, .A11],
+                    basicType: .seventh)
+          case .dominant7Sharp11:
+               return ChordBasicInfo(
+                    baseName: "7",
+                    baseNameAddition: [.A11],
+                    cnName: "属七升十一",
+                    enName: "dominant 7th sharp 11th",
+                    intervals: [.M3, .P5, .m7, .A11],
+                    basicType: .seventh)
+          case .dominant7Flat9:
+               return ChordBasicInfo(
+                    baseName: "7",
+                    baseNameAddition: [.m9],
+                    cnName: "属七降九",
+                    enName: "dominant 7th flat 9th",
+                    intervals: [.M3, .P5, .m7, .m9],
+                    basicType: .seventh)
+          case .dominant7Sharp9:
+               return ChordBasicInfo(
+                    baseName: "7",
+                    baseNameAddition: [.A9],
+                    cnName: "属七升九",
+                    enName: "dominant 7th sharp 9th",
+                    intervals: [.M3, .P5, .m7, .A9],
+                    basicType: .seventh)
+          }
+     }
+}
 
-    // 7-3-5
-    ChordBasicInfo(
-        DNA: [0, nil, nil, 5, 6, nil, 10],
-        sysName: "7sus4(♭5)",
-        handName: "7sus4(♭5)",
-        firstClass: "7th_chord",
-        secondClass: "7th_sus4",
-        priority: 2,
-        cnNameString: "属七挂四减五",
-        enNameString: "dominant 7th suspended 4th flat 5th chord"
-    ),
+// 7音以下所有排列组合
+public enum ChordTypeBasic: ChordType, CaseIterable {
 
-    // 7-3-6
-    ChordBasicInfo(
-        DNA: [0, nil, nil, 5, 6, nil, 9],
-        sysName: "sus4(♭5 𝄫7)",
-        handName: "sus4(♭5 𝄫7)",
-        firstClass: "7th_chord",
-        secondClass: "7th_sus4",
-        priority: 1,
-        cnNameString: "减七挂四减五",
-        enNameString: "suspended 4th flat 5th double flat 7th chord"
-    ),
+     // 三和弦
+     case majorTriad
+     case augmentedTriad
+     case majorFlatFiveTriad
+     case minorTriad
+     case minorAugmentedTriad
+     case diminishedTriad
 
-    // 7-3-7
-    ChordBasicInfo(
-        DNA: [0, nil, nil, 5, 8, nil, 11],
-        sysName: "M7sus4(♯5)",
-        handName: "△sus4(♯5)",
-        firstClass: "7th_chord",
-        secondClass: "7th_sus4",
-        priority: 2,
-        cnNameString: "大七挂四增五",
-        enNameString: "major 7th suspended 4th sharp 5th chord"
-    ),
-    
-    // 7-3-8
-    ChordBasicInfo(
-        DNA: [0, nil, nil, 5, 8, nil, 10],
-        sysName: "7sus4(♯5)",
-        handName: "7sus4(♯5)",
-        firstClass: "7th_chord",
-        secondClass: "7th_sus4",
-        priority: 2,
-        cnNameString: "属七挂四增五",
-        enNameString: "dominant 7th suspended 4th sharp 5th chord"
-    ),
-    
-    // 7-3-9
-    ChordBasicInfo(
-        DNA: [0, nil, nil, 5, 8, nil, 9],
-        sysName: "sus4(♯5 𝄫7)",
-        handName: "sus4(♯5 𝄫7)",
-        firstClass: "7th_chord",
-        secondClass: "7th_sus4",
-        priority: 1,
-        cnNameString: "减七挂四增五",
-        enNameString: "suspended 4th sharp 5th double flat 7th chord"
-    ),
-    
-    //
-    // 6th chord
-    // 6th basic chord
-    //
-    
-    // 6basic
-    // 6-1-1
-    ChordBasicInfo(
-        DNA: [0, nil, 4, nil, 7, 9, nil],
-        sysName: "6",
-        handName: "6",
-        firstClass: "6th_chord",
-        secondClass: "6th_basic",
-        priority: 4,
-        cnNameString: "大六",
-        enNameString: "major 6th chord"
-    ),
-    
-    // 6-1-2
-    ChordBasicInfo(
-        DNA: [0, nil, 4, nil, 8, 9, nil],
-        sysName: "aug6",
-        handName: "+6",
-        firstClass: "6th_chord",
-        secondClass: "6th_basic",
-        priority: 3,
-        cnNameString: "增六",
-        enNameString: "augmented 6th chord"
-    ),
-    
-    // 6-1-3
-    ChordBasicInfo(
-        DNA: [0, nil, 4, nil, 6, 9, nil],
-        sysName: "6(♭5)",
-        handName: "6(♭5)",
-        firstClass: "6th_chord",
-        secondClass: "6th_basic",
-        priority: 2,
-        cnNameString: "大六减五",
-        enNameString: "major 6th flat 5th chord"
-    ),
-    
-    // 6-1-4
-    ChordBasicInfo(
-        DNA: [0, nil, 3, nil, 7, 9, nil],
-        sysName: "m6",
-        handName: "-6",
-        firstClass: "6th_chord",
-        secondClass: "6th_basic",
-        priority: 3,
-        cnNameString: "小六",
-        enNameString: "minor 6th chord"
-    ),
-    
-    // 6-1-5
-    ChordBasicInfo(
-        DNA: [0, nil, 3, nil, 8, 9, nil],
-        sysName: "m6(♯5)",
-        handName: "-6(♯5)",
-        firstClass: "6th_chord",
-        secondClass: "6th_basic",
-        priority: 2,
-        cnNameString: "小六增五",
-        enNameString: "minor 6th sharp 5th chord"
-    ),
-    
-    // 6-1-6
-    ChordBasicInfo(
-        DNA: [0, nil, 3, nil, 6, 9, nil],
-        sysName: "dim6",
-        handName: "°6",
-        firstClass: "6th_chord",
-        secondClass: "6th_basic",
-        priority: 3,
-        cnNameString: "减六",
-        enNameString: "diminished 6th chord"
-    ),
-    
-    // 6sus2
-    // 6-2-1
-    ChordBasicInfo(
-        DNA: [0, 2, nil, nil, 7, 9, nil],
-        sysName: "6sus2",
-        handName: "6sus2",
-        firstClass: "6th_chord",
-        secondClass: "6th_sus2",
-        priority: 3, // 虽然是sus2和弦，但是和7sus2相比较，6sus2的优先级要小
-        cnNameString: "大六挂二",
-        enNameString: "major 6th suspended 2nd chord"
-    ),
-    
-    // 6-2-2
-    ChordBasicInfo(
-        DNA: [0, 2, nil, nil, 8, 9, nil],
-        sysName: "6sus2(♯5)",
-        handName: "6sus2(♯5)",
-        firstClass: "6th_chord",
-        secondClass: "6th_sus2",
-        priority: 2, // 比普通的（#5优先级还要小）
-        cnNameString: "大六挂二增五",
-        enNameString: "major 6th suspended 2nd sharp 5th chord"
-    ),
-    
-    // 6-2-3
-    ChordBasicInfo(
-        DNA: [0, 2, nil, nil, 6, 9, nil],
-        sysName: "6sus2(♭5)",
-        handName: "6sus2(♭5)",
-        firstClass: "6th_chord",
-        secondClass: "6th_sus2",
-        priority: 2,
-        cnNameString: "大六挂二减五",
-        enNameString: "major 6th suspended 2nd flat 5th chord"
-    ),
-    
-    // 6sus4
-    // 6-4-1
-    ChordBasicInfo(
-        DNA: [0, nil, nil, 5, 7, 9, nil],
-        sysName: "6sus4",
-        handName: "6sus4",
-        firstClass: "6th_chord",
-        secondClass: "6th_sus4",
-        priority: 3,
-        cnNameString: "大六挂四",
-        enNameString: "major 6th suspended 4th chord"
-    ),
-    
-    // 6-4-2
-    ChordBasicInfo(
-        DNA: [0, nil, nil, 5, 8, 9, nil],
-        sysName: "6sus4(♯5)",
-        handName: "6sus4(♯5)",
-        firstClass: "6th_chord",
-        secondClass: "6th_sus4",
-        priority: 2,
-        cnNameString: "大六挂四增五",
-        enNameString: "major 6th suspended 4th sharp 5th chord"
-    ),
-    
-    // 6-4-3
-    ChordBasicInfo(
-        DNA: [0, nil, nil, 5, 6, 9, nil],
-        sysName: "6sus4(♭5)",
-        handName: "6sus4(♭5)",
-        firstClass: "6th_chord",
-        secondClass: "6th_sus4",
-        priority: 2,
-        cnNameString: "大六挂四减五",
-        enNameString: "major 6th suspended 4th flat 5th chord"
-    ),
-]
+     // 挂留和弦
+     case sus2
+     case sus2FlatFive
+     case sus2SharpFive
+     case sus4
+     case sus4FlatFive
+     case sus4SharpFive
+
+     // 七和弦
+     case major7
+     case dominant7
+     case majorDoubleFlat7
+     case major7Flat5
+     case dominant7Flat5
+     case majorFlat5DoubleFlat7
+     case major7Sharp5
+     case dominant7Sharp5
+     case majorSharp5DoubleFlat7
+     case minorMajor7
+     case minor7
+     case minorDoubleFlat7
+     case minorMajor7Flat5
+     case halfDiminished7
+     case diminished7
+     case minorMajor7Sharp5
+     case minor7Sharp5
+     case minorSharp5DoubleFlat7
+
+     // 七挂留和弦
+     case major7Sus2
+     case dominant7Sus2
+     case sus2DoubleFlat7
+     case major7Sus2Flat5
+     case dominant7Sus2Flat5
+     case sus2Flat5DoubleFlat7
+     case major7Sus2Sharp5
+     case dominant7Sus2Sharp5
+     case sus2Sharp5DoubleFlat7
+     case major7Sus4
+     case dominant7Sus4
+     case sus4DoubleFlat7
+     case major7Sus4Flat5
+     case dominant7Sus4Flat5
+     case sus4Flat5DoubleFlat7
+     case major7Sus4Sharp5
+     case dominant7Sus4Sharp5
+     case sus4Sharp5DoubleFlat7
+
+     // 六和弦
+     case major6
+     case augmented6
+     case major6Flat5
+     case minor6
+     case minor6Sharp5
+     case diminished6
+
+     // 六挂留和弦
+     case major6Sus2
+     case major6Sus2Sharp5
+     case major6Sus2Flat5
+     case major6Sus4
+     case major6Sus4Sharp5
+     case major6Sus4Flat5
+
+     public var info: ChordBasicInfo {
+          switch self {
+          case .majorTriad:
+               return ChordBasicInfo(
+                    baseName: "M",
+                    shortName: "",
+                    cnName: "大三",
+                    enName: "major triad",
+                    intervals: [.M3, .P5],
+                    basicType: .triad,
+                    isDiatonic: true)
+          case .augmentedTriad:
+               return ChordBasicInfo(
+                    baseName: "aug",
+                    shortName: "+",
+                    cnName: "增三",
+                    enName: "augmented triad",
+                    intervals: [.M3, .A5],
+                    basicType: .triad)
+          case .majorFlatFiveTriad:
+               return ChordBasicInfo(
+                    baseName: "M",
+                    baseNameAddition: [.d5],
+                    cnName: "大三减五",
+                    enName: "major triad flat five",
+                    intervals: [.M3, .d5],
+                    basicType: .triad)
+          case .minorTriad:
+               return ChordBasicInfo(
+                    baseName: "m",
+                    shortName: "-",
+                    cnName: "小三",
+                    enName: "minor triad",
+                    intervals: [.m3, .P5],
+                    basicType: .triad,
+                    isDiatonic: true)
+          case .minorAugmentedTriad:
+               return ChordBasicInfo(
+                    baseName: "m",
+                    baseNameAddition: [.A5],
+                    cnName: "小三增五",
+                    enName: "minor augmented triad",
+                    intervals: [.m3, .A5],
+                    basicType: .triad)
+          case .diminishedTriad:
+               return ChordBasicInfo(
+                    baseName: "dim",
+                    shortName: "°",
+                    cnName: "减三",
+                    enName: "diminished triad",
+                    intervals: [.m3, .d5],
+                    basicType: .triad,
+                    isDiatonic: true)
+          case .sus2:
+               return ChordBasicInfo(
+                    baseName: "sus2",
+                    cnName: "挂二",
+                    enName: "suspended 2",
+                    intervals: [.M2, .P5],
+                    basicType: .triadSus2)
+          case .sus2FlatFive:
+               return ChordBasicInfo(
+                    baseName: "sus2",
+                    baseNameAddition: [.d5],
+                    cnName: "挂二减五",
+                    enName: "suspended 2 diminished 5",
+                    intervals: [.M2, .d5],
+                    basicType: .triadSus2)
+          case .sus2SharpFive:
+               return ChordBasicInfo(
+                    baseName: "sus2",
+                    baseNameAddition: [.A5],
+                    cnName: "挂二增五",
+                    enName: "suspended 2 augmented 5",
+                    intervals: [.M2, .A5],
+                    basicType: .triadSus2)
+          case .sus4:
+               return ChordBasicInfo(
+                    baseName: "sus4",
+                    cnName: "挂四",
+                    enName: "suspended 4",
+                    intervals: [.P4, .P5],
+                    basicType: .triadSus4)
+          case .sus4FlatFive:
+               return ChordBasicInfo(
+                    baseName: "sus4",
+                    baseNameAddition: [.d5],
+                    cnName: "挂四减五",
+                    enName: "suspended 4 diminished 5",
+                    intervals: [.P4, .d5],
+                    basicType: .triadSus4)
+          case .sus4SharpFive:
+               return ChordBasicInfo(
+                    baseName: "sus4",
+                    baseNameAddition: [.A5],
+                    cnName: "挂四增五",
+                    enName: "suspended 4 augmented 5",
+                    intervals: [.P4, .A5],
+                    basicType: .triadSus4)
+          case .major7:
+               return ChordBasicInfo(
+                    baseName: "M7",
+                    shortName: "△",
+                    cnName: "大七",
+                    enName: "major 7th",
+                    intervals: [.M3, .P5, .M7],
+                    basicType: .seventh,
+                    isDiatonic: true)
+          case .dominant7:
+               return ChordBasicInfo(
+                    baseName: "7",
+                    cnName: "属七",
+                    enName: "dominant 7th",
+                    intervals: [.M3, .P5, .m7],
+                    basicType: .seventh,
+                    isDiatonic: true)
+          case .majorDoubleFlat7:
+               return ChordBasicInfo(
+                    baseName: "M",
+                    baseNameAddition: [.d7],
+                    cnName: "大三加重减七",
+                    enName: "major triad double flat 7th",
+                    intervals: [.M3, .P5, .d7],
+                    basicType: .seventh)
+          case .major7Flat5:
+               return ChordBasicInfo(
+                    baseName: "M7",
+                    baseNameAddition: [.d5],
+                    cnName: "大七减五",
+                    enName: "major 7th flat 5th",
+                    intervals: [.M3, .d5, .M7],
+                    basicType: .seventh)
+          case .dominant7Flat5:
+               return ChordBasicInfo(
+                    baseName: "7",
+                    baseNameAddition: [.d5],
+                    cnName: "属七减五",
+                    enName: "dominant 7th flat 5th",
+                    intervals: [.M3, .d5, .m7],
+                    basicType: .seventh)
+          case .majorFlat5DoubleFlat7:
+               return ChordBasicInfo(
+                    baseName: "M",
+                    baseNameAddition: [.d5, .d7],
+                    cnName: "大三减五重减七",
+                    enName: "major flat 5th double flat 7th",
+                    intervals: [.M3, .d5, .d7],
+                    basicType: .seventh)
+          case .major7Sharp5:
+               return ChordBasicInfo(
+                    baseName: "M7",
+                    baseNameAddition: [.A5],
+                    shortName: "△",
+                    cnName: "大七增五",
+                    enName: "major 7th sharp 5th",
+                    intervals: [.M3, .A5, .M7],
+                    basicType: .seventh)
+          case .dominant7Sharp5:
+               return ChordBasicInfo(
+                    baseName: "7",
+                    baseNameAddition: [.A5],
+                    cnName: "属七增五",
+                    enName: "dominant 7th sharp 5th",
+                    intervals: [.M3, .A5, .m7],
+                    basicType: .seventh)
+          case .majorSharp5DoubleFlat7:
+               return ChordBasicInfo(
+                    baseName: "M",
+                    baseNameAddition: [.A5, .d7],
+                    cnName: "大三增五重减七",
+                    enName: "major sharp 5th double flat 7th",
+                    intervals: [.M3, .A5, .d7],
+                    basicType: .seventh)
+          case .minorMajor7:
+               return ChordBasicInfo(
+                    baseName: "mM7",
+                    cnName: "小大七",
+                    enName: "minor major 7th",
+                    intervals: [.m3, .P5, .M7],
+                    basicType: .seventh)
+          case .minor7:
+               return ChordBasicInfo(
+                    baseName: "m7",
+                    shortName: "-7",
+                    cnName: "小七",
+                    enName: "minor 7th",
+                    intervals: [.m3, .P5, .m7],
+                    basicType: .seventh,
+                    isDiatonic: true)
+          case .minorDoubleFlat7:
+               return ChordBasicInfo(
+                    baseName: "m",
+                    baseNameAddition: [.d7],
+                    cnName: "小三加重减七",
+                    enName: "minor triad double flat 7th",
+                    intervals: [.m3, .P5, .d7],
+                    basicType: .seventh)
+          case .minorMajor7Flat5:
+               return ChordBasicInfo(
+                    baseName: "mM7",
+                    baseNameAddition: [.d5],
+                    cnName: "小大七减五",
+                    enName: "minor major 7th flat 5th",
+                    intervals: [.m3, .d5, .M7],
+                    basicType: .seventh)
+          case .halfDiminished7:
+               return ChordBasicInfo(
+                    baseName: "m7",
+                    baseNameAddition: [.d5],
+                    shortName: "ø7",
+                    cnName: "半减七",
+                    enName: "half-diminished 7th",
+                    intervals: [.m3, .d5, .m7],
+                    basicType: .seventh,
+                    isDiatonic: true)
+          case .diminished7:
+               return ChordBasicInfo(
+                    baseName: "dim7",
+                    shortName: "°7",
+                    cnName: "减七",
+                    enName: "diminished 7th",
+                    intervals: [.m3, .d5, .d7],
+                    basicType: .seventh)
+          case .minorMajor7Sharp5:
+               return ChordBasicInfo(
+                    baseName: "mM7",
+                    baseNameAddition: [.A5],
+                    cnName: "小大七增五",
+                    enName: "minor major 7th sharp 5th",
+                    intervals: [.m3, .A5, .M7],
+                    basicType: .seventh)
+          case .minor7Sharp5:
+               return ChordBasicInfo(
+                    baseName: "m7",
+                    baseNameAddition: [.A5],
+                    cnName: "小七增五",
+                    enName: "minor 7th sharp 5th",
+                    intervals: [.m3, .A5, .m7],
+                    basicType: .seventh)
+          case .minorSharp5DoubleFlat7:
+               return ChordBasicInfo(
+                    baseName: "m",
+                    baseNameAddition: [.A5, .d7],
+                    cnName: "小三增五重减七",
+                    enName: "minor sharp 5th double flat 7th",
+                    intervals: [.m3, .A5, .d7],
+                    basicType: .seventh)
+          case .major7Sus2:
+               return ChordBasicInfo(
+                    baseName: "M7sus2",
+                    shortName: "△sus2",
+                    cnName: "大七挂二",
+                    enName: "major 7th suspended 2nd",
+                    intervals: [.M2, .P5, .M7],
+                    basicType: .seventhSus2)
+          case .dominant7Sus2:
+               return ChordBasicInfo(
+                    baseName: "7sus2",
+                    cnName: "属七挂二",
+                    enName: "dominant 7th suspended 2nd",
+                    intervals: [.M2, .P5, .m7],
+                    basicType: .seventhSus2)
+          case .sus2DoubleFlat7:
+               return ChordBasicInfo(
+                    baseName: "sus2",
+                    baseNameAddition: [.d7],
+                    cnName: "重减七挂二",
+                    enName: "suspended 2nd double flat 7th",
+                    intervals: [.M2, .P5, .d7],
+                    basicType: .seventhSus2)
+          case .major7Sus2Flat5:
+               return ChordBasicInfo(
+                    baseName: "M7sus2",
+                    baseNameAddition: [.d5],
+                    shortName: "△sus2",
+                    cnName: "大七挂二减五",
+                    enName: "major 7th suspended 2nd flat 5th",
+                    intervals: [.M2, .d5, .M7],
+                    basicType: .seventhSus2)
+          case .dominant7Sus2Flat5:
+               return ChordBasicInfo(
+                    baseName: "7sus2",
+                    baseNameAddition: [.d5],
+                    cnName: "属七挂二减五",
+                    enName: "dominant 7th suspended 2nd flat 5th",
+                    intervals: [.M2, .d5, .m7],
+                    basicType: .seventhSus2)
+          case .sus2Flat5DoubleFlat7:
+               return ChordBasicInfo(
+                    baseName: "sus2",
+                    baseNameAddition: [.d5, .d7],
+                    cnName: "减七挂二减五",
+                    enName: "suspended 2nd flat 5th double flat 7th",
+                    intervals: [.M2, .d5, .d7],
+                    basicType: .seventhSus2)
+          case .major7Sus2Sharp5:
+               return ChordBasicInfo(
+                    baseName: "M7sus2",
+                    baseNameAddition: [.A5],
+                    shortName: "△sus2",
+                    cnName: "大七挂二增五",
+                    enName: "major 7th suspended 2nd sharp 5th",
+                    intervals: [.M2, .A5, .M7],
+                    basicType: .seventhSus2)
+          case .dominant7Sus2Sharp5:
+               return ChordBasicInfo(
+                    baseName: "7sus2",
+                    baseNameAddition: [.A5],
+                    cnName: "属七挂二增五",
+                    enName: "dominant 7th suspended 2nd sharp 5th",
+                    intervals: [.M2, .A5, .m7],
+                    basicType: .seventhSus2)
+          case .sus2Sharp5DoubleFlat7:
+               return ChordBasicInfo(
+                    baseName: "sus2",
+                    baseNameAddition: [.A5, .d7],
+                    cnName: "减七挂二增五",
+                    enName: "suspended 2nd sharp 5th double flat 7th",
+                    intervals: [.M2, .A5, .d7],
+                    basicType: .seventhSus2)
+          case .major7Sus4:
+               return ChordBasicInfo(
+                    baseName: "M7sus4",
+                    shortName: "△sus4",
+                    cnName: "大七挂四",
+                    enName: "major 7th suspended 4th",
+                    intervals: [.P4, .P5, .M7],
+                    basicType: .seventhSus4)
+          case .dominant7Sus4:
+               return ChordBasicInfo(
+                    baseName: "7sus4",
+                    cnName: "属七挂四",
+                    enName: "dominant 7th suspended 4th",
+                    intervals: [.P4, .P5, .m7],
+                    basicType: .seventhSus4)
+          case .sus4DoubleFlat7:
+               return ChordBasicInfo(
+                    baseName: "sus4",
+                    baseNameAddition: [.d7],
+                    cnName: "重减七挂四",
+                    enName: "suspended 4th double flat 7th",
+                    intervals: [.P4, .P5, .d7],
+                    basicType: .seventhSus4)
+          case .major7Sus4Flat5:
+               return ChordBasicInfo(
+                    baseName: "M7sus4",
+                    baseNameAddition: [.d5],
+                    shortName: "△sus4",
+                    cnName: "大七挂四减五",
+                    enName: "major 7th suspended 4th flat 5th",
+                    intervals: [.P4, .d5, .M7],
+                    basicType: .seventhSus4)
+          case .dominant7Sus4Flat5:
+               return ChordBasicInfo(
+                    baseName: "7sus4",
+                    baseNameAddition: [.d5],
+                    cnName: "属七挂四减五",
+                    enName: "dominant 7th suspended 4th flat 5th",
+                    intervals: [.P4, .d5, .m7],
+                    basicType: .seventhSus4)
+          case .sus4Flat5DoubleFlat7:
+               return ChordBasicInfo(
+                    baseName: "sus4",
+                    baseNameAddition: [.d5, .d7],
+                    cnName: "减七挂四减五",
+                    enName: "suspended 4th flat 5th double flat 7th",
+                    intervals: [.P4, .d5, .d7],
+                    basicType: .seventhSus4)
+          case .major7Sus4Sharp5:
+               return ChordBasicInfo(
+                    baseName: "M7sus4",
+                    baseNameAddition: [.A5],
+                    shortName: "△sus4",
+                    cnName: "大七挂四增五",
+                    enName: "major 7th suspended 4th sharp 5th",
+                    intervals: [.P4, .A5, .M7],
+                    basicType: .seventhSus4)
+          case .dominant7Sus4Sharp5:
+               return ChordBasicInfo(
+                    baseName: "7sus4",
+                    baseNameAddition: [.A5],
+                    cnName: "属七挂四增五",
+                    enName: "dominant 7th suspended 4th sharp 5th",
+                    intervals: [.P4, .A5, .m7],
+                    basicType: .seventhSus4)
+          case .sus4Sharp5DoubleFlat7:
+               return ChordBasicInfo(
+                    baseName: "sus4",
+                    baseNameAddition: [.A5, .d7],
+                    cnName: "减七挂四增五",
+                    enName: "suspended 4th sharp 5th double flat 7th",
+                    intervals: [.P4, .A5, .d7],
+                    basicType: .seventhSus4)
+          case .major6:
+               return ChordBasicInfo(
+                    baseName: "6",
+                    cnName: "大六",
+                    enName: "major 6th",
+                    intervals: [.M3, .P5, .M6],
+                    basicType: .sixth)
+          case .augmented6:
+               return ChordBasicInfo(
+                    baseName: "aug6",
+                    shortName: "+6",
+                    cnName: "增六",
+                    enName: "augmented 6th",
+                    intervals: [.M3, .A5, .M6],
+                    basicType: .sixth)
+          case .major6Flat5:
+               return ChordBasicInfo(
+                    baseName: "6",
+                    baseNameAddition: [.d5],
+                    cnName: "大六减五",
+                    enName: "major 6th flat 5th",
+                    intervals: [.M3, .d5, .M6],
+                    basicType: .sixth)
+          case .minor6:
+               return ChordBasicInfo(
+                    baseName: "m6",
+                    shortName: "-6",
+                    cnName: "小六",
+                    enName: "minor 6th",
+                    intervals: [.m3, .P5, .M6],
+                    basicType: .sixth)
+          case .minor6Sharp5:
+               return ChordBasicInfo(
+                    baseName: "m6",
+                    baseNameAddition: [.A5],
+                    cnName: "小六增五",
+                    enName: "minor 6th sharp 5th",
+                    intervals: [.m3, .A5, .M6],
+                    basicType: .sixth)
+          case .diminished6:
+               return ChordBasicInfo(
+                    baseName: "dim6",
+                    shortName: "°6",
+                    cnName: "减六",
+                    enName: "diminished 6th",
+                    intervals: [.m3, .d5, .M6],
+                    basicType: .sixth)
+          case .major6Sus2:
+               return ChordBasicInfo(
+                    baseName: "6sus2",
+                    cnName: "大六挂二",
+                    enName: "major 6th suspended 2nd",
+                    intervals: [.M2, .P5, .M6],
+                    basicType: .sixthSus2)
+          case .major6Sus2Sharp5:
+               return ChordBasicInfo(
+                    baseName: "6sus2",
+                    baseNameAddition: [.A5],
+                    cnName: "大六挂二增五",
+                    enName: "major 6th suspended 2nd sharp 5th",
+                    intervals: [.M2, .A5, .M6],
+                    basicType: .sixthSus2)
+          case .major6Sus2Flat5:
+               return ChordBasicInfo(
+                    baseName: "6sus2",
+                    baseNameAddition: [.d5],
+                    cnName: "大六挂二减五",
+                    enName: "major 6th suspended 2nd flat 5th",
+                    intervals: [.M2, .d5, .M6],
+                    basicType: .sixthSus2)
+          case .major6Sus4:
+               return ChordBasicInfo(
+                    baseName: "6sus4",
+                    cnName: "大六挂四",
+                    enName: "major 6th suspended 4th",
+                    intervals: [.P4, .P5, .M6],
+                    basicType: .sixthSus4)
+          case .major6Sus4Sharp5:
+               return ChordBasicInfo(
+                    baseName: "6sus4",
+                    baseNameAddition: [.A5],
+                    cnName: "大六挂四增五",
+                    enName: "major 6th suspended 4th sharp 5th",
+                    intervals: [.P4, .A5, .M6],
+                    basicType: .sixthSus4)
+          case .major6Sus4Flat5:
+               return ChordBasicInfo(
+                    baseName: "6sus4",
+                    baseNameAddition: [.d5],
+                    cnName: "大六挂四减五",
+                    enName: "major 6th suspended 4th flat 5th",
+                    intervals: [.P4, .d5, .M6],
+                    basicType: .sixthSus4)
+          }
+     }
+}

@@ -1,94 +1,75 @@
-import Testing
 import Foundation
+import Testing
+
 @testable import Tonic
 
 @Suite("Chord Tests")
 struct ChordTests {
-
-    @Test("ChordTraidType Intervals")
-    func testChordTraidTypeIntervals() {
-        #expect(ChordTraidType.major.intervals == [.M3, .P5])
-        #expect(ChordTraidType.majorAugFifth.intervals == [.M3, .A5])
-        #expect(ChordTraidType.majorFlatFifth.intervals == [.M3, .d5])
-        #expect(ChordTraidType.minor.intervals == [.m3, .P5])
-        #expect(ChordTraidType.minorAugFifth.intervals == [.m3, .A5])
-        #expect(ChordTraidType.minorFlatFifth.intervals == [.m3, .d5])
-    }
-    
     @Test("Chord Note Generation")
     func testChordNoteGeneration() {
+
         let rootNote = Note(letter: .C, accidental: 0, octave: 4)
-        let cMajor = Chord(rootNote: rootNote, intervals: ChordTraidType.major.intervals)
-        let notes = cMajor.getNoteAll()
-        
-        // C Major: C4, E4, G4. 
-        #expect(notes.count == 3)
-        
+        // Fix: Use available initializer with explicit intervals for C Major (Major 3rd, Perfect 5th)
+        let cMajor = Chord(root: rootNote, intervals: [.M3, .P5])
+        let noteToInterval = cMajor.noteToIntervalRaw
+
         let noteC4 = rootNote
         let noteE4 = Note(letter: .E, accidental: 0, octave: 4)
         let noteG4 = Note(letter: .G, accidental: 0, octave: 4)
-        
-        #expect(notes.keys.contains(noteC4))
-        #expect(notes.keys.contains(noteE4))
-        #expect(notes.keys.contains(noteG4))
-        
-        #expect(notes[noteC4] == .P1)
-        #expect(notes[noteE4] == .M3)
-        #expect(notes[noteG4] == .P5)
+
+        #expect(noteToInterval[noteC4] == Interval.P1)
+        #expect(noteToInterval[noteE4] == Interval.M3)
+        #expect(noteToInterval[noteG4] == Interval.P5)
     }
 
-    @Test("Chord Note PitchInt String Generation")
-    func testChordNotePitchIntStringGeneration() {
-        let rootNote = Note(letter: .C, accidental: 0, octave: 4) // Pitch 60
-        let cMajor = Chord(rootNote: rootNote, intervals: ChordTraidType.major.intervals)
-        let pitchIntStrings = cMajor.getPitchIntIntervalDescription()
-        
-        #expect(pitchIntStrings.count == 3)
-        #expect(pitchIntStrings[60] == "P1")
-        #expect(pitchIntStrings[64] == "M3")
-        #expect(pitchIntStrings[67] == "P5")
+    @Test("Debug Chord Output")
+    /// swift test --filter testChordDebugOutput 2>&1 | grep ">>>"
+    func testChordDebugOutput() {
+        let rootNote = Note(letter: .A, accidental: 0, octave: 4)
+        let cMajor = Chord(root: rootNote, intervals: [.M2, .m3, .P5])
+
+        // 输出的结果按照 interval 的大小排序输出
+        print(">>> intervalsRaw: \(cMajor.intervalsRaw)")
+        for (note, interval) in cMajor.noteToIntervalRaw.sorted(by: { $0.value < $1.value }) {
+            print(">>> \(interval) -> \(note.fullName)")
+        }
     }
 
-    @Test("Chord with Voicing")
-    func testChordVoicing() {
-        let rootNote = Note(letter: .C, accidental: 0, octave: 4) // C4
-        // C Major Triad: C, E, G (1, 3, 5)
-        
-        // Triad First Inversion Voicing: 3, 5, 1 (+1 octave)
-        // Expect: E4, G4, C5
-        let voicing = VoicingType.triadFirstInversion.voicing
-        let cMajorInverted = Chord(rootNote: rootNote, basicChordType: .major, voicing: voicing)
-        let notes = cMajorInverted.getNoteAll()
-        
-        #expect(notes.count == 3)
-        
-        let e4 = Note(letter: .E, accidental: 0, octave: 4)
-        let g4 = Note(letter: .G, accidental: 0, octave: 4)
-        let c5 = Note(letter: .C, accidental: 0, octave: 5)
-        
-        #expect(notes[e4] != nil)
-        #expect(notes[g4] != nil)
-        #expect(notes[c5] != nil)
-        
-        #expect(notes[e4]?.description == "M3")
-        #expect(notes[g4]?.description == "P5")
-        #expect(notes[c5]?.description == "P1")
-        
-        // Check pitches
-        let pitches = cMajorInverted.getPitchIntList()
-        // E4=64, G4=67, C5=72
-        #expect(pitches == [64, 67, 72])
-    }
+    @Test("Get Interval By Pitch")
+    func testChordGetIntervalByPitch() {
+        // Setup Chord: Root = C4, Intervals = [.M2, .P5, .M9]
+        // C4 = 60
+        // M2 -> D4 (62)
+        // P5 -> G4 (67)
+        // M9 -> D5 (74)
+        let rootNote = Note(letter: .C, accidental: 0, octave: 4)
+        // Fix: Use available initializer with explicit intervals for C Major (Major 3rd, Perfect 5th)
+        let chord = Chord(root: rootNote, intervals: [.M2, .P5, .M9])
 
+        // Test case 1: Pitch 50 (D3) should match .M2 and .M9 (both are 'D')
+        // D3 = 50. 50 % 12 = 2. 62 % 12 = 2. 74 % 12 = 2.
+        // Test case 1: Pitch 50 (D3) should match .M2 and .M9 (both are 'D')
+        // D3 = 50. 50 % 12 = 2. 62 % 12 = 2. 74 % 12 = 2.
+        let result1 = chord.getNoteToIntervalRaw(by: 50)
+        #expect(result1.count == 2)
+        #expect(result1.values.contains(Interval.M2))
+        #expect(result1.values.contains(Interval.M9))
 
-    @Test("Chord Names")
-    func testChordNames() {
-        #expect(ChordTraidType.major.cnName == "大三")
-        #expect(ChordTraidType.majorAugFifth.cnName == "增三")
-        #expect(ChordTraidType.minorFlatFifth.cnName == "减三")
-        
-        #expect(ChordTraidType.major.enName == "major triad")
-        #expect(ChordTraidType.majorAugFifth.enName == "augmented triad")
-        #expect(ChordTraidType.minorFlatFifth.enName == "diminished triad")
+        // Test case 2: Pitch 67 (G4) should match .P5
+        // G4 = 67. 67 % 12 = 7.
+        let result2 = chord.getNoteToIntervalRaw(by: 67)
+        #expect(result2.count == 1)
+        #expect(result2.values.contains(Interval.P5))
+
+        // Test case 3: Pitch 61 (C#4) should match nothing
+        // C#4 = 61. 61 % 12 = 1.
+        let result3 = chord.getNoteToIntervalRaw(by: 61)
+        #expect(result3.isEmpty)
+
+        // Test case 4: Root note C4 (60)
+        // Note: The init adds .P1 automatically.
+        // C4 = 60. 60 % 12 = 0.
+        let result4 = chord.getNoteToIntervalRaw(by: 60)
+        #expect(result4.values.contains(Interval.P1))
     }
 }
