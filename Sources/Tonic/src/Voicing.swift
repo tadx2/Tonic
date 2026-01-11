@@ -8,17 +8,25 @@
 import Foundation
 
 public struct Voicing: Equatable, Hashable{
+    
     public let nameEN: String  // 英文名
     public let nameShort: String
     public var position: Set<Position>  // 位置数据
+    public var basicType: BasicType
+    
+    public enum BasicType {
+        case threeNote, fourNote, shell
+    }
 
     public init(
         nameEN: String, nameShort: String,
-        position: Set<Position>
+        basicType: BasicType,
+        position: Set<Position>,
     ) {
         self.nameEN = nameEN
         self.position = position
         self.nameShort = nameShort
+        self.basicType = basicType
     }
 
     public var voicingActiveDegree: Set<Set<ChordDegreeInt>> {
@@ -107,7 +115,7 @@ public enum VoicingType: CaseIterable {
             return Voicing(
                 nameEN: "Traid Root Position ",
                 nameShort: "Traid.RP",
-
+                basicType: .threeNote,
                 position: [
                     .init(degreeInt: 1, octaveDiff: 0),
                     .init(degreeInt: 3, octaveDiff: 0),
@@ -119,7 +127,7 @@ public enum VoicingType: CaseIterable {
             return Voicing(
                 nameEN: "Traid First Inversion",
                 nameShort: "Traid.Inv.1",
-
+                basicType: .threeNote,
                 position: [
                     .init(degreeInt: 3, octaveDiff: 0),
                     .init(degreeInt: 5, octaveDiff: 0),
@@ -131,7 +139,7 @@ public enum VoicingType: CaseIterable {
             return Voicing(
                 nameEN: "Traid Second Inversion",
                 nameShort: "Traid.Inv.2",
-
+                basicType: .threeNote,
                 position: [
                     .init(degreeInt: 5, octaveDiff: 0),
                     .init(degreeInt: 1, octaveDiff: 1),
@@ -143,7 +151,7 @@ public enum VoicingType: CaseIterable {
             return Voicing(
                 nameEN: "Traid Drop 2ed Note",
                 nameShort: "Traid.Drop2",
-
+                basicType: .threeNote,
                 position: [
                     .init(degreeInt: 3, octaveDiff: -1),
                     .init(degreeInt: 1, octaveDiff: 0),
@@ -154,9 +162,9 @@ public enum VoicingType: CaseIterable {
         // MARK: - 4个音的和弦 Voicings
         case .fourNoteRootPosition:
             return Voicing(
-                nameEN: "Seventh Root Position",
-                nameShort: "Seventh.RP",
-
+                nameEN: "four note root position",
+                nameShort: "RP",
+                basicType: .fourNote,
                 position: [
                     .init(degreeInt: 1, octaveDiff: 0),
                     .init(degreeInt: 3, octaveDiff: 0),
@@ -167,9 +175,9 @@ public enum VoicingType: CaseIterable {
 
         case .fourNoteFirstInversion:
             return Voicing(
-                nameEN: "Seventh First Inversion",
-                nameShort: "Seventh.Inv.1",
-
+                nameEN: "four note first inversion",
+                nameShort: "Inv.1",
+                basicType: .fourNote,
                 position: [
                     .init(degreeInt: 3, octaveDiff: 0),
                     .init(degreeInt: 5, octaveDiff: 0),
@@ -180,9 +188,9 @@ public enum VoicingType: CaseIterable {
 
         case .fourNoteSecondInversion:
             return Voicing(
-                nameEN: "Seventh Second Inversion",
-                nameShort: "Seventh.Inv.2",
-
+                nameEN: "four note second inversion",
+                nameShort: "Inv.2",
+                basicType: .fourNote,
                 position: [
                     .init(degreeInt: 5, octaveDiff: 0),
                     .init(degreeInt: 7, octaveDiff: 0),
@@ -193,9 +201,9 @@ public enum VoicingType: CaseIterable {
 
         case .fourNoteThirdInversion:
             return Voicing(
-                nameEN: "Seventh Third Inversion",
-                nameShort: "Seventh.Inv.3",
-
+                nameEN: "four note third inversion",
+                nameShort: "Inv.3",
+                basicType: .fourNote,
                 position: [
                     .init(degreeInt: 7, octaveDiff: 0),
                     .init(degreeInt: 1, octaveDiff: 1),
@@ -206,9 +214,9 @@ public enum VoicingType: CaseIterable {
 
         case .fourNoteDrop2:
             return Voicing(
-                nameEN: "Drop 2ed Note",
-                nameShort: "Seventh.Drop2",
-
+                nameEN: "four note drop 2ed",
+                nameShort: "Drop2",
+                basicType: .fourNote,
                 position: [
                     .init(degreeInt: 5, octaveDiff: -1),
                     .init(degreeInt: 1, octaveDiff: 0),
@@ -219,9 +227,9 @@ public enum VoicingType: CaseIterable {
 
         case .fourNoteDrop3:
             return Voicing(
-                nameEN: "Seventh Drop 3rd Note",
-                nameShort: "Seventh.Drop3",
-
+                nameEN: "four note drop 3rd",
+                nameShort: "Drop3",
+                basicType: .fourNote,
                 position: [
                     .init(degreeInt: 3, octaveDiff: -1),
                     .init(degreeInt: 1, octaveDiff: 0),
@@ -232,9 +240,9 @@ public enum VoicingType: CaseIterable {
 
         case .fourNoteDrop2And3:
             return Voicing(
-                nameEN: "Seventh Drop 2ed&3rd Note",
-                nameShort: "Seventh.Drop2&3",
-
+                nameEN: "four note drop 2ed&3rd",
+                nameShort: "Drop2&3",
+                basicType: .fourNote,
                 position: [
                     .init(degreeInt: 3, octaveDiff: -1),
                     .init(degreeInt: 5, octaveDiff: -1),
@@ -248,7 +256,7 @@ public enum VoicingType: CaseIterable {
             return Voicing(
                 nameEN: "Shell Voicing type A",
                 nameShort: "Shell",
-
+                basicType: .shell,
                 position: [
                     .init(degreeInt: 1, octaveDiff: 0),
                     .init(degreeInt: 3, octaveDiff: 0),
@@ -260,7 +268,7 @@ public enum VoicingType: CaseIterable {
             return Voicing(
                 nameEN: "Shell Voicing type B",
                 nameShort: "Shell",
-
+                basicType: .shell,
                 position: [
                     .init(degreeInt: 1, octaveDiff: 0),
                     .init(degreeInt: 7, octaveDiff: 0),
@@ -272,7 +280,7 @@ public enum VoicingType: CaseIterable {
             return Voicing(
                 nameEN: "Rootless Shell Voicing A",
                 nameShort: "Rootless Shell",
-
+                basicType: .shell,
                 position: [
                     .init(degreeInt: 3, octaveDiff: 0),
                     .init(degreeInt: 7, octaveDiff: 0),
@@ -283,7 +291,7 @@ public enum VoicingType: CaseIterable {
             return Voicing(
                 nameEN: "Rootless Shell Voicing B",
                 nameShort: "Rootless Shell",
-
+                basicType: .shell,
                 position: [
                     .init(degreeInt: 7, octaveDiff: -1),
                     .init(degreeInt: 3, octaveDiff: 0),

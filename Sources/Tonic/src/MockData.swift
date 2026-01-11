@@ -43,6 +43,11 @@ struct MockRawDNA{
     static let xMflat99Shrop11flat13 = [0,nil,3,nil,7,nil,nil,14,18,20]
 }
 
+public struct MockIntervals{
+    public static let xM: Set<Interval> = [.P1, .M3, .P5]
+    public static let x7sharp9flat13: Set<Interval> = [.P1, .M3, .P5, .m7, .m9, .m13]
+}
+
 struct MockNote{
     
     // C大调 octave = 0
