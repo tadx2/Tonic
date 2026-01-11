@@ -178,14 +178,15 @@ public extension Note {
 
 // MARK: - Formatting & Description
 extension Note {
+    
     /// 升降号符号 (e.g., "♯", "♭♭", "")
-    public var accidentalSymbol: String {
-        return accidental == 0 ? "" : String(repeating: accidental > 0 ? "♯" : "♭", count: abs(accidental))
-    }
+//    public var accidentalSymbol: String {
+//        return accidental == 0 ? "" : String(repeating: accidental > 0 ? "♯" : "♭", count: abs(accidental))
+//    }
 
     /// 简短音符名称，不包含八度 (e.g., "C", "D♯")
     public var name: String {
-        return "\(letter)\(accidentalSymbol)"
+        return "\(letter)\(accidental.descriptionStrict)"
     }
 
     /// 完整音符名称，包含八度 (e.g., "C4", "D♯5")

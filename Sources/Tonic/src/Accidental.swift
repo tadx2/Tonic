@@ -26,8 +26,8 @@ public extension Accidental {
     /// 例如：
     /// - 2 -> "♯♯"
     /// - -2 -> "♭♭"
-    var simpleDescription: String {
-        Self.getSimpleDescription(for: self)
+    var descriptionSimple: String {
+        Self.getDescriptionSimple(for: self)
     }
     
     /// 标准乐理符号表示 (Standard Notation)
@@ -36,13 +36,13 @@ public extension Accidental {
     /// 例如：
     /// - 2 -> "𝄪"
     /// - -2 -> "♭♭" (目前重降号通常仍写作两个降号，部分字体支持单字符重降号但这里保持通用性)
-    var notation: String {
-        Self.getNotation(for: self)
+    var descriptionStrict: String {
+        Self.getDescriptionStrict(for: self)
     }
     
     /// 获取简单的重复符号字符串
     /// - Parameter count: 升降号的数量
-    static func getSimpleDescription(for count: Int) -> String {
+    static func getDescriptionSimple(for count: Int) -> String {
         if count > 0 {
             return String(repeating: "♯", count: count)
         } else if count < 0 {
@@ -54,7 +54,7 @@ public extension Accidental {
     
     /// 获取标准乐理符号字符串
     /// - Parameter count: 升降号的数量
-    static func getNotation(for count: Int) -> String {
+    static func getDescriptionStrict(for count: Int) -> String {
         // 处理升号系列
         if count > 0 {
             let doubleSharps = count / 2

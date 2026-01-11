@@ -8,34 +8,34 @@ struct AccidentalTests {
     @Test("Simple Description")
     func testSimpleDescription() {
         // Natural
-        #expect(Accidental(0).simpleDescription == "")
+        #expect(Accidental(0).descriptionSimple == "")
         
         // Sharp
-        #expect(Accidental(1).simpleDescription == "♯")
-        #expect(Accidental(2).simpleDescription == "♯♯")
-        #expect(Accidental(3).simpleDescription == "♯♯♯")
+        #expect(Accidental(1).descriptionSimple == "♯")
+        #expect(Accidental(2).descriptionSimple == "♯♯")
+        #expect(Accidental(3).descriptionSimple == "♯♯♯")
         
         // Flat
-        #expect(Accidental(-1).simpleDescription == "♭")
-        #expect(Accidental(-2).simpleDescription == "♭♭")
-        #expect(Accidental(-3).simpleDescription == "♭♭♭")
+        #expect(Accidental(-1).descriptionSimple == "♭")
+        #expect(Accidental(-2).descriptionSimple == "♭♭")
+        #expect(Accidental(-3).descriptionSimple == "♭♭♭")
     }
 
     @Test("Standard Notation")
     func testNotation() {
         // Natural
-        #expect(Accidental(0).notation == "")
+        #expect(Accidental(0).descriptionStrict == "")
         
         // Sharp
-        #expect(Accidental(1).notation == "♯")
-        #expect(Accidental(2).notation == "𝄪")      // Double sharp
-        #expect(Accidental(3).notation == "𝄪♯")     // Triple sharp (1 double + 1 single)
-        #expect(Accidental(4).notation == "𝄪𝄪")     // Quadruple sharp
+        #expect(Accidental(1).descriptionStrict == "♯")
+        #expect(Accidental(2).descriptionStrict == "𝄪")      // Double sharp
+        #expect(Accidental(3).descriptionStrict == "𝄪♯")     // Triple sharp (1 double + 1 single)
+        #expect(Accidental(4).descriptionStrict == "𝄪𝄪")     // Quadruple sharp
         
         // Flat
-        #expect(Accidental(-1).notation == "♭")
-        #expect(Accidental(-2).notation == "♭♭")     // Double flat (standard)
-        #expect(Accidental(-3).notation == "♭♭♭")
+        #expect(Accidental(-1).descriptionStrict == "♭")
+        #expect(Accidental(-2).descriptionStrict == "♭♭")     // Double flat (standard)
+        #expect(Accidental(-3).descriptionStrict == "♭♭♭")
     }
 
     @Test("Common Combinations")
