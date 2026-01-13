@@ -45,8 +45,15 @@ struct MockRawDNA{
 
 public struct MockIntervals{
     public static let xM: Set<Interval> = [.P1, .M3, .P5]
+    public static let xSus2: Set<Interval> = [.P1, .M2, .P5]
     public static let x7sharp9flat13: Set<Interval> = [.P1, .M3, .P5, .m7, .m9, .m13]
 }
+
+public struct MockChord{
+    public static let CM: Chord = Chord(root: MockNote.C4, intervals: MockIntervals.xM)
+    public static let CSus2: Chord = Chord(root: MockNote.C4, intervals: MockIntervals.xSus2)
+}
+
 
 struct MockNote{
     
@@ -111,122 +118,4 @@ struct MockNote{
     static let B4bbbb = Note(letter: .B, accidental: -4, octave: 4)
 }
 
-//public struct MockChordRaw{
-//    
-//    // 三和弦
-//    public static let C4_M   = ChordRaw( rootNote: MockNote.C4, dnaRaw: MockRawDNA.xM )
-//    public static let C4_m   = ChordRaw( rootNote: MockNote.C4, dnaRaw: MockRawDNA.xm )
-//    public static let C4_dim = ChordRaw( rootNote: MockNote.C4, dnaRaw: MockRawDNA.xdim )
-//    
-//    // 七和弦
-//    public static let C4_M7   = ChordRaw( rootNote: MockNote.C4, dnaRaw: MockRawDNA.xM7  )
-//    public static let C4_m7   = ChordRaw( rootNote: MockNote.C4, dnaRaw: MockRawDNA.xm7 )
-//    public static let C4_dim7 = ChordRaw( rootNote: MockNote.C4, dnaRaw: MockRawDNA.xdim7 )
-//    public static let C4_7falt5 = ChordRaw( rootNote: MockNote.C4, dnaRaw: MockRawDNA.xm7falt5 )
-//}
 
-
-public struct MockChord{
-
-//    static let C47                   = ChordRaw( noteRoot: MockNote.C4, dnaRaw: MockRawDNA.x7                 )
-//    static let C4dim7                = ChordRaw( noteRoot: MockNote.C4,     dnaRaw: MockRawDNA.xdim7          )
-//    static let C3Sm9                 = ChordRaw( noteRoot: MockNote.C3s,    dnaRaw: MockRawDNA.xm9            )
-//    static let C3Sm9flat13           = ChordRaw( noteRoot: MockNote.C3s,    dnaRaw: MockRawDNA.xm9flat13      )
-//    static let C4m7                  = ChordRaw( noteRoot: MockNote.C4,     dnaRaw: MockRawDNA.xm7            )
-//    static let G4sM7sus4b5           = ChordRaw( noteRoot: MockNote.G4s,    dnaRaw: MockRawDNA.xM7sus4b5      )
-//    static let B4bM7sus4b5           = ChordRaw( noteRoot: MockNote.B4b,    dnaRaw: MockRawDNA.xM7sus4b5      )
-//    static let B4bbbbM7sus4b5        = ChordRaw( noteRoot: MockNote.B4bbbb, dnaRaw: MockRawDNA.xM7sus4b5      )
-//    static let B4bbbbx7sharp9flat13  = ChordRaw( noteRoot: MockNote.B4bbbb, dnaRaw: MockRawDNA.x7sharp9flat13 )
-//
-//    static let B4bx7sharp9flat13 = Chord(rootNote: MockNote.B4b, rawDNA: MockRawDNA.x7sharp9flat13)
-//    
-//    static let B4x7sharp9flat13 = Chord(rootNote: MockNote.B4, rawDNA: MockRawDNA.x7sharp9flat13)
-//    
-//    static let B4bxm9Shrop11flat13 = Chord(rootNote: MockNote.B4b, rawDNA: MockRawDNA.xm9Shrop11flat13)
-//    
-//    static let B4bMflat99Shrop11flat13 = Chord(rootNote: MockNote.B4b, rawDNA: MockRawDNA.xMflat99Shrop11flat13)
-//    static let B4bm9flat5Shrop11flat13 = Chord(rootNote: MockNote.B4b, rawDNA: MockRawDNA.xm9flat5Shrop11flat13)
-//    
-//    // C自然大调 顺阶3和弦 octave = 4
-//    static let C4_M     = Chord(rootNote: MockNote.C4, rawDNA: MockRawDNA.xM)
-//    static let D4_m     = Chord(rootNote: MockNote.D4, rawDNA: MockRawDNA.xm)
-//    static let E4_m     = Chord(rootNote: MockNote.E4, rawDNA: MockRawDNA.xm)
-//    static let F4_m     = Chord(rootNote: MockNote.F4, rawDNA: MockRawDNA.xM)
-//    static let G4_m     = Chord(rootNote: MockNote.G4, rawDNA: MockRawDNA.xM)
-//    static let A4_m     = Chord(rootNote: MockNote.A4, rawDNA: MockRawDNA.xm)
-//    static let B4_dim   = Chord(rootNote: MockNote.B4, rawDNA: MockRawDNA.xdim)
-//    
-//    static let C4_Diatonic_3_Chords = [
-//        C4_M,D4_m,E4_m,F4_m,G4_m,A4_m,B4_dim
-//    ]
-//    
-//    // Ab自然大调 顺阶3和弦 octave = 4
-//    static let Ab4_M = Chord(rootNote: MockNote.Ab4, rawDNA: MockRawDNA.xM)
-//    static let Bb4_m = Chord(rootNote: MockNote.Bb4, rawDNA: MockRawDNA.xm)
-//    static let C4_m = Chord(rootNote: MockNote.C4, rawDNA: MockRawDNA.xm)
-//    static let Db4_m = Chord(rootNote: MockNote.Db4, rawDNA: MockRawDNA.xM)
-//    static let Eb4_m = Chord(rootNote: MockNote.Eb4, rawDNA: MockRawDNA.xM)
-////    static let F4_m = Chord(rootNote: MockNote.F4, rawDNA: MockRawDNA.xm)
-//    static let G4_dim = Chord(rootNote: MockNote.G4, rawDNA: MockRawDNA.xdim)
-//    
-//    static let Ab4_Diatonic_3_Chords = [
-//        Ab4_M,Bb4_m,C4_m,Db4_m,Eb4_m,F4_m,G4_dim
-//    ]
-//    
-//    
-//    // C自然大调 顺阶9和弦 octave = 4
-//    static let C4_M9 = Chord(rootNote: MockNote.C4, rawDNA: MockRawDNA.xM9)
-//    static let D4_m9 = Chord(rootNote: MockNote.D4, rawDNA: MockRawDNA.xm9)
-//    static let E4_m7flat9 = Chord(rootNote: MockNote.E4, rawDNA: MockRawDNA.xm7flat9)
-//    static let F4_M9 = Chord(rootNote: MockNote.F4, rawDNA: MockRawDNA.xM9)
-//    static let G4_9 = Chord(rootNote: MockNote.G4, rawDNA: MockRawDNA.x9)
-//    static let A4_m9 = Chord(rootNote: MockNote.A4, rawDNA: MockRawDNA.xm9)
-//    static let B4_m7flat5flat9 = Chord(rootNote: MockNote.B4, rawDNA: MockRawDNA.xm7flat5flat9)
-//
-//    static let C4_Diatonic_9_Chords = [
-//        C4_M9,D4_m9,E4_m7flat9,F4_M9,G4_9,A4_m9,B4_m7flat5flat9
-//    ]
-//    
-//    // C自然大调 顺阶7和弦 octave = 4
-//    public static let C4_M7 = ChordRaw(noteRoot: MockNote.C4, dnaRaw: MockRawDNA.xM7)
-//    static let D4_m7 = ChordRaw(noteRoot: MockNote.D4, dnaRaw: MockRawDNA.xm7)
-//    static let E4_m7 = ChordRaw(noteRoot: MockNote.E4, dnaRaw: MockRawDNA.xm7)
-//    static let F4_M7 = ChordRaw(noteRoot: MockNote.F4, dnaRaw: MockRawDNA.xM7)
-//    static let G4_7 = ChordRaw(noteRoot: MockNote.G4, dnaRaw: MockRawDNA.x7)
-//    static let A4_m7 = ChordRaw(noteRoot: MockNote.A4, dnaRaw: MockRawDNA.xm7)
-//    static let B4_m7flat5 = ChordRaw(noteRoot: MockNote.B4, dnaRaw: MockRawDNA.xm7falt5)
-//
-//    static let C4_Diatonic_7_Chords = [
-//        C4_M7,
-//        D4_m7,
-//        E4_m7,
-//        F4_M7,
-//        G4_7,
-//        A4_m7,
-//        B4_m7flat5,
-//    ]
-//    
-//    // C自然大调 顺阶13和弦 octave = 4
-//    static let C4_M13 = Chord(rootNote: MockNote.C4, rawDNA: MockRawDNA.xM13)
-//    
-//    // 常用 sus2 和弦
-//    static let C3_sus2 = Chord(rootNote: MockNote.C3, rawDNA: MockRawDNA.xSus2)
-//    static let C4_sus2 = Chord(rootNote: MockNote.C4, rawDNA: MockRawDNA.xSus2)
-//    static let D4_sus2 = Chord(rootNote: MockNote.D4, rawDNA: MockRawDNA.xSus2)
-//    static let E4_sus2 = Chord(rootNote: MockNote.E4, rawDNA: MockRawDNA.xSus2)
-//    static let F4_sus2 = Chord(rootNote: MockNote.F4, rawDNA: MockRawDNA.xSus2)
-//    static let G4_sus2 = Chord(rootNote: MockNote.G4, rawDNA: MockRawDNA.xSus2)
-//    static let A4_sus2 = Chord(rootNote: MockNote.A4, rawDNA: MockRawDNA.xSus2)
-//    static let B4_sus2 = Chord(rootNote: MockNote.B4, rawDNA: MockRawDNA.xSus2)
-//    
-//    static let common_use_sus2_triad_chords = [
-//        C4_sus2,
-//        D4_sus2,
-//        E4_sus2,
-//        F4_sus2,
-//        G4_sus2,
-//        A4_sus2,
-//        B4_sus2,
-//    ]
-//    
-}

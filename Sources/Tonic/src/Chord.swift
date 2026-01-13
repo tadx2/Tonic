@@ -7,35 +7,54 @@
 
 import Foundation
 
-public struct Chord {
+public struct Chord: Sendable {
 
     // note
     public var noteRoot: Note  // 根音
     public var noteBase: Note?  // 基音
 
     // intervals
-    // 传入进来的原始音程，已经加上了 .P1(根音)
-    public var intervalsRaw: Set<Interval>  // 原始音程
+    public var intervalsRaw: Set<Interval>  // 原始音程 // 传入进来的原始音程，已经加上了 .P1(根音)
 
-    // Voicing
-    public var voicingPitchIntSet: Set<PitchInt>
+    // degree
+    public var degreeInts: Set<ChordDegreeInt>
+
+    // pitch
+    public var pitchInts: Set<PitchInt>
 
     // noteToInterval
     public var noteToIntervalRaw: [Note: Interval]
 
-    // 音程构造1.
+    // 音程构造
     public init(
         root: Note = Note(), intervals: Set<Interval> = [.M3, .P5],
-        voicingPitchIntSet: Set<PitchInt> = [],
         base: Note? = nil
     ) {
+        var validatedIntervals = intervals
+        let degreeInts = Set(intervals.map { $0.degreeInt })
+
+        // 条件1. 2音/3音/4音 必须至少包含1个
+        if !(degreeInts.contains(2) || degreeInts.contains(3) || degreeInts.contains(4)) {
+            validatedIntervals = []
+        }
+
+        // 条件2. 6音与7音不能同时存在
+        if degreeInts.contains(6) && degreeInts.contains(7) {
+            validatedIntervals = []
+        }
+
+        // 条件3. 必须包含一个 5度音
+        if !degreeInts.contains(5) {
+            validatedIntervals = []
+        }
 
         self.noteRoot = root
         self.noteBase = base
-        self.voicingPitchIntSet = voicingPitchIntSet
 
-        let intervalsWithRoot = intervals.union([.P1])
+        let intervalsWithRoot = validatedIntervals.union([.P1])
+
         self.intervalsRaw = intervalsWithRoot
+        self.degreeInts = Set(intervalsWithRoot.map { $0.degreeInt })
 
         // noteToIntervalRaw
         // 原始音程与 root 的音程关系生成note
@@ -45,65 +64,71 @@ public struct Chord {
             noteToIntervalRaw[note] = interval
         }
         self.noteToIntervalRaw = noteToIntervalRaw
+
+        // pitchInts
+        self.pitchInts = Set(noteToIntervalRaw.keys.map { $0.pitch })
     }
 
-    // 音程构造2.
-    public init(
-        root: Note = Note(), intervals: Set<Interval> = [.M3, .P5], voicing: Voicing?,
-        base: Note? = nil
-    ) {
-        // 直接赋值基本属性，避免重复构造 noteToIntervalRaw
-        self.noteRoot = root
-        self.noteBase = base
+}
 
-        let intervalsWithRoot = intervals.union([.P1])
-        self.intervalsRaw = intervalsWithRoot
+// 判断和弦的类型
+extension Chord {
 
-        // 构建 noteToIntervalRaw（只构建一次）
-        var noteToIntervalRaw: [Note: Interval] = [:]
-        // 同时构建 degreeInt -> Note 的映射，用于 voicing 计算
-        var degreeToNote: [Int: Note] = [:]
-
-        for interval in intervalsWithRoot {
-            let note = root + interval
-            noteToIntervalRaw[note] = interval
-            degreeToNote[interval.degreeInt] = note
-        }
-        self.noteToIntervalRaw = noteToIntervalRaw
-
-        // 根据 voicing 计算 voicingPitchIntSet
-        // 如果 voicing 为空，直接设置为 nil；否则进行计算
-        if let voicing = voicing {
-            var pitchIntSet: Set<PitchInt> = []
-            for position in voicing.position {
-                if let note = degreeToNote[position.degreeInt] {
-                    // 计算最终音高：原始音高 + 八度偏移 * 12
-                    let finalPitch = note.pitch + (position.octaveDiff * 12)
-                    pitchIntSet.insert(finalPitch)
-                }
-            }
-            self.voicingPitchIntSet = pitchIntSet
-        } else {
-            self.voicingPitchIntSet = []
-        }
+    public var isSus2: Bool {
+        return degreeInts.contains(2)
     }
 
+    public var isSus4: Bool {
+        return degreeInts.contains(4)
+    }
+
+    public var isSus: Bool {
+        return isSus2 || isSus4
+    }
+
+    public var isSixth: Bool {
+        return degreeInts.contains(6)
+    }
+
+    public var isSeventh: Bool {
+        return degreeInts.contains(7)
+    }
+
+    public var isSixthOrSeventh: Bool {
+        return isSixth || isSeventh
+    }
+
+    public var isTension: Bool {
+        // 改成 包含 9/11/13中任何一个
+        return degreeInts.contains(9) || degreeInts.contains(11) || degreeInts.contains(13)
+    }
+}
+
+// Get Note
+extension Chord {
+    // 根据度数获取音符
+    public func getNote(by degreeInt: ChordDegreeInt) -> Note? {
+        guard let interval = intervalsRaw.first(where: { $0.degreeInt == degreeInt }) else {
+            return nil
+        }
+        return noteRoot + interval
+    }
 }
 
 // Pitch & Degree - Set
 extension Chord {
 
     // 原始和弦PitchIntSet
-    public func getPitchIntSetRaw() -> Set<PitchInt> {
-        let pitchInts = Set(noteToIntervalRaw.keys.map { $0.pitch })
-        return pitchInts
-    }
+    // public func getPitchIntSetRaw() -> Set<PitchInt> {
+    //     let pitchInts = Set(noteToIntervalRaw.keys.map { $0.pitch })
+    //     return pitchInts
+    // }
 
     // 原始和弦ChordDegreeIntSet
-    public func getDegreeIntSetRaw() -> Set<ChordDegreeInt> {
-        let degreeInts = Set(noteToIntervalRaw.values.map { $0.degreeInt })
-        return degreeInts
-    }
+    // public func getDegreeIntSetRaw() -> Set<ChordDegreeInt> {
+    //     let degreeInts = Set(noteToIntervalRaw.values.map { $0.degreeInt })
+    //     return degreeInts
+    // }
 }
 
 // Dict
@@ -151,19 +176,6 @@ extension Chord {
     }
 }
 
-extension Chord {
-    public func getAvalibleVoicing() -> [Voicing] {
-        // 根据VoicingType中的所有 Voicing 的 voicingActiveDegree 匹配可以运用的 voicing
-        var result: [Voicing] = []
-        for voicingType in VoicingType.allCases {
-            if voicingType.voicing.voicingActiveDegree.contains(where: { $0.isSubset(of: getDegreeIntSetRaw() ) }) {
-                result.append(voicingType.voicing)
-            }
-        }
-        return result
-    }
-}
-
 // ChordName - Raw( 根据原始音程计算出来的和弦名)
 extension Chord {
 
@@ -201,9 +213,9 @@ extension Chord {
         if ["M7", "7", "m7"].contains(name) {
             shorthands = [.M9, .P11, .M13]
         }
-//        else if ["m7"].contains(name) {
-//            shorthands = [.M9, .P11, .m13]
-//        }
+        //        else if ["m7"].contains(name) {
+        //            shorthands = [.M9, .P11, .m13]
+        //        }
 
         let foundShorthands = currentTension.filter { shorthands.contains($0) }
 
