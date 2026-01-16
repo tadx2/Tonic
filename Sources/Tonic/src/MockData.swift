@@ -55,25 +55,25 @@ public struct MockChord{
 }
 
 
-struct MockNote{
+public struct MockNote{
     
     // C大调 octave = 0
-    static let C0 = Note(letter: .C, accidental: 0, octave: 0)
-    static let D0 = Note(letter: .D, accidental: 0, octave: 0)
-    static let E0 = Note(letter: .E, accidental: 0, octave: 0)
-    static let F0 = Note(letter: .F, accidental: 0, octave: 0)
-    static let G0 = Note(letter: .G, accidental: 0, octave: 0)
-    static let A0 = Note(letter: .A, accidental: 0, octave: 0)
-    static let B0 = Note(letter: .B, accidental: 0, octave: 0)
+    public static let C0 = Note(letter: .C, accidental: 0, octave: 0)
+    public static let D0 = Note(letter: .D, accidental: 0, octave: 0)
+    public static let E0 = Note(letter: .E, accidental: 0, octave: 0)
+    public static let F0 = Note(letter: .F, accidental: 0, octave: 0)
+    public static let G0 = Note(letter: .G, accidental: 0, octave: 0)
+    public static let A0 = Note(letter: .A, accidental: 0, octave: 0)
+    public static let B0 = Note(letter: .B, accidental: 0, octave: 0)
     
     // C大调 octave = 1
-    static let C1 = Note(letter: .C, accidental: 0, octave: 1)
-    static let D1 = Note(letter: .D, accidental: 0, octave: 1)
-    static let E1 = Note(letter: .E, accidental: 0, octave: 1)
-    static let F1 = Note(letter: .F, accidental: 0, octave: 1)
-    static let G1 = Note(letter: .G, accidental: 0, octave: 1)
-    static let A1 = Note(letter: .A, accidental: 0, octave: 1)
-    static let B1 = Note(letter: .B, accidental: 0, octave: 1)
+    public static let C1 = Note(letter: .C, accidental: 0, octave: 1)
+    public static let D1 = Note(letter: .D, accidental: 0, octave: 1)
+    public static let E1 = Note(letter: .E, accidental: 0, octave: 1)
+    public static let F1 = Note(letter: .F, accidental: 0, octave: 1)
+    public static let G1 = Note(letter: .G, accidental: 0, octave: 1)
+    public static let A1 = Note(letter: .A, accidental: 0, octave: 1)
+    public static let B1 = Note(letter: .B, accidental: 0, octave: 1)
     
     // C大调 octave = 3
     static let C3 = Note(letter: .C, accidental: 0, octave: 3)
@@ -85,13 +85,13 @@ struct MockNote{
     static let B3 = Note(letter: .B, accidental: 0, octave: 3)
     
     // C大调 octave = 4
-    static let C4 = Note(letter: .C, accidental: 0, octave: 4)
-    static let D4 = Note(letter: .D, accidental: 0, octave: 4)
-    static let E4 = Note(letter: .E, accidental: 0, octave: 4)
-    static let F4 = Note(letter: .F, accidental: 0, octave: 4)
-    static let G4 = Note(letter: .G, accidental: 0, octave: 4)
-    static let A4 = Note(letter: .A, accidental: 0, octave: 4)
-    static let B4 = Note(letter: .B, accidental: 0, octave: 4)
+    public static let C4 = Note(letter: .C, accidental: 0, octave: 4)
+    public static let D4 = Note(letter: .D, accidental: 0, octave: 4)
+    public static let E4 = Note(letter: .E, accidental: 0, octave: 4)
+    public static let F4 = Note(letter: .F, accidental: 0, octave: 4)
+    public static let G4 = Note(letter: .G, accidental: 0, octave: 4)
+    public static let A4 = Note(letter: .A, accidental: 0, octave: 4)
+    public static let B4 = Note(letter: .B, accidental: 0, octave: 4)
     
     // C大调 octave = 8
     static let C8 = Note(letter: .C, accidental: 0, octave: 8)
@@ -103,14 +103,15 @@ struct MockNote{
     static let B8 = Note(letter: .B, accidental: 0, octave: 8)
     
     // Ab大调 octave = 4
-    static let Ab4 = Note(letter: .A, accidental: -1, octave: 4)
-    static let Bb4 = Note(letter: .B, accidental: -1, octave: 4)
+    public static let Ab4 = Note(letter: .A, accidental: -1, octave: 4)
+    public static let Bb4 = Note(letter: .B, accidental: -1, octave: 4)
 //    static let C4 = Note(letter: .C, accidental: 0, octave: 4)
-    static let Db4 = Note(letter: .D, accidental: -1, octave: 4)
-    static let Eb4 = Note(letter: .E, accidental: -1, octave: 4)
+    public static let Db4 = Note(letter: .D, accidental: -1, octave: 4)
+    public static let Eb4 = Note(letter: .E, accidental: -1, octave: 4)
 //    static let F4 = Note(letter: .F, accidental: 0, octave: 4)
 //    static let G4 = Note(letter: .G, accidental: 0, octave: 4)
     
+    // Other
     static let G4s = Note(letter: .G, accidental: 1, octave: 4)
     static let C3s = Note(letter: .C, accidental: 1, octave: 3)
     static let F4s = Note(letter: .F, accidental: 1, octave: 4)

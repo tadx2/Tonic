@@ -8,6 +8,7 @@
 import Foundation
 
 public struct ChordBasicInfo {
+
      public var baseName: String
      public var baseNameAddition: [Interval]  // 基础和弦中需要特别说明的音
      public var shortName: String?
@@ -18,7 +19,7 @@ public struct ChordBasicInfo {
 
      public var basicType: BasicType
 
-     public enum BasicType {
+     public enum BasicType: CaseIterable, CustomStringConvertible {
           case triad, triadSus2, triadSus4
           case seventh, seventhSus2, seventhSus4
           case sixth, sixthSus2, sixthSus4
@@ -78,6 +79,30 @@ public struct ChordBasicInfo {
                     return false
                }
           }
+
+          public var description: String {
+               switch self {
+               case .triad:
+                    return "Triad"
+               case .triadSus2:
+                    return "Triad&Sus2"
+               case .triadSus4:
+                    return "Triad&Sus4"
+               case .seventh:
+                    return "Seventh"
+               case .seventhSus2:
+                    return "Seventh&Sus2"
+               case .seventhSus4:
+                    return "Seventh&Sus4"
+               case .sixth:
+                    return "Sixth"
+               case .sixthSus2:
+                    return "Sixth&Sus2"
+               case .sixthSus4:
+                    return "Sixth&Sus4"
+               }
+          }
+
      }
 
      public init(
@@ -261,20 +286,20 @@ public enum ChordTypeBasic: ChordType, CaseIterable {
 
      // 七和弦
      case major7
+     case minor7
      case dominant7
-     case majorDoubleFlat7
+     case halfDiminished7
+     case diminished7
      case major7Flat5
+     case minorMajor7
+     case majorDoubleFlat7
      case dominant7Flat5
      case majorFlat5DoubleFlat7
      case major7Sharp5
      case dominant7Sharp5
      case majorSharp5DoubleFlat7
-     case minorMajor7
-     case minor7
      case minorDoubleFlat7
      case minorMajor7Flat5
-     case halfDiminished7
-     case diminished7
      case minorMajor7Sharp5
      case minor7Sharp5
      case minorSharp5DoubleFlat7

@@ -113,6 +113,31 @@ extension Chord {
         }
         return noteRoot + interval
     }
+    // 获取到修正后的BaseNote
+    public func getNoteBase() -> Note? {
+
+        // metaData中要设置BaseNote
+        guard let noteBase else { return nil }
+
+        // 设置的noteBase要与 noteRoot不一样（letter与accidental都不一样）
+        guard (noteBase.letter != noteRoot.letter) || (noteBase.accidental != noteRoot.accidental)
+        else { return nil }
+
+        var resultNote: Note?
+
+        // baseNote的pitch一定比 noteRoot的pitch小
+        // baseNote的可能性为 octave 0-8
+        // 从 octave == -1 开始试，一直试到 最大的 baseNote
+        for octave in -1...8 {
+            let note = Note(
+                letter: noteBase.letter, accidental: noteBase.accidental, octave: octave)
+            if note.pitch < noteRoot.pitch {
+                resultNote = note
+            }
+        }
+
+        return resultNote
+    }
 }
 
 // Pitch & Degree - Set
@@ -180,7 +205,7 @@ extension Chord {
 extension Chord {
 
     // noteInterval 中 interval 过滤出来与 ChordBasicType 中符合条件的 name做比较找出 基本和弦名 ChordNameBasic
-    private var basicInfo: ChordBasicInfo? {
+    public var basicInfo: ChordBasicInfo? {
         let currentIntervals = Set(intervalsRaw.filter { $0.degreeInt != 1 && $0.degreeInt <= 7 })
         return ChordTypeBasic.allCases.first { $0.info.intervals == currentIntervals }?.info
     }
