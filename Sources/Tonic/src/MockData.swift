@@ -44,13 +44,50 @@ struct MockRawDNA{
 }
 
 public struct MockIntervals{
-    public static let xM: Set<Interval> = [.P1, .M3, .P5]
+    
+    public static let x: Set<Interval> = [.P1, .M3, .P5]
+    public static let xm: Set<Interval> = [.P1, .m3, .P5]
+    public static let xdim: Set<Interval> = [.P1, .m3, .d5]
+    
+    public static let xM7: Set<Interval> = [.P1, .M3, .P5, .M7]
+    public static let xm7: Set<Interval> = [.P1, .m3, .P5, .m7]
+    public static let x7: Set<Interval> = [.P1, .M3, .P5, .m7]
+    public static let xdim7: Set<Interval> = [.P1, .m3, .d5, .m7]
+    
     public static let xSus2: Set<Interval> = [.P1, .M2, .P5]
     public static let x7sharp9flat13: Set<Interval> = [.P1, .M3, .P5, .m7, .m9, .m13]
 }
 
 public struct MockChord{
-    public static let CM: Chord = Chord(root: MockNote.C4, intervals: MockIntervals.xM)
+    
+    // C 大调顺接和弦 Triad
+    public static let C4M: Chord = Chord(root: MockNote.C4, intervals: MockIntervals.x)
+    public static let D4m: Chord = Chord(root: MockNote.D4, intervals: MockIntervals.xm)
+    public static let E4m: Chord = Chord(root: MockNote.E4, intervals: MockIntervals.xm)
+    public static let F4M: Chord = Chord(root: MockNote.F4, intervals: MockIntervals.x)
+    public static let G4M: Chord = Chord(root: MockNote.G4, intervals: MockIntervals.x)
+    public static let A4m: Chord = Chord(root: MockNote.A4, intervals: MockIntervals.xm)
+    public static let B4dim: Chord = Chord(root: MockNote.B4, intervals: MockIntervals.xdim)
+    
+    // C 大调顺接和弦 Seventh
+    public static let C4M7: Chord = Chord(root: MockNote.C4, intervals: MockIntervals.xM7)
+    public static let D4m7: Chord = Chord(root: MockNote.D4, intervals: MockIntervals.xm7)
+    public static let E4m7: Chord = Chord(root: MockNote.E4, intervals: MockIntervals.xm7)
+    public static let F4M7: Chord = Chord(root: MockNote.F4, intervals: MockIntervals.xM7)
+    public static let G4X7: Chord = Chord(root: MockNote.G4, intervals: MockIntervals.x7)
+    public static let A4m7: Chord = Chord(root: MockNote.A4, intervals: MockIntervals.xm7)
+    public static let B4dim7: Chord = Chord(root: MockNote.B4, intervals: MockIntervals.xdim7)
+    
+    // F 大调顺接和弦 Seventh
+    //                F4M7
+    public static let G4m7: Chord = Chord(root: MockNote.G4, intervals: MockIntervals.xm7)
+    //                 A4m7
+    public static let Bb4M7: Chord = Chord(root: MockNote.Bb4, intervals: MockIntervals.xM7)
+    public static let C4X7: Chord = Chord(root: MockNote.C4, intervals: MockIntervals.x7)
+    //                  D4m7
+    public static let E4dim7: Chord = Chord(root: MockNote.E4, intervals: MockIntervals.xdim7)
+    
+    // C Sus2
     public static let CSus2: Chord = Chord(root: MockNote.C4, intervals: MockIntervals.xSus2)
 }
 

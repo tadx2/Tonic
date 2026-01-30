@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Chord: Sendable {
+public struct Chord: Sendable, Equatable, Hashable {
 
     // note
     public var noteRoot: Note  // 根音
@@ -20,7 +20,7 @@ public struct Chord: Sendable {
     public var degreeInts: Set<ChordDegreeInt>
 
     // pitch
-    public var pitchInts: Set<PitchInt>
+    public var pitchIntsRaw: Set<PitchInt>
 
     // noteToInterval
     public var noteToIntervalRaw: [Note: Interval]
@@ -66,7 +66,7 @@ public struct Chord: Sendable {
         self.noteToIntervalRaw = noteToIntervalRaw
 
         // pitchInts
-        self.pitchInts = Set(noteToIntervalRaw.keys.map { $0.pitch })
+        self.pitchIntsRaw = Set(noteToIntervalRaw.keys.map { $0.pitch })
     }
 
 }
@@ -138,22 +138,6 @@ extension Chord {
 
         return resultNote
     }
-}
-
-// Pitch & Degree - Set
-extension Chord {
-
-    // 原始和弦PitchIntSet
-    // public func getPitchIntSetRaw() -> Set<PitchInt> {
-    //     let pitchInts = Set(noteToIntervalRaw.keys.map { $0.pitch })
-    //     return pitchInts
-    // }
-
-    // 原始和弦ChordDegreeIntSet
-    // public func getDegreeIntSetRaw() -> Set<ChordDegreeInt> {
-    //     let degreeInts = Set(noteToIntervalRaw.values.map { $0.degreeInt })
-    //     return degreeInts
-    // }
 }
 
 // Dict
@@ -264,5 +248,32 @@ extension Chord {
         }
 
         return name
+    }
+    
+    public var rawNameFullAndRootNote: String? {
+        guard let rawNameFull else { return nil }
+        return  noteRoot.name + rawNameFull
+        
+    }
+}
+
+
+extension Chord {
+    static public let Empty: Chord? = nil
+}
+
+// Consider Base Note
+extension Chord {
+    public var pitchIntsRawWithBaseNote: Set<PitchInt> {
+        guard !isBaseEqualToRoot, let baseNote = getNoteBase() else { return pitchIntsRaw }
+        var result = pitchIntsRaw
+        result.remove(noteRoot.pitch)
+        result.insert(baseNote.pitch)
+        return result
+    }
+    
+    public var isBaseEqualToRoot: Bool {
+        guard let noteBase else { return true }
+        return (noteBase.letter == noteRoot.letter) && (noteBase.accidental == noteRoot.accidental)
     }
 }
