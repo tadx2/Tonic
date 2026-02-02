@@ -50,8 +50,25 @@ public struct MockIntervals{
     public static let xdim: Set<Interval> = [.P1, .m3, .d5]
     
     public static let xM7: Set<Interval> = [.P1, .M3, .P5, .M7]
+    public static let xM7_M9: Set<Interval> = [.P1, .M3, .P5, .M7, .M9]
+    public static let xM7_M13: Set<Interval> = [.P1, .M3, .P5, .M7, .M13]
+    public static let xM7_M9_M13: Set<Interval> = [.P1, .M3, .P5, .M7, .M9, .M13]
+    public static let xM7_M9_P11: Set<Interval> = [.P1, .M3, .P5, .M7, .M9, .P11]
+    public static let xM7_M9_P11_M13: Set<Interval> = [.P1, .M3, .P5, .M7, .M9, .P11, .M13]
+    
     public static let xm7: Set<Interval> = [.P1, .m3, .P5, .m7]
+    public static let xm7_M9: Set<Interval> = [.P1, .m3, .P5, .m7, .M9]
+    public static let xm7_M13: Set<Interval> = [.P1, .m3, .P5, .m7, .M13]
+    public static let xm7_M9_M13: Set<Interval> = [.P1, .m3, .P5, .m7, .M13]
+    public static let xm7_M9_P11: Set<Interval> = [.P1, .m3, .P5, .m7, .M9, .P11]
+    public static let xm7_M9_P11_M13: Set<Interval> = [.P1, .m3, .P5, .m7, .M9, .P11, .M13]
+    
     public static let x7: Set<Interval> = [.P1, .M3, .P5, .m7]
+    public static let x7_M9: Set<Interval> = [.P1, .M3, .P5, .m7, .M9]
+    public static let x7_M9_P11: Set<Interval> = [.P1, .M3, .P5, .m7, .M9, .P11]
+    public static let x7_M9_M13: Set<Interval> = [.P1, .M3, .P5, .m7, .M9, .M13]
+    public static let x7_M9_P11_M13: Set<Interval> = [.P1, .M3, .P5, .m7, .M9, .P11, .M13]
+    
     public static let xdim7: Set<Interval> = [.P1, .m3, .d5, .m7]
     
     public static let xSus2: Set<Interval> = [.P1, .M2, .P5]
@@ -77,6 +94,24 @@ public struct MockChord{
     public static let G4X7: Chord = Chord(root: MockNote.G4, intervals: MockIntervals.x7)
     public static let A4m7: Chord = Chord(root: MockNote.A4, intervals: MockIntervals.xm7)
     public static let B4dim7: Chord = Chord(root: MockNote.B4, intervals: MockIntervals.xdim7)
+    
+    // C 大调顺接和弦 Seventh Multiple Tension
+    public static let C4M7_M9: Chord = Chord(root: MockNote.C4, intervals: MockIntervals.xM7_M9)
+    public static let C4M7_M13: Chord = Chord(root: MockNote.C4, intervals: MockIntervals.xM7_M13)
+    public static let C4M7_M9_M13: Chord = Chord(root: MockNote.C4, intervals: MockIntervals.xM7_M9_M13)
+    public static let C4M7_M9_P11: Chord = Chord(root: MockNote.C4, intervals: MockIntervals.xM7_M9_P11)
+    public static let C4M7_M9_P11_M13: Chord = Chord(root: MockNote.C4, intervals: MockIntervals.xM7_M9_P11_M13)
+    
+    public static let D4m7_M9: Chord = Chord(root: MockNote.D4, intervals: MockIntervals.xm7_M9)
+    public static let D4m7_M9_P11: Chord = Chord(root: MockNote.D4, intervals: MockIntervals.xm7_M9_P11)
+    public static let D4m7_M9_P11_M13: Chord = Chord(root: MockNote.D4, intervals: MockIntervals.xm7_M9_P11_M13)
+    
+    public static let G4x7: Chord = Chord(root: MockNote.G4, intervals: MockIntervals.x7)
+    public static let G4x7_M9: Chord = Chord(root: MockNote.G4, intervals: MockIntervals.x7_M9)
+    public static let G4x7_M9_P11: Chord = Chord(root: MockNote.G4, intervals: MockIntervals.x7_M9_P11)
+    public static let G4x7_M9_M13: Chord = Chord(root: MockNote.G4, intervals: MockIntervals.x7_M9_M13)
+    
+    public static let G4x7_M9_P11_M13: Chord = Chord(root: MockNote.G4, intervals: MockIntervals.x7_M9_P11_M13)
     
     // F 大调顺接和弦 Seventh
     //                F4M7

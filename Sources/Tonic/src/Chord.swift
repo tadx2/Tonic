@@ -199,7 +199,7 @@ extension Chord {
 
     public var rawNameBasic: String? {
         guard let basicInfo else { return nil }
-        return basicInfo.baseName
+        return basicInfo.basicName
     }
 
     public var rawNameTension: [Interval] {
@@ -225,9 +225,6 @@ extension Chord {
         if ["M7", "7", "m7"].contains(name) {
             shorthands = [.M9, .P11, .M13]
         }
-        //        else if ["m7"].contains(name) {
-        //            shorthands = [.M9, .P11, .m13]
-        //        }
 
         let foundShorthands = currentTension.filter { shorthands.contains($0) }
 
@@ -237,7 +234,7 @@ extension Chord {
             currentTension.removeAll(where: { shorthands.contains($0) })
         }
 
-        let addition = (basicInfo?.baseNameAddition ?? []) + currentTension
+        let addition = (basicInfo?.basicNameAddition ?? []) + currentTension
 
         if !addition.isEmpty {
             let additionStr = addition.map { $0.descriptionNumber }.joined(separator: " ")
@@ -256,8 +253,8 @@ extension Chord {
     public var rawNameFullAndRootNote: String? {
         guard let rawNameFull else { return nil }
         return noteRoot.name + rawNameFull
-
     }
+    
 }
 
 extension Chord {
