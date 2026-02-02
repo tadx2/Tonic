@@ -34,6 +34,10 @@ struct NoteClassTests {
         #expect(NoteClass.C.shifted(by: -.P11) == (.G, -2))
         #expect(NoteClass.C.shifted(by: -.M13) == (.Eb, -2))
         #expect(NoteClass.C.shifted(by: -.P15) == (.C, -2))
+
+        // F
+        #expect(NoteClass.F.shifted(by: .P5) == (.C, 1))
+        #expect(NoteClass.F.shifted(by: .d5) == (.Cb, 1))
     }
 
     @Test("Shifted - & + ")
@@ -50,12 +54,12 @@ struct NoteClassTests {
 
         #expect(NoteClass.C - .d2 == .Bs)
         #expect(NoteClass.C + .d2 == .Dbb)
-        
+
         #expect(NoteClass.C + .P5 == .G)
         #expect(NoteClass.C - .P5 == .F)
-        
+
         #expect(NoteClass.C - -.P5 == .G)
-        
+
         #expect(NoteClass.C + .M9 == .D)
         #expect(NoteClass.C - .M9 == .Bb)
         #expect(NoteClass.C - -.M9 == .D)

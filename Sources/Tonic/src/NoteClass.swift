@@ -33,16 +33,11 @@ extension NoteClass {
 
     /// 音级
     ///
-    /// 返回 0-11 的整数，表示在十二平均律中的位置，考虑到了 升降号
-    /// C = 0, C♯/D♭ = 1, D = 2, ..., B = 11
-    ///
+    /// 考虑到了 升降号
+    /// C = 0, C♭ = -1, C♯/D♭ = 1, D = 2, ..., B = 11
+    /// 
     public var pitchClass: PitchClassInt {
-        let base = letter.pitchClass
-        let semitone = base + Int(accidental)
-
-        // 保证结果在 0...11（Swift 的 % 对负数会是负值，所以要修正）
-        let r = semitone % 12
-        return r >= 0 ? r : r + 12
+        letter.pitchClass + Int(accidental)
     }
 
     /// 音名等级

@@ -22,6 +22,8 @@ struct LetterTests {
         #expect(Letter.C + -1 == .B)
         #expect(Letter.C + -2 == .A)
         #expect(Letter.C + -7 == .C)
+
+        #expect(Letter.F + 4 == .C)
     }
 
     @Test("Letter Subtraction")
@@ -40,23 +42,23 @@ struct LetterTests {
         var res = Letter.C.shifted(by: 1)
         #expect(res.letter == .D)
         #expect(res.octaveDiff == 0)
-        
+
         res = Letter.C.shifted(by: 2)
         #expect(res.letter == .E)
         #expect(res.octaveDiff == 0)
-        
+
         res = Letter.C.shifted(by: 3)
         #expect(res.letter == .F)
         #expect(res.octaveDiff == 0)
-        
+
         res = Letter.C.shifted(by: 4)
         #expect(res.letter == .G)
         #expect(res.octaveDiff == 0)
-        
+
         res = Letter.C.shifted(by: 5)
         #expect(res.letter == .A)
         #expect(res.octaveDiff == 0)
-        
+
         res = Letter.C.shifted(by: 6)
         #expect(res.letter == .B)
         #expect(res.octaveDiff == 0)
@@ -77,11 +79,11 @@ struct LetterTests {
         res = Letter.C.shifted(by: -1)
         #expect(res.letter == .B)
         #expect(res.octaveDiff == -1)
-        
+
         res = Letter.C.shifted(by: -7)
         #expect(res.letter == .C)
         #expect(res.octaveDiff == -1)
-        
+
         res = Letter.C.shifted(by: -8)
         #expect(res.letter == .B)
         #expect(res.octaveDiff == -2)

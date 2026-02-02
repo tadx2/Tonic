@@ -17,6 +17,10 @@ struct IntervalTests {
         #expect(Interval.M2.description == "M2")
         #expect(Interval.A2.description == "A2")
 
+        #expect(Interval.d5.description == "d5")
+        #expect(Interval.P5.description == "P5")
+        #expect(Interval.A5.description == "A5")
+
         #expect(Interval.d7.description == "d7")
         #expect(Interval.m7.description == "m7")
         #expect(Interval.M7.description == "M7")
@@ -79,6 +83,18 @@ struct IntervalTests {
     @Test("Interval Name Test Down")
     func testIntervalNameOctave() {
         #expect(Interval(degreeInt: 15, semitones: 26, direction: .down).description == "-AA15")
+    }
+
+    @Test("Interval Name Test Number")
+    func testIntervalNameNumber() {
+        #expect(Interval.d5.descriptionNumber == "♭5")
+        #expect(Interval.P5.descriptionNumber == "5")
+        #expect(Interval.A5.descriptionNumber == "♯5")
+
+        #expect(Interval.d7.descriptionNumber == "♭♭7")
+        #expect(Interval.m7.descriptionNumber == "♭7")
+        #expect(Interval.M7.descriptionNumber == "7")
+        #expect(Interval.A7.descriptionNumber == "♯7")
     }
 
 }

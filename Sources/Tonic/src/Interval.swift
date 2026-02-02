@@ -111,8 +111,8 @@ extension Interval: CustomStringConvertible {
         guard semitones >= 0 else { return "error, semitone must >= 0" }
 
         // 把 degreeInt 转化为 letter 以便于后续的计算
-        let letter = Letter(rawValue: (self.degreeInt - 1) % 7)!
-        let diff = semitones % 12 - letter.letterClass
+        let (letterVirtual, octaveVirtuaDiff) = Letter.C.shifted(by: degreeInt - 1)
+        let diff = self.semitones - (letterVirtual.pitchClass + octaveVirtuaDiff * 12)
 
         // 判断是纯音程系列（1, 4, 5）还是大小音程系列（2, 3, 6, 7）
         var element: String = "init"

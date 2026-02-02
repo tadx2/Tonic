@@ -103,6 +103,11 @@ struct NoteTests {
         #expect(c4.shifted(by: .M13) == Note(letter: .A, accidental: 0, octave: 5))
         #expect(c4.shifted(by: .A13) == Note(letter: .A, accidental: 1, octave: 5))
 
+        let f4 = Note(letter: .F, accidental: 0, octave: 4)
+        #expect(f4.shifted(by: .d5) == Note(letter: .C, accidental: -1, octave: 5))
+        #expect(f4.shifted(by: .P5) == Note(letter: .C, accidental: 0, octave: 5))
+        #expect(f4.shifted(by: .A5) == Note(letter: .C, accidental: 1, octave: 5))
+
     }
 
     @Test("Shifted Down")
@@ -112,13 +117,13 @@ struct NoteTests {
         #expect(Note.C4.shifted(by: -.P1) == .C4)
 
         #expect(Note.C4.shifted(by: -.d2) == .B3s)
-        
+
         #expect(Note.C4.shifted(by: .P5) == .G4)
         #expect(Note.C4.shifted(by: -.P4) == .G3)
-        
+
         #expect(Note.G3.shifted(by: .P4) == .C4)
         #expect(Note.G3.shifted(by: -.P5) == .C3)
-        
+
         #expect(Note.F3.shifted(by: .P5) == .C4)
         #expect(Note.F3.shifted(by: -.P4) == .C3)
 
@@ -174,6 +179,12 @@ struct NoteTests {
         #expect(Note.interval(from: .C4, to: .G3) == -.P4)
         #expect(Note.interval(from: .G3, to: .C4) == .P4)
 
+    }
+
+    @Test("Note pitch class")
+    func testPitchClass() {
+        #expect(Note.C4.pitchClass == 60)
+        #expect(Note.C5b.pitchClass == 71)
     }
 
 }
