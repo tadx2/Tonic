@@ -106,6 +106,7 @@ extension Chord {
 
 // Get Note
 extension Chord {
+    
     // 根据度数获取音符
     public func getNote(by degreeInt: ChordDegreeInt) -> Note? {
         guard let interval = intervalsRaw.first(where: { $0.degreeInt == degreeInt }) else {
@@ -113,6 +114,7 @@ extension Chord {
         }
         return noteRoot + interval
     }
+    
     // 获取到修正后的BaseNote
     public func getNoteBase() -> Note? {
 
@@ -138,6 +140,7 @@ extension Chord {
 
         return resultNote
     }
+    
 }
 
 // Dict
@@ -249,14 +252,13 @@ extension Chord {
 
         return name
     }
-    
+
     public var rawNameFullAndRootNote: String? {
         guard let rawNameFull else { return nil }
-        return  noteRoot.name + rawNameFull
-        
+        return noteRoot.name + rawNameFull
+
     }
 }
-
 
 extension Chord {
     static public let Empty: Chord? = nil
@@ -271,7 +273,7 @@ extension Chord {
         result.insert(baseNote.pitch)
         return result
     }
-    
+
     public var isBaseEqualToRoot: Bool {
         guard let noteBase else { return true }
         return (noteBase.letter == noteRoot.letter) && (noteBase.accidental == noteRoot.accidental)

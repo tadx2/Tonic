@@ -5,29 +5,21 @@
 //  Created by 小汤汤 on 2025/5/2.
 //
 
-public enum Letter: String, Equatable, CaseIterable, Sendable {
-    case C, D, E, F, G, A, B
+public typealias PitchClassInt = Int
+public typealias LetterClassInt = Int
+
+public enum Letter: Int, Equatable, CaseIterable, Sendable {
+    case C = 0
+    case D, E, F, G, A, B
 }
 
-extension Letter: Comparable{
-    public static func < (lhs: Letter, rhs: Letter) -> Bool {
-        return lhs.letterIndex < rhs.letterIndex
-    }
-}
+// MARK: - Class
 
-extension Letter: CustomStringConvertible{
-    public var description: String {
-        self.rawValue
-    }
-}
+extension Letter {
 
-// staff
-public extension Letter{
-
-
-
-    // also the relative positon of the pitch
-    var semitone: Int {
+    /// Letter 对应的 pitch级数（ 以 C 为起点）等于 semitone 半音数
+    /// C=0, D=2, E=4, F=5, G=7, A=9, B=11
+    public var pitchClass: PitchClassInt {
         switch self {
         case .C: return 0
         case .D: return 2
@@ -38,48 +30,50 @@ public extension Letter{
         case .B: return 11
         }
     }
-    
-    var diffToGClefStaffCenter: Int{ // 音名与五线谱中 中线（B）的diff，比如说 A就是在B的下方一个单位，diff = -1
-        switch self {
-        case .C: return -6
-        case .D: return -5
-        case .E: return -4
-        case .F: return -3
-        case .G: return -2
-        case .A: return -1
-        case .B: return 0
-        }
+
+    // Letter 对应的 letter自己的级数（以C为起点）
+    public var letterClass: LetterClassInt {
+        self.rawValue
     }
+
 }
 
-// index
-// extension Letter {
-    
-//     /// 在给定调性 (Key) 中的音阶索引（0=主音, 1=上主音, ... 6=导音） // 待定验证
-//     func diatonicIndex(in keyLetter: Letter) -> Int {
-//         let offset = (self.letterIndex - keyLetter.letterIndex + 7) % 7
-//         return offset
-//     }
-// }
-
-// extension Letter {
-//     static let basicLetterList: [Letter] = [.C, .D, .E, .F, .G, .A, .B]
-// }
-
-
-// index
+// MARK: - Calculate
 extension Letter {
-    /// 音名在自然音阶不考虑调性的情况下 (默认是C 大调) 中的索引位置。
-    /// C = 0, D = 1, E = 2, F = 3, G = 4, A = 5, B = 6
-    var letterIndex: Int {
-       switch self {
-       case .C: return 0
-       case .D: return 1
-       case .E: return 2
-       case .F: return 3
-       case .G: return 4
-       case .A: return 5
-       case .B: return 6
-       }
-   }
+    
+    // Letter 移动几个单位后的结果，相对关系
+    public func shifted(by letterClassDiff: LetterClassInt) -> (
+        letter: Letter, octaveDiff: Octave
+    ) {
+        let totalValue = self.rawValue + letterClassDiff
+        let octaveDiff = totalValue >= 0 ? totalValue / 7 : (totalValue - 6) / 7
+        let newRawValue = (totalValue % 7 + 7) % 7
+        return (Letter(rawValue: newRawValue)!, octaveDiff)
+    }
+
+    public static func + (lhs: Letter, rhs: Int) -> Letter {
+        lhs.shifted(by: rhs).letter
+    }
+
+    public static func - (lhs: Letter, rhs: Int) -> Letter {
+        lhs.shifted(by: -rhs).letter
+    }
+
+}
+
+// MARK: - Description
+extension Letter: CustomStringConvertible {
+
+    public var description: String {
+        switch self {
+        case .C: "C"
+        case .D: "D"
+        case .E: "E"
+        case .F: "F"
+        case .G: "G"
+        case .A: "A"
+        case .B: "B"
+        }
+    }
+
 }

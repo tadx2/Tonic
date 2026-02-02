@@ -4,185 +4,171 @@ import Foundation
 ///
 /// 乐理系统中的核心结构，包含音名、升降号和八度信息。
 /// 能够计算其音高 (Pitch) 并支持乐理运算。
-public struct Note: Identifiable, Sendable {
-    /// 唯一标识符，用于 SwiftUI 等 UI 框架区分不同的音符实例。
-    public let id = UUID()
+public struct Note: Sendable {
 
-    /// 音名 (Letter)，如 C, D, E, F, G, A, B。
-    public var letter: Letter = .C
+    public var noteClass: NoteClass
 
-    /// 升降号 (Accidental)，0 为原音，正数为升 (♯)，负数为降 (♭)。
-    public var accidental: Accidental = 0
+    public var letter: Letter {
+        get { noteClass.letter }
+        set { noteClass = NoteClass(letter: newValue, accidental: noteClass.accidental) }
+    }
 
-    /// 八度 (Octave)，通常 C4 (中央C) 的 octave 为 4。
+    public var accidental: Accidental {
+        get { noteClass.accidental }
+        set { noteClass = NoteClass(letter: noteClass.letter, accidental: newValue) }
+    }
+
     public var octave: Octave = 4
 
-    /// MIDI 音高 (Pitch)
-    ///
-    /// 计算公式：(octave + 1) * 12 + semitone + accidental
-    /// 例如：C4 = (4 + 1) * 12 + 0 + 0 = 60
-    public var pitch: PitchInt {
-        (octave + 1) * 12 + letter.semitone + accidental
-    }
-
-    /// 公开初始化方法
     public init(letter: Letter = .C, accidental: Accidental = 0, octave: Octave = 4) {
-        self.letter = letter
-        self.accidental = accidental
+        self.noteClass = NoteClass(letter: letter, accidental: accidental)
         self.octave = octave
     }
+
+    public init(noteClass: NoteClass = NoteClass(letter: .C, accidental: 0), octave: Octave = 4) {
+        self.noteClass = noteClass
+        self.octave = octave
+    }
+
+}
+
+// MARK: - Class: Pitch & Letter
+
+extension Note {
+
+    public var pitch: PitchInt {
+        self.pitchClass
+    }
+
+    public var pitchClass: PitchClassInt {
+        (octave + 1) * 12 + noteClass.pitchClass
+    }
+
+    public var letterClass: LetterClassInt {
+        (octave + 1) * 7 + noteClass.letterClass
+    }
+
 }
 
 // MARK: - Hashable & Equality
-/// 实现自定义的相等性和哈希值计算。
-///
-/// 尽管 Note 拥有唯一的 `id` (Identifiable)，但在乐理逻辑中，
 /// 只要 `letter`、`accidental` 和 `octave` 相同，就应视为同一个音符。
 /// 这允许我们在 `Set` 或 `Dictionary` 中对音符进行去重和查找。
 extension Note: Hashable {
 
-    /// 判断两个音符在乐理上是否相等。
-    /// 忽略 `id`，只比较音符本身的乐理属性。
+    /// 判断两个音符在乐理上是否相等
     public static func == (lhs: Note, rhs: Note) -> Bool {
-        lhs.letter == rhs.letter &&
-        lhs.accidental == rhs.accidental &&
-        lhs.octave == rhs.octave
+        lhs.noteClass == rhs.noteClass && lhs.octave == rhs.octave
     }
 
     /// 生成音符的哈希值，基于其乐理属性。
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(letter)
-        hasher.combine(accidental)
+        hasher.combine(noteClass)
         hasher.combine(octave)
     }
 }
 
-// MARK: - Comparison
-/// 实现 Comparable 协议，定义音符的排序规则。
-///
-/// 排序优先级：
-/// 1. `octave`：八度越低越靠前。
-/// 2. `letter`：八度相同时，按 C, D, E, F, G, A, B 顺序排序。
-/// 3. `accidental`：音名相同时，按降号到升号的顺序排序。
-extension Note: Comparable {
-
-    public static func < (lhs: Note, rhs: Note) -> Bool {
-        // 1. 比较 octave
-        if lhs.octave != rhs.octave {
-            return lhs.octave < rhs.octave
-        }
-        // 2. octave 相同 → 比较 letter
-        if lhs.letter != rhs.letter {
-            return lhs.letter.letterIndex < rhs.letter.letterIndex
-        }
-        // 3. octave 和 letter 相同 → 比较 accidental
-        return lhs.accidental < rhs.accidental
-    }
-}
-
-// MARK: - Indexing
+// MARK: - Note & Intervals caltulate
 extension Note {
-    
-    /// 自然音级索引 (Diatonic Index)
-    ///
-    /// 为音符的 Letter 生成一个考虑八度 (Octave) 的绝对索引，但不考虑升降号 (Accidental)。
-    /// 该索引对应于音符在五线谱上的纵向位置或在钢琴白键上的顺序。
-    ///
-    /// 例子：
-    /// C4 -> 28, Cb4 -> 28
-    /// D4 -> 29, E4 -> 30
-    var diatonicIndex: Int {
-        octave * 7 + letter.letterIndex
-    }
-    
-    /// 钢琴自然音级索引范围 (基于 88 键钢琴)
-    ///
-    /// 最左边 (A0)：0 * 7 + 5 (A) = 5 (若 A 为 5) -> 实际 Piano 最低是 A0，最高是 C8
-    /// 这里根据 Letter 索引计算：
-    /// A0: 0 * 7 + 5 = 5 (但代码中定义 A 为 5，Piano A0 实际上是起始偏移)
-    /// 
-    /// 按照 current implementation:
-    /// 最左边 A0: 0 * 7 + 5 = 5 (注：原代码注释写 6，需确认 Letter.A.letterIndex)
-    /// 最右边 C8: 8 * 7 + 0 = 56
-    static let diatonicIndexRangeOfPianoKeyBoard: ClosedRange<Int> = 5...56
-}
 
-// MARK: - Array Extensions
-extension Array where Element == Note {
-    
-    /// 返回去重并排序后的新数组
+    /// 按指定音程和方向移动音符
     ///
-    /// 结合了 `Set` 的去重能力 (Hashable) 和 `sorted()` 的排序能力 (Comparable)。
-    ///
-    /// 用法示例：
-    /// ```swift
-    /// let notes = [Note(.C), Note(.D), Note(.C)]
-    /// let result = notes.uniqueSorted()
-    /// // result: [Note(.C), Note(.D)]
-    /// ```
-    func uniqueSorted() -> [Note] {
-        return Array(Set(self)).sorted()
-    }
-    
-    /// 原地去重并排序
-    ///
-    /// 直接修改当前数组，使其仅包含唯一的音符并按音高排序。
-    mutating func uniqueSort() {
-        self = self.uniqueSorted()
-    }
-}
-
-// MARK: - Arithmetic (Intervals)
-/// 提供音符与音程 (NoteInterval) 之间的加减运算。
-/// 这些运算会同时更新音符的 Letter、Octave 和 Accidental。
-public extension Note {
-
-    /// 音符加上一个音程。
     /// - Parameters:
-    ///   - lhs: 起始音符
-    ///   - rhs: 要加上的音程
-    /// - Returns: 计算后的目标音符，保持正确的音名和升降号。
-    static func + (lhs: Note, rhs: Interval) -> Note {
-        let degreeIndex = rhs.degreeInt - 1
-        let newLetterIndexSum = lhs.letter.letterIndex + degreeIndex
-        let newLetterIndex = newLetterIndexSum % 7
-        let octaveChange = newLetterIndexSum / 7
-        let newOctave = lhs.octave + octaveChange
-
-        let newLetter = Letter.allCases[newLetterIndex]
-
-        let targetPitch = lhs.pitch + rhs.semitones
-        let naturalTargetNote = Note(letter: newLetter, accidental: 0, octave: newOctave)
-        let newaccidental: Accidental = targetPitch - naturalTargetNote.pitch
-
-        return Note(letter: newLetter, accidental: newaccidental, octave: newOctave)
+    ///   - interval: 音程
+    ///   - direction: 移动方向 (.up 上行, .down 下行)
+    /// - Returns: 移动后的新音符
+    ///
+    /// ## 示例
+    /// ```swift
+    /// let c4 = Note(letter: .C, octave: 4)
+    /// let g4 = c4.shifted(by: .P5, direction: .up)   // G4
+    /// let f3 = c4.shifted(by: .P5, direction: .down) // F3
+    /// ```
+    public func shifted(by interval: Interval) -> Note {
+        let (targetNoteClass, targetOctaveDiff) = self.noteClass.shifted(by: interval)
+        return Note(noteClass: targetNoteClass, octave: self.octave + targetOctaveDiff)
     }
 
-    /// 音符减去一个音程。
-//    static func - (lhs: Note, rhs: NoteInterval) -> Note {
-//        let degreeIndex = rhs.degree - 1
-//        let newLetterIndexDiff = lhs.letter.letterIndex - degreeIndex
-//        let newLetterIndex = (newLetterIndexDiff % 7 + 7) % 7
-//        let octaveChange = Int(floor(Double(newLetterIndexDiff) / 7.0))
-//        let newOctave = lhs.octave + octaveChange
-//
-//        let newLetter = Letter.allCases[newLetterIndex]
-//
-//        let targetPitch = lhs.pitch - rhs.semitones
-//        let naturalTargetNote = Note(letter: newLetter, accidental: 0, octave: newOctave)
-//        let newaccidental: Accidental = targetPitch - naturalTargetNote.pitch
-//
-//        return Note(letter: newLetter, accidental: newaccidental, octave: newOctave)
-//    }
+    /// 音符加上一个音程（上行）
+    ///
+    /// 等价于 `shifted(by: interval, direction: .up)`
+    ///
+    /// ## 示例
+    /// ```swift
+    /// let c4 = Note(letter: .C, octave: 4)
+    /// let g4 = c4 + .P5   // G4
+    /// let c5 = c4 + .P8   // C5
+    /// ```
+    public static func + (lhs: Note, rhs: Interval) -> Note {
+        lhs.shifted(by: rhs)
+    }
+
+    /// 音符减去一个音程（下行）
+    ///
+    /// 等价于 `shifted(by: interval, direction: .down)`
+    ///
+    /// ## 示例
+    /// ```swift
+    /// let c4 = Note(letter: .C, octave: 4)
+    /// let f3 = c4 - .P5   // F3
+    /// let c3 = c4 - .P8   // C3
+    /// ```
+    public static func - (lhs: Note, rhs: Interval) -> Note {
+        lhs.shifted(by: -rhs)
+    }
+
+}
+
+// MARK: - Note & Note caltulate
+
+extension Note {
+
+    /// 计算两个音符之间的距离
+    ///
+    /// 返回上行和下行两个方向的音程。
+    ///
+    /// ## 示例
+    /// ```swift
+    /// let c4 = Note(letter: .C, octave: 4)
+    /// let g4 = Note(letter: .G, octave: 4)
+    /// let distances = Note.interval(_ lhs: c4, _ rhs: g4)
+    /// ```
+    public static func interval(from: Note, to: Note) -> Interval? {
+
+        let letterClassDiff = to.letterClass - from.letterClass
+        let pitchClassDiff = to.pitchClass - from.pitchClass
+
+        switch (letterClassDiff, pitchClassDiff) {
+
+        case let (l, p) where l > 0 && p > 0:
+            // 情况1. 乐理上最正常的情况，左边是 小的音， 右边是大的音
+            // 表示 左边到 右边 是上行多少音程
+            return Interval(
+                degreeInt: letterClassDiff + 1, semitones: pitchClassDiff, direction: .up)
+        case let (l, p) where l < 0 && p < 0:
+            
+            // 情况2. 也处理左边大，右边小的情况。音程是同样的
+            // 表示 左边 到 右边 是下行多少音程
+            return Interval(
+                degreeInt: -(letterClassDiff - 1), semitones: -pitchClassDiff, direction: .down)
+        case let (l, p) where l == 0 && p == 0:
+            return .P1
+        default:
+            print(
+                " Note - interval distance - error - gaurantee the rhs/lhs Note is Bigger than the other(form the music theory perspective)"
+            )
+            return nil
+        }
+
+    }
+
+    public static func - (lhs: Note, rhs: Note) -> Interval? {
+        Note.interval(from: lhs, to: rhs)
+    }
+
 }
 
 // MARK: - Formatting & Description
 extension Note {
-    
-    /// 升降号符号 (e.g., "♯", "♭♭", "")
-//    public var accidentalSymbol: String {
-//        return accidental == 0 ? "" : String(repeating: accidental > 0 ? "♯" : "♭", count: abs(accidental))
-//    }
 
     /// 简短音符名称，不包含八度 (e.g., "C", "D♯")
     public var name: String {
@@ -200,39 +186,4 @@ extension Note: CustomStringConvertible {
     public var description: String {
         name
     }
-}
-
-// MARK: - Presets
-extension Note {
-    /// 半音音阶默认序列 (从C开始)
-    static let NoteCircleDefault: [Note] = [
-        Note(letter: .C, accidental: 0),
-        Note(letter: .D, accidental: -1),
-        Note(letter: .D, accidental: 0),
-        Note(letter: .E, accidental: -1),
-        Note(letter: .E, accidental: 0),
-        Note(letter: .F, accidental: 0),
-        Note(letter: .G, accidental: -1),
-        Note(letter: .G, accidental: 0),
-        Note(letter: .A, accidental: -1),
-        Note(letter: .A, accidental: 0),
-        Note(letter: .B, accidental: -1),
-        Note(letter: .B, accidental: 0)
-    ]
-    
-    /// 五度圈下行音符序列 (C, F, Bb, Eb, Ab, Db, Gb, B, E, A, D, G)
-    public static let NoteFifthCircleDefault: [Note] = [
-        Note(letter: .C, accidental: 0),
-        Note(letter: .F, accidental: 0),
-        Note(letter: .B, accidental: -1),
-        Note(letter: .E, accidental: -1),
-        Note(letter: .A, accidental: -1),
-        Note(letter: .D, accidental: -1),
-        Note(letter: .G, accidental: -1),
-        Note(letter: .B, accidental: 0),
-        Note(letter: .E, accidental: 0),
-        Note(letter: .A, accidental: 0),
-        Note(letter: .D, accidental: 0),
-        Note(letter: .G, accidental: 0)
-    ]
 }
