@@ -35,7 +35,7 @@ extension NoteClass {
     ///
     /// 考虑到了 升降号
     /// C = 0, C♭ = -1, C♯/D♭ = 1, D = 2, ..., B = 11
-    /// 
+    ///
     public var pitchClass: PitchClassInt {
         letter.pitchClass + Int(accidental)
     }

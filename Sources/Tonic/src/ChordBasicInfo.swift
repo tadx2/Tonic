@@ -232,7 +232,6 @@ public enum ChordTypeBasic: CaseIterable {
           case .majorTriad:
                return ChordBasicInfo(
                     basicName: "M",
-                    shortName: "",
                     cnName: "大三",
                     enName: "major triad",
                     intervals: [.M3, .P5],

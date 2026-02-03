@@ -8,31 +8,36 @@
 
 public struct KeySignature : Sendable, Equatable{
     
-    var noteName: NoteClass
+    var noteClass: NoteClass
     
     var mode: Mode.ModeType_Natural // 调用的是自然大小描述
     
     public var letter: Letter {
-        get { noteName.letter }
-        set { noteName = NoteClass(letter: newValue, accidental: noteName.accidental) }
+        get { noteClass.letter }
+        set { noteClass = NoteClass(letter: newValue, accidental: noteClass.accidental) }
     }
 
     public var accidental: Accidental {
-        get { noteName.accidental }
-        set { noteName = NoteClass(letter: noteName.letter, accidental: newValue) }
+        get { noteClass.accidental }
+        set { noteClass = NoteClass(letter: noteClass.letter, accidental: newValue) }
     }
     
     public init(letter: Letter, accidental: Accidental, mode: Mode.ModeType_Natural) {
-        self.noteName = NoteClass(letter: letter, accidental: accidental)
+        self.noteClass = NoteClass(letter: letter, accidental: accidental)
         self.mode = mode
     }
     
-    public init(noteName: NoteClass, mode: Mode.ModeType_Natural) {
-        self.noteName = noteName
+    public init(noteClass: NoteClass, mode: Mode.ModeType_Natural) {
+        self.noteClass = noteClass
         self.mode = mode
     }
     
 }
+
+// note
+//extension KeySignature {
+//    public noteClassList:
+//}
 
 // Preset
 extension KeySignature {

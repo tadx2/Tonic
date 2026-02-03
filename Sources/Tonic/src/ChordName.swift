@@ -89,10 +89,6 @@ extension ChordName {
             _basicName = String(_basicName.dropLast()) + String(maxMergedTension.degreeInt)
         }
 
-        // 特殊情况，如果是大七简写后 “△7” 参与 merged 后还是 “△7” 一般直接写 “△” 就好了
-        if _basicName == "△7" {
-            _basicName = "△"
-        }
 
         return _basicName
 
@@ -123,12 +119,35 @@ extension ChordName {
             return "nil"
         }
 
-        let additions = getAddition(isMergeTension: isMergeTension)
+        var additions = getAddition(isMergeTension: isMergeTension)
+        
+        var result: String = _basicName
+        
+        
+        if isShort {
+            
+            // 特殊情况，如果是大七简写后 “△7” 参与 merged 后还是 “△7” 一般直接写 “△” 就好了
+            if result == "△7" {
+                result = "△"
+            }
+            
+            // 如果是大三和弦，可以进一步简写把 大M去掉
+            if result == "M" &&  additions.isEmpty {
+                result = ""
+            }
+            
+            // 如果是半减7和弦，可以进一步把 additions 中的 b5 去掉
+            if result == "ø7" {
+                additions.removeAll(where: {$0 == Interval.d5})
+            }
+            
+        }
+       
 
-        var result: String = self.rootNote.name
+        
 
         if isShowRootNote {
-            result += _basicName
+            result = self.rootNote.name + result
         }
 
         if !additions.isEmpty {

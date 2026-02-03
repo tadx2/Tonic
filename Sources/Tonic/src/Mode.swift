@@ -7,6 +7,9 @@
 
 import Foundation
 
+// 调试内级数
+typealias ModeDegreeInt = Int
+
 public struct Mode{
     
     let tonic: NoteClass
@@ -19,6 +22,15 @@ public struct Mode{
     
 }
 
+extension Mode {
+    
+    var noteClassSeries: [(noteClass: NoteClass, octaveDiff: Octave)] {
+        type.intervals.map{  tonic.shifted(by: $0) }
+    }
+}
+
+
+// Preset
 extension Mode: Sendable{
     static let cNatural_Major = Mode(tonic: NoteClass(letter: .C, accidental: 0), type: .natural(.major))
 }
