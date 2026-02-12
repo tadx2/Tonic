@@ -6,7 +6,7 @@
 //
 
 
-// MARK: - Common Intervals in Chord
+// MARK: - Common Interval in Scale
 extension Interval {
 
     // MARK: Unison
@@ -92,4 +92,46 @@ extension Interval {
     public static let P15 = Interval(degreeInt: 15, semitones: 24)
     public static let A15 = Interval(degreeInt: 15, semitones: 25)
 
+}
+
+// MARK: - Common Intervals in Chord
+extension Set<Interval> {
+    
+    public static let x: Set<Interval> = [.P1, .M3, .P5]
+    public static let xM: Set<Interval> = [.P1, .M3, .P5]
+    public static let xm: Set<Interval> = [.P1, .m3, .P5]
+    public static let xdim: Set<Interval> = [.P1, .m3, .d5]
+    
+    public static let xM7: Set<Interval> = [.P1, .M3, .P5, .M7]
+    public static let xM7_M9: Set<Interval> = [.P1, .M3, .P5, .M7, .M9]
+    public static let xM7_M13: Set<Interval> = [.P1, .M3, .P5, .M7, .M13]
+    public static let xM7_M9_M13: Set<Interval> = [.P1, .M3, .P5, .M7, .M9, .M13]
+    public static let xM7_M9_P11: Set<Interval> = [.P1, .M3, .P5, .M7, .M9, .P11]
+    public static let xM7_M9_P11_M13: Set<Interval> = [.P1, .M3, .P5, .M7, .M9, .P11, .M13]
+    
+    public static let xm7: Set<Interval> = [.P1, .m3, .P5, .m7]
+    public static let xm7_M9: Set<Interval> = [.P1, .m3, .P5, .m7, .M9]
+    public static let xm7_M13: Set<Interval> = [.P1, .m3, .P5, .m7, .M13]
+    public static let xm7_M9_M13: Set<Interval> = [.P1, .m3, .P5, .m7, .M13]
+    public static let xm7_M9_P11: Set<Interval> = [.P1, .m3, .P5, .m7, .M9, .P11]
+    public static let xm7_M9_P11_M13: Set<Interval> = [.P1, .m3, .P5, .m7, .M9, .P11, .M13]
+    
+    public static let x7: Set<Interval> = [.P1, .M3, .P5, .m7]
+    public static let x7_M9: Set<Interval> = [.P1, .M3, .P5, .m7, .M9]
+    public static let x7_M9_P11: Set<Interval> = [.P1, .M3, .P5, .m7, .M9, .P11]
+    public static let x7_M9_M13: Set<Interval> = [.P1, .M3, .P5, .m7, .M9, .M13]
+    public static let x7_M9_P11_M13: Set<Interval> = [.P1, .M3, .P5, .m7, .M9, .P11, .M13]
+    
+    public static let xdim7: Set<Interval> = [.P1, .m3, .d5, .m7]
+    
+    // Sus2
+    public static let xSus2: Set<Interval> = [.P1, .M2, .P5]
+    public static let xSus2_M9: Set<Interval> = [.P1, .M2, .P5, .M9]
+    
+    // Sus4
+    public static let xSus4: Set<Interval> = [.P1, .P4, .P5]
+    public static let xSus4_P11: Set<Interval> = [.P1, .P4, .P5, .P11]
+    
+    public static let x7sharp9flat13: Set<Interval> = [.P1, .M3, .P5, .m7, .m9, .m13]
+    
 }

@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Mode.swift
 //  Tonic
 //
 //  Created by 小汤汤 on 1/30/26.
@@ -7,91 +7,50 @@
 
 import Foundation
 
-// 调试内级数
-typealias ModeDegreeInt = Int
+public struct Mode: CustomStringConvertible, Hashable {
 
-public struct Mode{
-    
-    let tonic: NoteClass
-    let type: ModeType
-    
-    init(tonic: NoteClass, type: ModeType) {
-        self.tonic = tonic
-        self.type = type
-    }
-    
+    public let description: String
+
+    public let intervals: [Interval]
+
 }
 
 extension Mode {
     
-    var noteClassSeries: [(noteClass: NoteClass, octaveDiff: Octave)] {
-        type.intervals.map{  tonic.shifted(by: $0) }
-    }
-}
-
-
-// Preset
-extension Mode: Sendable{
-    static let cNatural_Major = Mode(tonic: NoteClass(letter: .C, accidental: 0), type: .natural(.major))
-}
-
-extension Mode {
-    
-    public enum ModeType: Sendable {
+    public enum ModeQuality {
         
-        case natural(ModeType_Natural)
-        case church(ModeType_Church)
-
-        var intervals: [Interval] {
-            switch self {
-            case .natural(let t): return t.intervals
-            case .church(let t):  return t.intervals
-            }
-        }
-
-        var displayName: String {
-            switch self {
-            case .natural(let t): return t.rawValue.capitalized
-            case .church(let t):  return t.rawValue.capitalized
-            }
-        }
+        case major
+        case minor
+        case dominant
+        case diminished
+        case altered
     }
 
-    public enum ModeType_Natural: String, Sendable {
-        case major, minor
+    public var quality: ModeQuality {
+        
+        let hasMajor3 = intervals.contains(.M3)
+        let hasMinor3 = intervals.contains(.m3)
+        let hasMinor7 = intervals.contains(.m7)
+        // let hasMajor7 = intervals.contains(.M7)
+        let hasFlat5  = intervals.contains(.d5)
 
-        var intervals: [Interval] {
-            switch self {
-            case .major:
-                return [.P1, .M2, .M3, .P4, .P5, .M6, .M7]
-            case .minor:
-                return [.P1, .M2, .m3, .P4, .P5, .m6, .m7]
-            }
+        if hasMajor3 && hasMinor7 {
+            return .dominant
         }
-    }
 
-    public enum ModeType_Church: String, Sendable {
-        case ionian, dorian, phrygian, lydian, mixolydian, aeolian, locrian
-
-        var intervals: [Interval] {
-            switch self {
-            case .ionian:
-                return [.P1, .M2, .M3, .P4, .P5, .M6, .M7]
-            case .dorian:
-                return [.P1, .M2, .m3, .P4, .P5, .M6, .m7]
-            case .phrygian:
-                return [.P1, .m2, .m3, .P4, .P5, .m6, .m7]
-            case .lydian:
-                return [.P1, .M2, .M3, .A4, .P5, .M6, .M7]   // #4 = A4
-            case .mixolydian:
-                return [.P1, .M2, .M3, .P4, .P5, .M6, .m7]
-            case .aeolian:
-                return [.P1, .M2, .m3, .P4, .P5, .m6, .m7]
-            case .locrian:
-                return [.P1, .m2, .m3, .P4, .d5, .m6, .m7]   // b5 = d5
-            }
+        if hasMajor3 {
+            return .major
         }
+
+        if hasMinor3 && hasFlat5 {
+            return .diminished
+        }
+
+        if hasMinor3 {
+            return .minor
+        }
+
+        return .altered
     }
+    
 }
-
-

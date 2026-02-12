@@ -46,6 +46,7 @@ struct MockRawDNA{
 public struct MockIntervals{
     
     public static let x: Set<Interval> = [.P1, .M3, .P5]
+    public static let xM: Set<Interval> = [.P1, .M3, .P5]
     public static let xm: Set<Interval> = [.P1, .m3, .P5]
     public static let xdim: Set<Interval> = [.P1, .m3, .d5]
     
@@ -71,7 +72,14 @@ public struct MockIntervals{
     
     public static let xdim7: Set<Interval> = [.P1, .m3, .d5, .m7]
     
+    // Sus2
     public static let xSus2: Set<Interval> = [.P1, .M2, .P5]
+    public static let xSus2_M9: Set<Interval> = [.P1, .M2, .P5, .M9]
+    
+    // Sus4
+    public static let xSus4: Set<Interval> = [.P1, .P4, .P5]
+    public static let xSus4_P11: Set<Interval> = [.P1, .P4, .P5, .P11]
+    
     public static let x7sharp9flat13: Set<Interval> = [.P1, .M3, .P5, .m7, .m9, .m13]
 }
 
@@ -114,16 +122,20 @@ public struct MockChord{
     public static let G4x7_M9_P11_M13: Chord = Chord(root: MockNote.G4, intervals: MockIntervals.x7_M9_P11_M13)
     
     // F 大调顺接和弦 Seventh
-    //                F4M7
+    // F4M7
     public static let G4m7: Chord = Chord(root: MockNote.G4, intervals: MockIntervals.xm7)
-    //                 A4m7
+    // A4m7
     public static let Bb4M7: Chord = Chord(root: MockNote.Bb4, intervals: MockIntervals.xM7)
     public static let C4X7: Chord = Chord(root: MockNote.C4, intervals: MockIntervals.x7)
-    //                  D4m7
+    // D4m7
     public static let E4dim7: Chord = Chord(root: MockNote.E4, intervals: MockIntervals.xdim7)
     
     // C Sus2
     public static let CSus2: Chord = Chord(root: MockNote.C4, intervals: MockIntervals.xSus2)
+    public static let CSus2_M9: Chord = Chord(root: MockNote.C4, intervals: MockIntervals.xSus2_M9)
+    
+    // C Sus4
+    public static let CSus4_P11: Chord = Chord(root: MockNote.C4, intervals: MockIntervals.xSus4_P11)
 }
 
 

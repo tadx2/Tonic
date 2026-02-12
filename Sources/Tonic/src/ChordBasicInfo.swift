@@ -153,7 +153,7 @@ extension ChordBasicInfo {
 }
 
 // 7音以下所有排列组合
-public enum ChordTypeBasic: CaseIterable {
+public enum ChordTypeBasic: CaseIterable, ChordType {
 
      // 三和弦
      case majorTriad
@@ -839,7 +839,7 @@ public enum ChordTypeBasic: CaseIterable {
 //          }
 //     }
 //}
-//
-//public protocol ChordType {
-//     var info: ChordBasicInfo { get }
-//}
+
+public protocol ChordType {
+     var info: ChordBasicInfo { get }
+}

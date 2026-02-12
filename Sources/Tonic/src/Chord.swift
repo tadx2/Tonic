@@ -7,6 +7,8 @@
 
 import Foundation
 
+public typealias ChordDegreeInt = Int
+
 public struct Chord: Sendable, Equatable, Hashable {
 
     // note

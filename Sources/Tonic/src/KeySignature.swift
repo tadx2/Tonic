@@ -6,48 +6,27 @@
 //
 
 
-public struct KeySignature : Sendable, Equatable{
+public struct KeySignature {
     
-    var noteClass: NoteClass
+    public let noteClass: NoteClass
     
-    var mode: Mode.ModeType_Natural // 调用的是自然大小描述
+    public let type: KeySignatureType // 调用的是自然大小描述
     
-    public var letter: Letter {
-        get { noteClass.letter }
-        set { noteClass = NoteClass(letter: newValue, accidental: noteClass.accidental) }
-    }
-
-    public var accidental: Accidental {
-        get { noteClass.accidental }
-        set { noteClass = NoteClass(letter: noteClass.letter, accidental: newValue) }
-    }
-    
-    public init(letter: Letter, accidental: Accidental, mode: Mode.ModeType_Natural) {
-        self.noteClass = NoteClass(letter: letter, accidental: accidental)
-        self.mode = mode
-    }
-    
-    public init(noteClass: NoteClass, mode: Mode.ModeType_Natural) {
+    public init(noteClass: NoteClass, type: KeySignatureType) {
         self.noteClass = noteClass
-        self.mode = mode
+        self.type = type
     }
     
 }
 
-// note
-//extension KeySignature {
-//    public noteClassList:
-//}
-
-// Preset
-extension KeySignature {
-    public static let cMajor = KeySignature(letter: .C, accidental:  0, mode: .major)
+public enum KeySignatureType {
+    case major, minor
 }
 
 // Description
 extension KeySignature: CustomStringConvertible {
     public var description: String {
-        let note = Note(letter: self.letter, accidental: self.accidental)
+        let note = Note(letter: self.noteClass.letter, accidental: self.noteClass.accidental)
         return note.name
     }
 }
