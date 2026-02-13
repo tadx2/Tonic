@@ -25,7 +25,7 @@ public struct ChordDiatonic {
 
 
 public enum ChordDiatonicType: Hashable {
-    case traid, seventh, sixth
+    case traid, seventh, sixth, ninth, eleventh, thirteenth
     
     var modalClasses: [ModalClass] {
         switch self {
@@ -33,6 +33,12 @@ public enum ChordDiatonicType: Hashable {
             [1, 3, 5]
         case .seventh:
             [1, 3, 5, 7]
+        case .ninth:
+            [1, 3, 5, 7, 9]
+        case .eleventh:
+            [1, 3, 5, 7, 9, 11]
+        case .thirteenth:
+            [1, 3, 5, 7, 9, 11, 13]
         default:
             [1, 3, 5]
         }
@@ -58,6 +64,18 @@ extension ChordDiatonic {
         }
         
         return Chord(root: firstNote, intervals: Set(intervals))
+    }
+    
+    public func getDiatonicChordSequence() -> [Chord] {
+        
+        let sequenceRange = 0...(self.modeType.mode.intervals.count-1)
+        
+        var chords: [Chord] = []
+        for index in sequenceRange {
+            chords.append(getDiatonicChord(at: index + 1))
+        }
+        
+        return chords
     }
     
 }
