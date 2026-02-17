@@ -278,3 +278,5 @@ extension Chord {
         return (noteBase.letter == noteRoot.letter) && (noteBase.accidental == noteRoot.accidental)
     }
 }
+
+
