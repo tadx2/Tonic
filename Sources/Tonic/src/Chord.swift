@@ -260,7 +260,7 @@ extension Chord {
 }
 
 extension Chord {
-    static public let Empty: Chord? = nil
+    static public let Empty: Chord = Chord(root: .C4, intervals: [])
 }
 
 // Consider Base Note
