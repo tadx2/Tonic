@@ -126,6 +126,13 @@ extension Interval: CustomStringConvertible {
             element = String(repeating: "♭", count: -diff)
         }
 
+        // 特别情况：
+        if diff == 2 {
+            element = "𝄪"
+        } else if diff == -2 {
+            element = "𝄫"
+        }
+
         return String(self.direction == .up ? "" : "-") + element + String(self.degreeInt)
     }
 }
@@ -161,5 +168,3 @@ extension Set<Interval> {
     }
 
 }
-
-

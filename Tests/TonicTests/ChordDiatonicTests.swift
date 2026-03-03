@@ -8,23 +8,23 @@ import Tonic
         
         // C traid
         var chordDiationc = ChordDiatonic(tonic: .C4, modeType: ModeTypeMain.majorNatural, type: .traid)
-        #expect(chordDiationc.getDiatonicChord(at: 1) == MockChord.C4M)
-        #expect(chordDiationc.getDiatonicChord(at: 2) == MockChord.D4m)
-        #expect(chordDiationc.getDiatonicChord(at: 3) == MockChord.E4m)
-        #expect(chordDiationc.getDiatonicChord(at: 4) == MockChord.F4M)
-        #expect(chordDiationc.getDiatonicChord(at: 5) == MockChord.G4M)
-        #expect(chordDiationc.getDiatonicChord(at: 6) == MockChord.A4m)
-        #expect(chordDiationc.getDiatonicChord(at: 7) == MockChord.B4dim)
+        #expect(chordDiationc.getDiatonicChord(at: 1) == .C4M)
+        #expect(chordDiationc.getDiatonicChord(at: 2) == .D4m)
+        #expect(chordDiationc.getDiatonicChord(at: 3) == .E4m)
+        #expect(chordDiationc.getDiatonicChord(at: 4) == .F4M)
+        #expect(chordDiationc.getDiatonicChord(at: 5) == .G4M)
+        #expect(chordDiationc.getDiatonicChord(at: 6) == .A4m)
+        #expect(chordDiationc.getDiatonicChord(at: 7) == .B4dim)
         
         // C seventh
         chordDiationc = ChordDiatonic(tonic: .C4, modeType: ModeTypeMain.majorNatural, type: .seventh)
-        #expect(chordDiationc.getDiatonicChord(at: 1) == MockChord.C4M7)
-        #expect(chordDiationc.getDiatonicChord(at: 2) == MockChord.D4m7)
-        #expect(chordDiationc.getDiatonicChord(at: 3) == MockChord.E4m7)
-        #expect(chordDiationc.getDiatonicChord(at: 4) == MockChord.F4M7)
-        #expect(chordDiationc.getDiatonicChord(at: 5) == MockChord.G4x7)
-        #expect(chordDiationc.getDiatonicChord(at: 6) == MockChord.A4m7)
-        #expect(chordDiationc.getDiatonicChord(at: 7) == MockChord.B4dim7)
+        #expect(chordDiationc.getDiatonicChord(at: 1) == .C4M7)
+        #expect(chordDiationc.getDiatonicChord(at: 2) == .D4m7)
+        #expect(chordDiationc.getDiatonicChord(at: 3) == .E4m7)
+        #expect(chordDiationc.getDiatonicChord(at: 4) == .F4M7)
+        #expect(chordDiationc.getDiatonicChord(at: 5) == .G4x7)
+        #expect(chordDiationc.getDiatonicChord(at: 6) == .A4m7)
+        #expect(chordDiationc.getDiatonicChord(at: 7) == .B4dim7)
         
         // F traid
         chordDiationc = ChordDiatonic(tonic: .F4, modeType: ModeTypeMain.majorNatural, type: .traid)

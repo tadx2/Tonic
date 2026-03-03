@@ -232,6 +232,7 @@ public enum ChordTypeBasic: CaseIterable, ChordType {
           case .majorTriad:
                return ChordBasicInfo(
                     basicName: "M",
+                    shortName: "△",
                     cnName: "大三",
                     enName: "major triad",
                     intervals: [.M3, .P5],
@@ -249,6 +250,7 @@ public enum ChordTypeBasic: CaseIterable, ChordType {
                return ChordBasicInfo(
                     basicName: "M",
                     basicNameAddition: [.d5],
+                    shortName: "△",
                     cnName: "大三减五",
                     enName: "major triad flat five",
                     intervals: [.M3, .d5],
@@ -266,6 +268,7 @@ public enum ChordTypeBasic: CaseIterable, ChordType {
                return ChordBasicInfo(
                     basicName: "m",
                     basicNameAddition: [.A5],
+                    shortName: "-",
                     cnName: "小三增五",
                     enName: "minor augmented triad",
                     intervals: [.m3, .A5],
@@ -346,6 +349,7 @@ public enum ChordTypeBasic: CaseIterable, ChordType {
                return ChordBasicInfo(
                     basicName: "M",
                     basicNameAddition: [.d7],
+                    shortName: "△",
                     cnName: "大三加重减七",
                     enName: "major triad double flat 7th",
                     intervals: [.M3, .P5, .d7],
@@ -354,6 +358,7 @@ public enum ChordTypeBasic: CaseIterable, ChordType {
                return ChordBasicInfo(
                     basicName: "M7",
                     basicNameAddition: [.d5],
+                    shortName: "△7",
                     cnName: "大七减五",
                     enName: "major 7th flat 5th",
                     intervals: [.M3, .d5, .M7],
@@ -370,6 +375,7 @@ public enum ChordTypeBasic: CaseIterable, ChordType {
                return ChordBasicInfo(
                     basicName: "M",
                     basicNameAddition: [.d5, .d7],
+                    shortName: "△",
                     cnName: "大三减五重减七",
                     enName: "major flat 5th double flat 7th",
                     intervals: [.M3, .d5, .d7],
@@ -395,6 +401,7 @@ public enum ChordTypeBasic: CaseIterable, ChordType {
                return ChordBasicInfo(
                     basicName: "M",
                     basicNameAddition: [.A5, .d7],
+                    shortName: "△",
                     cnName: "大三增五重减七",
                     enName: "major sharp 5th double flat 7th",
                     intervals: [.M3, .A5, .d7],
@@ -402,6 +409,7 @@ public enum ChordTypeBasic: CaseIterable, ChordType {
           case .minorMajor7:
                return ChordBasicInfo(
                     basicName: "mM7",
+                    shortName: "-△7",
                     cnName: "小大七",
                     enName: "minor major 7th",
                     intervals: [.m3, .P5, .M7],
@@ -419,6 +427,7 @@ public enum ChordTypeBasic: CaseIterable, ChordType {
                return ChordBasicInfo(
                     basicName: "m",
                     basicNameAddition: [.d7],
+                    shortName: "-",
                     cnName: "小三加重减七",
                     enName: "minor triad double flat 7th",
                     intervals: [.m3, .P5, .d7],
@@ -427,6 +436,7 @@ public enum ChordTypeBasic: CaseIterable, ChordType {
                return ChordBasicInfo(
                     basicName: "mM7",
                     basicNameAddition: [.d5],
+                    shortName: "-△7",
                     cnName: "小大七减五",
                     enName: "minor major 7th flat 5th",
                     intervals: [.m3, .d5, .M7],
@@ -453,6 +463,7 @@ public enum ChordTypeBasic: CaseIterable, ChordType {
                return ChordBasicInfo(
                     basicName: "mM7",
                     basicNameAddition: [.A5],
+                    shortName: "-△7",
                     cnName: "小大七增五",
                     enName: "minor major 7th sharp 5th",
                     intervals: [.m3, .A5, .M7],
@@ -461,6 +472,7 @@ public enum ChordTypeBasic: CaseIterable, ChordType {
                return ChordBasicInfo(
                     basicName: "m7",
                     basicNameAddition: [.A5],
+                    shortName: "-7",
                     cnName: "小七增五",
                     enName: "minor 7th sharp 5th",
                     intervals: [.m3, .A5, .m7],
@@ -469,6 +481,7 @@ public enum ChordTypeBasic: CaseIterable, ChordType {
                return ChordBasicInfo(
                     basicName: "m",
                     basicNameAddition: [.A5, .d7],
+                    shortName: "-",
                     cnName: "小三增五重减七",
                     enName: "minor sharp 5th double flat 7th",
                     intervals: [.m3, .A5, .d7],
@@ -476,7 +489,7 @@ public enum ChordTypeBasic: CaseIterable, ChordType {
           case .major7Sus2:
                return ChordBasicInfo(
                     basicName: "M7sus2",
-                    shortName: "△sus2",
+                    shortName: "△7sus2",
                     cnName: "大七挂二",
                     enName: "major 7th suspended 2nd",
                     intervals: [.M2, .P5, .M7],
@@ -500,7 +513,7 @@ public enum ChordTypeBasic: CaseIterable, ChordType {
                return ChordBasicInfo(
                     basicName: "M7sus2",
                     basicNameAddition: [.d5],
-                    shortName: "△sus2",
+                    shortName: "△7sus2",
                     cnName: "大七挂二减五",
                     enName: "major 7th suspended 2nd flat 5th",
                     intervals: [.M2, .d5, .M7],
@@ -525,7 +538,7 @@ public enum ChordTypeBasic: CaseIterable, ChordType {
                return ChordBasicInfo(
                     basicName: "M7sus2",
                     basicNameAddition: [.A5],
-                    shortName: "△sus2",
+                    shortName: "△7sus2",
                     cnName: "大七挂二增五",
                     enName: "major 7th suspended 2nd sharp 5th",
                     intervals: [.M2, .A5, .M7],
@@ -549,7 +562,7 @@ public enum ChordTypeBasic: CaseIterable, ChordType {
           case .major7Sus4:
                return ChordBasicInfo(
                     basicName: "M7sus4",
-                    shortName: "△sus4",
+                    shortName: "△7sus4",
                     cnName: "大七挂四",
                     enName: "major 7th suspended 4th",
                     intervals: [.P4, .P5, .M7],
@@ -573,7 +586,7 @@ public enum ChordTypeBasic: CaseIterable, ChordType {
                return ChordBasicInfo(
                     basicName: "M7sus4",
                     basicNameAddition: [.d5],
-                    shortName: "△sus4",
+                    shortName: "△7sus4",
                     cnName: "大七挂四减五",
                     enName: "major 7th suspended 4th flat 5th",
                     intervals: [.P4, .d5, .M7],
@@ -598,7 +611,7 @@ public enum ChordTypeBasic: CaseIterable, ChordType {
                return ChordBasicInfo(
                     basicName: "M7sus4",
                     basicNameAddition: [.A5],
-                    shortName: "△sus4",
+                    shortName: "△7sus4",
                     cnName: "大七挂四增五",
                     enName: "major 7th suspended 4th sharp 5th",
                     intervals: [.P4, .A5, .M7],
@@ -654,6 +667,7 @@ public enum ChordTypeBasic: CaseIterable, ChordType {
                return ChordBasicInfo(
                     basicName: "m6",
                     basicNameAddition: [.A5],
+                    shortName: "-6",
                     cnName: "小六增五",
                     enName: "minor 6th sharp 5th",
                     intervals: [.m3, .A5, .M6],

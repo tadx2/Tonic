@@ -91,7 +91,7 @@ struct IntervalTests {
         #expect(Interval.P5.descriptionNumber == "5")
         #expect(Interval.A5.descriptionNumber == "♯5")
 
-        #expect(Interval.d7.descriptionNumber == "♭♭7")
+        #expect(Interval.d7.descriptionNumber == "𝄫7")
         #expect(Interval.m7.descriptionNumber == "♭7")
         #expect(Interval.M7.descriptionNumber == "7")
         #expect(Interval.A7.descriptionNumber == "♯7")

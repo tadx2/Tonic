@@ -17,104 +17,104 @@ struct ChordNameTests {
         
         // C4M7
         #expect(
-            ChordName(chord: MockChord.C4M7).getChordNameString(isMergeTension: true, isShort: true) == "C△"
+            ChordName(chord: .C4M7).getChordNameString(isMergeTension: true, isShort: true) == "C△7"
         )
         
         #expect(
-            ChordName(chord: MockChord.C4M7).getChordNameString(isMergeTension: true, isShort: false) == "CM7"
+            ChordName(chord: .C4M7).getChordNameString(isMergeTension: true, isShort: false) == "CM7"
         )
         
         #expect(
-            ChordName(chord: MockChord.C4M7).getChordNameString(isMergeTension: false, isShort: true) == "C△"
+            ChordName(chord: .C4M7).getChordNameString(isMergeTension: false, isShort: true) == "C△7"
         )
         
         #expect(
-            ChordName(chord: MockChord.C4M7).getChordNameString(isMergeTension: false, isShort: false) == "CM7"
+            ChordName(chord: .C4M7).getChordNameString(isMergeTension: false, isShort: false) == "CM7"
         )
         
         // C4M7_M9
         #expect(
-            ChordName(chord: MockChord.C4M7_M9).getChordNameString(isMergeTension: true, isShort: true) == "C△9"
+            ChordName(chord: .C4M7_M9).getChordNameString(isMergeTension: true, isShort: true) == "C△9"
         )
         
         #expect(
-            ChordName(chord: MockChord.C4M7_M9).getChordNameString(isMergeTension: true, isShort: false) == "CM9"
+            ChordName(chord: .C4M7_M9).getChordNameString(isMergeTension: true, isShort: false) == "CM9"
         )
         
         #expect(
-            ChordName(chord: MockChord.C4M7_M9).getChordNameString(isMergeTension: false, isShort: true) == "C△(9)"
+            ChordName(chord: .C4M7_M9).getChordNameString(isMergeTension: false, isShort: true) == "C△7(9)"
         )
         
         #expect(
-            ChordName(chord: MockChord.C4M7_M9).getChordNameString(isMergeTension: false, isShort: false) == "CM7(9)"
+            ChordName(chord: .C4M7_M9).getChordNameString(isMergeTension: false, isShort: false) == "CM7(9)"
         )
         
         // C4M7_M13
         #expect(
-            ChordName(chord: MockChord.C4M7_M13).getChordNameString(isMergeTension: true, isShort: true) == "C△13"
+            ChordName(chord: .C4M7_M13).getChordNameString(isMergeTension: true, isShort: true) == "C△13"
         )
         
         #expect(
-            ChordName(chord: MockChord.C4M7_M13).getChordNameString(isMergeTension: true, isShort: false) == "CM13"
+            ChordName(chord: .C4M7_M13).getChordNameString(isMergeTension: true, isShort: false) == "CM13"
         )
         
         #expect(
-            ChordName(chord: MockChord.C4M7_M13).getChordNameString(isMergeTension: false, isShort: true) == "C△(13)"
+            ChordName(chord: .C4M7_M13).getChordNameString(isMergeTension: false, isShort: true) == "C△7(13)"
         )
         
         #expect(
-            ChordName(chord: MockChord.C4M7_M13).getChordNameString(isMergeTension: false, isShort: false) == "CM7(13)"
+            ChordName(chord: .C4M7_M13).getChordNameString(isMergeTension: false, isShort: false) == "CM7(13)"
         )
         
         // C4M7_M9_M13
         #expect(
-            ChordName(chord: MockChord.C4M7_M9_M13).getChordNameString(isMergeTension: true, isShort: true) == "C△13"
+            ChordName(chord: .C4M7_M9_M13).getChordNameString(isMergeTension: true, isShort: true) == "C△13"
         )
         
         #expect(
-            ChordName(chord: MockChord.C4M7_M9_M13).getChordNameString(isMergeTension: true, isShort: false) == "CM13"
+            ChordName(chord: .C4M7_M9_M13).getChordNameString(isMergeTension: true, isShort: false) == "CM13"
         )
         
         #expect(
-            ChordName(chord: MockChord.C4M7_M9_M13).getChordNameString(isMergeTension: false, isShort: true) == "C△(9 13)"
+            ChordName(chord: .C4M7_M9_M13).getChordNameString(isMergeTension: false, isShort: true) == "C△7(9 13)"
         )
         
         #expect(
-            ChordName(chord: MockChord.C4M7_M9_M13).getChordNameString(isMergeTension: false, isShort: false) == "CM7(9 13)"
+            ChordName(chord: .C4M7_M9_M13).getChordNameString(isMergeTension: false, isShort: false) == "CM7(9 13)"
         )
         
         // C4M7_M9_P11
         #expect(
-            ChordName(chord: MockChord.C4M7_M9_P11).getChordNameString(isMergeTension: true, isShort: true) == "C△11"
+            ChordName(chord: .C4M7_M9_P11).getChordNameString(isMergeTension: true, isShort: true) == "C△11"
         )
         
         #expect(
-            ChordName(chord: MockChord.C4M7_M9_P11).getChordNameString(isMergeTension: true, isShort: false) == "CM11"
+            ChordName(chord: .C4M7_M9_P11).getChordNameString(isMergeTension: true, isShort: false) == "CM11"
         )
         
         #expect(
-            ChordName(chord: MockChord.C4M7_M9_P11).getChordNameString(isMergeTension: false, isShort: true) == "C△(9 11)"
+            ChordName(chord: .C4M7_M9_P11).getChordNameString(isMergeTension: false, isShort: true) == "C△7(9 11)"
         )
         
         #expect(
-            ChordName(chord: MockChord.C4M7_M9_P11).getChordNameString(isMergeTension: false, isShort: false) == "CM7(9 11)"
+            ChordName(chord: .C4M7_M9_P11).getChordNameString(isMergeTension: false, isShort: false) == "CM7(9 11)"
         )
         
         // C4M7_M9_P11_M13
         #expect(
-            ChordName(chord: MockChord.C4M7_M9_P11_M13).getChordNameString(isMergeTension: true, isShort: true) == "C△13"
+            ChordName(chord: .C4M7_M9_P11_M13).getChordNameString(isMergeTension: true, isShort: true) == "C△13"
         )
         
         #expect(
-            ChordName(chord: MockChord.C4M7_M9_P11_M13).getChordNameString(isMergeTension: true, isShort: false) == "CM13"
+            ChordName(chord: .C4M7_M9_P11_M13).getChordNameString(isMergeTension: true, isShort: false) == "CM13"
         )
         
         #expect(
-            ChordName(chord: MockChord.C4M7_M9_P11_M13).getChordNameString(isMergeTension: false, isShort: true) == "C△(9 11 13)"
+            ChordName(chord: .C4M7_M9_P11_M13).getChordNameString(isMergeTension: false, isShort: true) == "C△7(9 11 13)"
         )
         
         #expect(
-            ChordName(chord: MockChord.C4M7_M9_P11_M13).getChordNameString(isMergeTension: false, isShort: false) == "CM7(9 11 13)"
+            ChordName(chord: .C4M7_M9_P11_M13).getChordNameString(isMergeTension: false, isShort: false) == "CM7(9 11 13)"
         )
     
     }
@@ -124,70 +124,70 @@ struct ChordNameTests {
         
         // D4m7
         #expect(
-            ChordName(chord: MockChord.D4m7).getChordNameString(isMergeTension: true, isShort: true) == "D-7"
+            ChordName(chord: .D4m7).getChordNameString(isMergeTension: true, isShort: true) == "D-7"
         )
         
         #expect(
-            ChordName(chord: MockChord.D4m7).getChordNameString(isMergeTension: true, isShort: false) == "Dm7"
+            ChordName(chord: .D4m7).getChordNameString(isMergeTension: true, isShort: false) == "Dm7"
         )
         
         #expect(
-            ChordName(chord: MockChord.D4m7).getChordNameString(isMergeTension: false, isShort: true) == "D-7"
+            ChordName(chord: .D4m7).getChordNameString(isMergeTension: false, isShort: true) == "D-7"
         )
         
         #expect(
-            ChordName(chord: MockChord.D4m7).getChordNameString(isMergeTension: false, isShort: false) == "Dm7"
+            ChordName(chord: .D4m7).getChordNameString(isMergeTension: false, isShort: false) == "Dm7"
         )
         
         // D4m7_M9
         #expect(
-            ChordName(chord: MockChord.D4m7_M9).getChordNameString(isMergeTension: true, isShort: true) == "D-9"
+            ChordName(chord: .D4m7_M9).getChordNameString(isMergeTension: true, isShort: true) == "D-9"
         )
         
         #expect(
-            ChordName(chord: MockChord.D4m7_M9).getChordNameString(isMergeTension: true, isShort: false) == "Dm9"
+            ChordName(chord: .D4m7_M9).getChordNameString(isMergeTension: true, isShort: false) == "Dm9"
         )
         
         #expect(
-            ChordName(chord: MockChord.D4m7_M9).getChordNameString(isMergeTension: false, isShort: true) == "D-7(9)"
+            ChordName(chord: .D4m7_M9).getChordNameString(isMergeTension: false, isShort: true) == "D-7(9)"
         )
         
         #expect(
-            ChordName(chord: MockChord.D4m7_M9).getChordNameString(isMergeTension: false, isShort: false) == "Dm7(9)"
-        )
-        
-        // D4m7_M9_M11
-        #expect(
-            ChordName(chord: MockChord.D4m7_M9_P11).getChordNameString(isMergeTension: true, isShort: true) == "D-11"
-        )
-        
-        #expect(
-            ChordName(chord: MockChord.D4m7_M9_P11).getChordNameString(isMergeTension: true, isShort: false) == "Dm11"
-        )
-        
-        #expect(
-            ChordName(chord: MockChord.D4m7_M9_P11).getChordNameString(isMergeTension: false, isShort: true) == "D-7(9 11)"
-        )
-        
-        #expect(
-            ChordName(chord: MockChord.D4m7_M9_P11).getChordNameString(isMergeTension: false, isShort: false) == "Dm7(9 11)"
+            ChordName(chord: .D4m7_M9).getChordNameString(isMergeTension: false, isShort: false) == "Dm7(9)"
         )
         
         // D4m7_M9_M11
         #expect(
-            ChordName(chord: MockChord.D4m7_M9_P11_M13).getChordNameString(isMergeTension: true, isShort: true) == "D-13"
+            ChordName(chord: .D4m7_M9_P11).getChordNameString(isMergeTension: true, isShort: true) == "D-11"
         )
         
         #expect(
-            ChordName(chord: MockChord.D4m7_M9_P11_M13).getChordNameString(isMergeTension: true, isShort: false) == "Dm13"
+            ChordName(chord: .D4m7_M9_P11).getChordNameString(isMergeTension: true, isShort: false) == "Dm11"
         )
         
         #expect(
-            ChordName(chord: MockChord.D4m7_M9_P11_M13).getChordNameString(isMergeTension: false, isShort: true) == "D-7(9 11 13)"
+            ChordName(chord: .D4m7_M9_P11).getChordNameString(isMergeTension: false, isShort: true) == "D-7(9 11)"
         )
         
         #expect(
-            ChordName(chord: MockChord.D4m7_M9_P11_M13).getChordNameString(isMergeTension: false, isShort: false) == "Dm7(9 11 13)"
+            ChordName(chord: .D4m7_M9_P11).getChordNameString(isMergeTension: false, isShort: false) == "Dm7(9 11)"
+        )
+        
+        // D4m7_M9_M11
+        #expect(
+            ChordName(chord: .D4m7_M9_P11_M13).getChordNameString(isMergeTension: true, isShort: true) == "D-13"
+        )
+        
+        #expect(
+            ChordName(chord: .D4m7_M9_P11_M13).getChordNameString(isMergeTension: true, isShort: false) == "Dm13"
+        )
+        
+        #expect(
+            ChordName(chord: .D4m7_M9_P11_M13).getChordNameString(isMergeTension: false, isShort: true) == "D-7(9 11 13)"
+        )
+        
+        #expect(
+            ChordName(chord: .D4m7_M9_P11_M13).getChordNameString(isMergeTension: false, isShort: false) == "Dm7(9 11 13)"
         )
         
         
@@ -198,87 +198,87 @@ struct ChordNameTests {
         
         // G4x7
         #expect(
-            ChordName(chord: MockChord.G4x7).getChordNameString(isMergeTension: true, isShort: true) == "G7"
+            ChordName(chord: .G4x7).getChordNameString(isMergeTension: true, isShort: true) == "G7"
         )
         
         #expect(
-            ChordName(chord: MockChord.G4x7).getChordNameString(isMergeTension: true, isShort: false) == "G7"
+            ChordName(chord: .G4x7).getChordNameString(isMergeTension: true, isShort: false) == "G7"
         )
         
         #expect(
-            ChordName(chord: MockChord.G4x7).getChordNameString(isMergeTension: false, isShort: true) == "G7"
+            ChordName(chord: .G4x7).getChordNameString(isMergeTension: false, isShort: true) == "G7"
         )
         
         #expect(
-            ChordName(chord: MockChord.G4x7).getChordNameString(isMergeTension: false, isShort: false) == "G7"
+            ChordName(chord: .G4x7).getChordNameString(isMergeTension: false, isShort: false) == "G7"
         )
         
         // G4x7_M9
         #expect(
-            ChordName(chord: MockChord.G4x7_M9).getChordNameString(isMergeTension: true, isShort: true) == "G9"
+            ChordName(chord: .G4x7_M9).getChordNameString(isMergeTension: true, isShort: true) == "G9"
         )
         
         #expect(
-            ChordName(chord: MockChord.G4x7_M9).getChordNameString(isMergeTension: true, isShort: false) == "G9"
+            ChordName(chord: .G4x7_M9).getChordNameString(isMergeTension: true, isShort: false) == "G9"
         )
         
         #expect(
-            ChordName(chord: MockChord.G4x7_M9).getChordNameString(isMergeTension: false, isShort: true) == "G7(9)"
+            ChordName(chord: .G4x7_M9).getChordNameString(isMergeTension: false, isShort: true) == "G7(9)"
         )
         
         #expect(
-            ChordName(chord: MockChord.G4x7_M9).getChordNameString(isMergeTension: false, isShort: false) == "G7(9)"
+            ChordName(chord: .G4x7_M9).getChordNameString(isMergeTension: false, isShort: false) == "G7(9)"
         )
         
         // G4x7_M9_P11
         #expect(
-            ChordName(chord: MockChord.G4x7_M9_P11).getChordNameString(isMergeTension: true, isShort: true) == "G11"
+            ChordName(chord: .G4x7_M9_P11).getChordNameString(isMergeTension: true, isShort: true) == "G11"
         )
         
         #expect(
-            ChordName(chord: MockChord.G4x7_M9_P11).getChordNameString(isMergeTension: true, isShort: false) == "G11"
+            ChordName(chord: .G4x7_M9_P11).getChordNameString(isMergeTension: true, isShort: false) == "G11"
         )
         
         #expect(
-            ChordName(chord: MockChord.G4x7_M9_P11).getChordNameString(isMergeTension: false, isShort: true) == "G7(9 11)"
+            ChordName(chord: .G4x7_M9_P11).getChordNameString(isMergeTension: false, isShort: true) == "G7(9 11)"
         )
         
         #expect(
-            ChordName(chord: MockChord.G4x7_M9_P11).getChordNameString(isMergeTension: false, isShort: false) == "G7(9 11)"
+            ChordName(chord: .G4x7_M9_P11).getChordNameString(isMergeTension: false, isShort: false) == "G7(9 11)"
         )
         
         // G4x7_M9_M13
         #expect(
-            ChordName(chord: MockChord.G4x7_M9_M13).getChordNameString(isMergeTension: true, isShort: true) == "G13"
+            ChordName(chord: .G4x7_M9_M13).getChordNameString(isMergeTension: true, isShort: true) == "G13"
         )
         
         #expect(
-            ChordName(chord: MockChord.G4x7_M9_M13).getChordNameString(isMergeTension: true, isShort: false) == "G13"
+            ChordName(chord: .G4x7_M9_M13).getChordNameString(isMergeTension: true, isShort: false) == "G13"
         )
         
         #expect(
-            ChordName(chord: MockChord.G4x7_M9_M13).getChordNameString(isMergeTension: false, isShort: true) == "G7(9 13)"
+            ChordName(chord: .G4x7_M9_M13).getChordNameString(isMergeTension: false, isShort: true) == "G7(9 13)"
         )
         
         #expect(
-            ChordName(chord: MockChord.G4x7_M9_M13).getChordNameString(isMergeTension: false, isShort: false) == "G7(9 13)"
+            ChordName(chord: .G4x7_M9_M13).getChordNameString(isMergeTension: false, isShort: false) == "G7(9 13)"
         )
         
         // G4x7_M9_P11_M13
         #expect(
-            ChordName(chord: MockChord.G4x7_M9_P11_M13).getChordNameString(isMergeTension: true, isShort: true) == "G13"
+            ChordName(chord: .G4x7_M9_P11_M13).getChordNameString(isMergeTension: true, isShort: true) == "G13"
         )
         
         #expect(
-            ChordName(chord: MockChord.G4x7_M9_P11_M13).getChordNameString(isMergeTension: true, isShort: false) == "G13"
+            ChordName(chord: .G4x7_M9_P11_M13).getChordNameString(isMergeTension: true, isShort: false) == "G13"
         )
         
         #expect(
-            ChordName(chord: MockChord.G4x7_M9_P11_M13).getChordNameString(isMergeTension: false, isShort: true) == "G7(9 11 13)"
+            ChordName(chord: .G4x7_M9_P11_M13).getChordNameString(isMergeTension: false, isShort: true) == "G7(9 11 13)"
         )
         
         #expect(
-            ChordName(chord: MockChord.G4x7_M9_P11_M13).getChordNameString(isMergeTension: false, isShort: false) == "G7(9 11 13)"
+            ChordName(chord: .G4x7_M9_P11_M13).getChordNameString(isMergeTension: false, isShort: false) == "G7(9 11 13)"
         )
         
     }
