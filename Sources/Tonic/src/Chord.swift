@@ -279,100 +279,82 @@ extension Chord {
     }
 }
 
-// Chord Symbol
+// For Chord Symbol
 extension Chord {
-    
-    public var chordSymbolsWithoutTension: [ChordSymbol]? {
-        let intervalsWithoutTension = intervalsRaw.filter { $0.degreeInt != 1 && $0.degreeInt <= 7 }
-        guard
-            let matchedType = ChordSymbolType.allCases.first(where: {
-                $0.intervals == intervalsWithoutTension
-            })
-        else {
-            return nil
-        }
-        return matchedType.chordSymbol
+
+    public var symbolBaseCase: ChordSymbolBaseCase? {
+
+        let intervalsWithoutTensionWithoutRootInterval: Set<Interval> =
+            self.intervalsRaw
+            .filter { $0.degreeInt != 1 && $0.degreeInt <= 7 }
+            .subtracting([.P1])
+
+        // 从 ChordSymbolBaseCase（预设中）获取到音程对应的唯一case
+        let baseCase = ChordSymbolBaseCase.allCases.first(where: {
+            $0.intervals == intervalsWithoutTensionWithoutRootInterval
+        })
+
+        guard let baseCase else { return nil }
+
+        return baseCase
+
     }
     
-    public var chordSymbolsWithTension: [ChordSymbol]? {
-        
-        guard let chordSymbolsWithoutTension = self.chordSymbolsWithoutTension else { return nil }
-        
-        let oriChordSymbols = chordSymbolsWithoutTension
-        
+    
+    // Symbol组合
+    // SymbolTensioned 可以进一步找到规则改写的情况
+    public typealias SymbolGroup = (main: ChordSymbol, rephase: [ChordSymbol])
+    
+    public var symbolGroups: [SymbolGroup]? {
+
+        guard let chordSymbolType = self.symbolBaseCase,
+              let pureSymbols: [ChordSymbol]  = chordSymbolType.chordSymbols
+        else { return nil }
+
+        // 获取到Tension intervals
         let intervalsTension = intervalsRaw.filter { $0.degreeInt > 7 }
-        
-        let intervalSymbol: [ChordSymbolElementNumberWithAccidental] = intervalsTension.compactMap{ interval in
-            
-            // 只识别特定的几个音程
+
+        // Tension intervals 转化为 Symbol 组合
+        // 只识别 特定的几个音程
+        let intervalSymbols: [ChordSymbolNumberWithAcc] = intervalsTension.compactMap { interval in
             if interval == .m9 { return .nineFlat }
-            if interval == .M9 { return .nine}
-            if interval == .A9 { return .nineSharp}
-            
+            if interval == .M9 { return .nine }
+            if interval == .A9 { return .nineSharp }
             if interval == .P11 { return .eleven }
-            if interval == .A11 { return .elevenSharp}
-            
+            if interval == .A11 { return .elevenSharp }
             if interval == .m13 { return .thirteenFlat }
-            if interval == .M13 { return .thirteen}
-            if interval == .A13 { return .thirteenSharp}
-            
+            if interval == .M13 { return .thirteen }
+            if interval == .A13 { return .thirteenSharp }
             return nil
         }
-        
-        var resultChordSymbols: [ChordSymbol]  = []
-        
-        for oriChordSymbol in oriChordSymbols {
-            var result = oriChordSymbol
-            result.addition.append(contentsOf: intervalSymbol)
-            resultChordSymbols.append(result)
+
+        var result: [SymbolGroup] = []
+
+        for var pureSymbol in pureSymbols {
+            
+            // pure 添加上 tension
+            pureSymbol.addition.append(contentsOf: intervalSymbols)
+            let symbolTensioned = pureSymbol
+            
+            var symbolGroup: SymbolGroup
+            symbolGroup.main = symbolTensioned // 初次添加 addition 后的 symbol
+            symbolGroup.rephase = symbolTensioned.rephraseSymbols // symbolTensioned 可以有其他rephase
+            
+            result.append(symbolGroup)
         }
-        
-        return resultChordSymbols
+
+        return result
     }
     
-    public var chordSymbolsWithTensionMerged: [ChordSymbol]? {
-        
-        guard let chordSymbolsWithTension = self.chordSymbolsWithTension else { return nil }
-        
-        let oriChordSymbols = chordSymbolsWithTension
-        
-        var resultChordSymbols: [ChordSymbol]  = []
-        
-        for oriChordSymbol in oriChordSymbols {
-            var result = oriChordSymbol
-            if result.isSeventhInMain { // 如果原本 ChordSymbol main 中含有 .seventh
- 
-                // 情况1, 含有一个大9度/纯11/大13度的音程，简写
-                if result.addition.contains(.nine) && result.addition.contains(.eleven) && result.addition.contains(.thirteen) {
-                    result.main?.numberWithAccidental = .thirteen
-                    result.addition.removeAll(where: { $0 == .nine || $0 == .eleven || $0 == .thirteen})
-                // 情况2, 含有一个大9度/纯11度的音程，简写
-                } else if result.addition.contains(.nine) && result.addition.contains(.eleven) {
-                    result.main?.numberWithAccidental = .eleven
-                    result.addition.removeAll(where: { $0 == .nine || $0 == .eleven})
-                
-                // 情况3, 含有一个 大9度的音程，简写过来
-                } else if result.addition.contains(.nine) {
-                    result.main?.numberWithAccidental = .nine
-                    result.addition.removeAll(where: { $0 == .nine})
-                }
-                
-            }
-            
-            if result.isSixNineChord && result.addition.contains(.nine) {
-                result.main = ChordSymbolElementlBasicType.sixNine.chordSymbolElementlBasic
-                
-                result.addition.removeAll(where: { $0 == .nine})
-                
-            }
-            
-            
-            resultChordSymbols.append(result)
+    public var symbols: [ChordSymbol]? {
+        guard let symbolGroups = self.symbolGroups else { return nil }
+         
+        var result: [ChordSymbol] = []
+        for symbolGroup in symbolGroups {
+            result.append(symbolGroup.main)
+            result.append(contentsOf: symbolGroup.rephase)
         }
-        
-        return resultChordSymbols
+        return result
     }
-    
-    
     
 }

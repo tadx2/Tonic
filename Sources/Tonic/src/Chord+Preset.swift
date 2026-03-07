@@ -76,6 +76,5 @@ extension Chord {
     // C Sus4
     public static let CSus4_P11: Chord = Chord(root: .C4, intervals: .xSus4_P11)
     
-    
     public static let F4X7: Chord = Chord(root: .F4, intervals: .x7)
 }

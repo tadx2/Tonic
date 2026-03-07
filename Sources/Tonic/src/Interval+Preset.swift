@@ -122,7 +122,7 @@ extension Set<Interval> {
     public static let x7_M9_M13: Set<Interval> = [.P1, .M3, .P5, .m7, .M9, .M13]
     public static let x7_M9_P11_M13: Set<Interval> = [.P1, .M3, .P5, .m7, .M9, .P11, .M13]
     
-    public static let xdim7: Set<Interval> = [.P1, .m3, .d5, .m7]
+    public static let xdim7: Set<Interval> = [.P1, .m3, .d5, .d7]
     
     // Sus2
     public static let xSus2: Set<Interval> = [.P1, .M2, .P5]
