@@ -282,7 +282,7 @@ extension Chord {
 // For Chord Symbol
 extension Chord {
 
-    public var symbolBaseCase: ChordSymbolBaseCase? {
+    public var symbolBaseCase: ChordSymbolCase? {
 
         let intervalsWithoutTensionWithoutRootInterval: Set<Interval> =
             self.intervalsRaw
@@ -290,14 +290,12 @@ extension Chord {
             .subtracting([.P1])
 
         // 从 ChordSymbolBaseCase（预设中）获取到音程对应的唯一case
-        let baseCase = ChordSymbolBaseCase.allCases.first(where: {
+        let baseCase = ChordSymbolCase.allCases.first(where: {
             $0.intervals == intervalsWithoutTensionWithoutRootInterval
         })
 
         guard let baseCase else { return nil }
-
         return baseCase
-
     }
     
     
@@ -307,24 +305,23 @@ extension Chord {
     
     public var symbolGroups: [SymbolGroup]? {
 
-        guard let chordSymbolType = self.symbolBaseCase,
-              let pureSymbols: [ChordSymbol]  = chordSymbolType.chordSymbols
-        else { return nil }
+        guard let chordSymbolCase = self.symbolBaseCase else { return nil }
+        let pureSymbols: [ChordSymbol]  = chordSymbolCase.chordSymbols
 
         // 获取到Tension intervals
-        let intervalsTension = intervalsRaw.filter { $0.degreeInt > 7 }
+        let intervalsTension = intervalsRaw.filter { $0.degreeInt > 7 }.sorted()
 
         // Tension intervals 转化为 Symbol 组合
         // 只识别 特定的几个音程
-        let intervalSymbols: [ChordSymbolNumberWithAcc] = intervalsTension.compactMap { interval in
-            if interval == .m9 { return .nineFlat }
-            if interval == .M9 { return .nine }
-            if interval == .A9 { return .nineSharp }
-            if interval == .P11 { return .eleven }
-            if interval == .A11 { return .elevenSharp }
-            if interval == .m13 { return .thirteenFlat }
-            if interval == .M13 { return .thirteen }
-            if interval == .A13 { return .thirteenSharp }
+        let intervalSymbols: [ChordSymbolElements] = intervalsTension.compactMap { interval in
+            if interval == .m9 { return [.acc(.flat), .number(.nine)] }
+            if interval == .M9 { return [.number(.nine)] }
+            if interval == .A9 { return [.acc(.sharp), .number(.nine)] }
+            if interval == .P11 { return [.number(.eleven)] }
+            if interval == .A11 { return [.acc(.sharp), .number(.eleven)] }
+            if interval == .m13 { return [.acc(.flat), .number(.thirteen)] }
+            if interval == .M13 { return [.number(.thirteen)] }
+            if interval == .A13 { return [.acc(.sharp), .number(.thirteen)] }
             return nil
         }
 
@@ -333,28 +330,30 @@ extension Chord {
         for var pureSymbol in pureSymbols {
             
             // pure 添加上 tension
-            pureSymbol.addition.append(contentsOf: intervalSymbols)
+            pureSymbol.additions.append(contentsOf: intervalSymbols)
             let symbolTensioned = pureSymbol
             
             var symbolGroup: SymbolGroup
             symbolGroup.main = symbolTensioned // 初次添加 addition 后的 symbol
-            symbolGroup.rephase = symbolTensioned.rephraseSymbols // symbolTensioned 可以有其他rephase
+            
+            // 添加 rephase
+            symbolGroup.rephase = symbolTensioned.rephraseSymbols
             
             result.append(symbolGroup)
         }
 
         return result
     }
-    
-    public var symbols: [ChordSymbol]? {
-        guard let symbolGroups = self.symbolGroups else { return nil }
-         
-        var result: [ChordSymbol] = []
-        for symbolGroup in symbolGroups {
-            result.append(symbolGroup.main)
-            result.append(contentsOf: symbolGroup.rephase)
-        }
-        return result
-    }
+//    
+//    public var symbols: [ChordSymbol]? {
+//        guard let symbolGroups = self.symbolGroups else { return nil }
+//         
+//        var result: [ChordSymbol] = []
+//        for symbolGroup in symbolGroups {
+//            result.append(symbolGroup.main)
+//            result.append(contentsOf: symbolGroup.rephase)
+//        }
+//        return result
+//    }
     
 }
