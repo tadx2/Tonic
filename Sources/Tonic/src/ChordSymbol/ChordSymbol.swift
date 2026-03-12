@@ -225,40 +225,26 @@ extension ChordSymbol {
     /// 写法： **WrongTension**
     /// 考虑到有的人会用 2来替代9， 4来替代11
 
+    /// 如果后续要新增映射（比如 flat11 → flat4），只需在字典里加一行，无需改动 canRephraseWrongTension 和 rephraseWrongTension 的逻辑。
+    private static let wrongTensionMap: [ChordSymbolElement: ChordSymbolElement] = [
+        .nine: .two,
+        .flat9: .flat2,
+        .sharp9: .sharp2,
+        .eleven: .four,
+        .sharp11: .sharp4,
+    ]
+
     var canRephraseWrongTension: Bool {
-        // 只针对 仅为 一个tension 的时候有效
-        (additions == [.nine]) || (additions == [.flat9]) || (additions == [.sharp9])
-            || (additions == [.eleven]) || (additions == [.sharp11])
+        additions.count == 1 && Self.wrongTensionMap.keys.contains(additions[0])
     }
 
     var rephraseWrongTension: ChordSymbol? {
-
-        guard canRephraseWrongTension else { return nil }
+        guard canRephraseWrongTension,
+            let replacement = Self.wrongTensionMap[additions[0]]
+        else { return nil }
 
         var result = self
-
-        var addition = result.additions
-
-        if addition == [.nine] {
-            result.additions = [.two]
-        }
-
-        if addition == [.flat9] {
-            result.additions = [.flat2]
-        }
-
-        if addition == [.sharp9] {
-            result.additions = [.sharp2]
-        }
-
-        if addition == [.eleven] {
-            result.additions = [.four]
-        }
-
-        if addition == [.sharp11] {
-            result.additions = [.sharp4]
-        }
-
+        result.additions = [replacement]
         return result
     }
 

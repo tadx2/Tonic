@@ -260,63 +260,31 @@ public enum ChordSymbolElement: Hashable, Sendable, CaseIterable, RendableChordS
     }
 
     public func displayString(mode: DisplayModeMainSus = .standard) -> String {
-        return switch self {
-        case .majorFlatFlat7:
-            switch mode {
-            case .standard:
-                "M𝄫7"
-            case .min_maj:
-                "maj7"
-            case .MIN_MAJ:
-                "MAJ𝄫7"
-            case .graph:
-                "△𝄫7"
-            }
-        case .flatFlat7:
-            "𝄫7"
-        case .minorMajor:
-            switch mode {
-            case .standard:
-                "mM"
-            case .min_maj:
-                "min maj"
-            case .MIN_MAJ:
-                "MIN MAJ"
-            case .graph:
-                "-△"
-            }
-        case .minorMajor13:
-            switch mode {
-            case .standard:
-                "mM13"
-            case .min_maj:
-                "minMaj13"
-            case .MIN_MAJ:
-                "MINMAJ13"
-            case .graph:
-                "-△13"
-            }
-        default:
-            self.inputElements.map {
-                $0.displayString(mode: mode)
-            }.joined()
-        }
+        var original = self.inputElements.map {
+            $0.displayString(mode: mode)
+        }.joined()
 
+        var result = original
+        result = result.replacingOccurrences(of: "♭♭", with: "𝄫")  // 当有连续两个 bb 要压缩成一个bb
+        result = result.replacingOccurrences(of: "minmaj", with: "min maj")  // 避免链接
+        result = result.replacingOccurrences(of: "maug", with: "mAug")
+        result = result.replacingOccurrences(of: "minaug", with: "minAug")
+        return result
     }
 
 }
 
 public enum DisplayModeMainSus: CaseIterable, CustomStringConvertible {
-    case standard, min_maj, MIN_MAJ, graph
+    case standard, maj_min, Maj_Min, graph
 
     public var description: String {
         switch self {
         case .standard:
             "M/m"
-        case .min_maj:
-            "min/maj"
-        case .MIN_MAJ:
-            "MIN/MAJ"
+        case .maj_min:
+            "maj/min"
+        case .Maj_Min:
+            "Maj/Min"
         case .graph:
             "△/-"
         }
@@ -358,10 +326,10 @@ public enum ChordSymbolElementInput: CaseIterable, Sendable, RendableChordSymbol
             switch mode {
             case .standard:
                 "M"
-            case .min_maj:
+            case .maj_min:
                 "maj"
-            case .MIN_MAJ:
-                "MAJ"
+            case .Maj_Min:
+                "Maj"
             case .graph:
                 "△"
             }
@@ -369,10 +337,10 @@ public enum ChordSymbolElementInput: CaseIterable, Sendable, RendableChordSymbol
             switch mode {
             case .standard:
                 "m"
-            case .min_maj:
+            case .maj_min:
                 "min"
-            case .MIN_MAJ:
-                "MIN"
+            case .Maj_Min:
+                "Min"
             case .graph:
                 "-"
             }
@@ -380,9 +348,9 @@ public enum ChordSymbolElementInput: CaseIterable, Sendable, RendableChordSymbol
             switch mode {
             case .standard:
                 "aug"
-            case .min_maj:
+            case .maj_min:
                 "aug"
-            case .MIN_MAJ:
+            case .Maj_Min:
                 "Aug"
             case .graph:
                 "+"
@@ -391,9 +359,9 @@ public enum ChordSymbolElementInput: CaseIterable, Sendable, RendableChordSymbol
             switch mode {
             case .standard:
                 "dim"
-            case .min_maj:
+            case .maj_min:
                 "dim"
-            case .MIN_MAJ:
+            case .Maj_Min:
                 "Dim"
             case .graph:
                 "o"
@@ -402,14 +370,18 @@ public enum ChordSymbolElementInput: CaseIterable, Sendable, RendableChordSymbol
             switch mode {
             case .standard:
                 "m7♭5"
-            case .min_maj:
+            case .maj_min:
                 "min7♭5"
-            case .MIN_MAJ:
-                "MIN7♭5"
+            case .Maj_Min:
+                "Min7♭5"
             case .graph:
                 "ø"
             }
-        case .sus: "sus"
+        case .sus:
+            switch mode {
+            case .Maj_Min: "Sus"
+            default: "sus"
+            }
         case .two: "2"
         case .four: "4"
         case .five: "5"
