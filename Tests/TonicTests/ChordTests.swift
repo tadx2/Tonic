@@ -72,4 +72,5 @@ struct ChordTests {
         let result4 = chord.getNoteToIntervalRaw(by: 60)
         #expect(result4.values.contains(Interval.P1))
     }
+
 }

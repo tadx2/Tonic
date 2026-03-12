@@ -36,9 +36,9 @@ public struct Chord: Sendable, Equatable, Hashable {
         let degreeInts = Set(intervals.map { $0.degreeInt })
 
         // 条件1. 2音/3音/4音 必须至少包含1个
-        if !(degreeInts.contains(2) || degreeInts.contains(3) || degreeInts.contains(4)) {
-            validatedIntervals = []
-        }
+//        if !(degreeInts.contains(2) || degreeInts.contains(3) || degreeInts.contains(4)) {
+//            validatedIntervals = []
+//        }
 
         // 条件2. 6音与7音不能同时存在
         if degreeInts.contains(6) && degreeInts.contains(7) {
@@ -282,6 +282,7 @@ extension Chord {
 // For Chord Symbol
 extension Chord {
 
+    
     public var symbolBaseCase: ChordSymbolCase? {
 
         let intervalsWithoutTensionWithoutRootInterval: Set<Interval> =
@@ -296,6 +297,7 @@ extension Chord {
 
         guard let baseCase else { return nil }
         return baseCase
+        
     }
     
     
@@ -306,6 +308,8 @@ extension Chord {
     public var symbolGroups: [SymbolGroup]? {
 
         guard let chordSymbolCase = self.symbolBaseCase else { return nil }
+        
+        // 获取到和弦符号的基底
         let pureSymbols: [ChordSymbol]  = chordSymbolCase.chordSymbols
 
         // 获取到Tension intervals
@@ -313,15 +317,15 @@ extension Chord {
 
         // Tension intervals 转化为 Symbol 组合
         // 只识别 特定的几个音程
-        let intervalSymbols: [ChordSymbolElements] = intervalsTension.compactMap { interval in
-            if interval == .m9 { return [.acc(.flat), .number(.nine)] }
-            if interval == .M9 { return [.number(.nine)] }
-            if interval == .A9 { return [.acc(.sharp), .number(.nine)] }
-            if interval == .P11 { return [.number(.eleven)] }
-            if interval == .A11 { return [.acc(.sharp), .number(.eleven)] }
-            if interval == .m13 { return [.acc(.flat), .number(.thirteen)] }
-            if interval == .M13 { return [.number(.thirteen)] }
-            if interval == .A13 { return [.acc(.sharp), .number(.thirteen)] }
+        let intervalSymbols: [ChordSymbolElement] = intervalsTension.compactMap { interval in
+            if interval == .m9 { return .flat9 }
+            if interval == .M9 { return .nine }
+            if interval == .A9 { return .sharp9 }
+            if interval == .P11 { return .eleven }
+            if interval == .A11 { return .sharp11 }
+            if interval == .m13 { return .flat13 }
+            if interval == .M13 { return .thirteen }
+            if interval == .A13 { return .sharp13 }
             return nil
         }
 
@@ -344,16 +348,18 @@ extension Chord {
 
         return result
     }
-//    
-//    public var symbols: [ChordSymbol]? {
-//        guard let symbolGroups = self.symbolGroups else { return nil }
-//         
-//        var result: [ChordSymbol] = []
-//        for symbolGroup in symbolGroups {
-//            result.append(symbolGroup.main)
-//            result.append(contentsOf: symbolGroup.rephase)
-//        }
-//        return result
-//    }
+    
+    public var symbols: [ChordSymbol]? {
+        guard let symbolGroups = self.symbolGroups else { return nil }
+    
+        var result: [ChordSymbol] = []
+        for symbolGroup in symbolGroups {
+            result.append(symbolGroup.main)
+            result.append(contentsOf: symbolGroup.rephase)
+        }
+        return result
+    }
     
 }
+
+
