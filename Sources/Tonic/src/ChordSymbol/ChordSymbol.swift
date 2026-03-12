@@ -34,7 +34,7 @@ extension ChordSymbol {
     // 一个symbol对应N个Chord， 例如 M13 这两个和弦记号，指向的和弦包括 含有 9音 或者 11音，或者同时9音和11音， 或者压根就没有9音或者11音 的和弦
     public static let ChordSymbolSearchChordsDictionary: [ChordSymbol: [Chord]] = {
 
-        let allChord = IntervalPreset().intervals.map {
+        let allChord = IntervalPreset(type: .all, sus: .all, isWithTension: true).intervals.map {
             Chord(root: .C3, intervals: $0)
         }
 
@@ -72,7 +72,7 @@ extension ChordSymbol {
     /// 和弦名的书写方式，在没有考虑到tension的时候，已经由 ChordSymbolBaseCase 指定好了 多个表达方式
     /// 但是，考虑到Tension的时候，又可以采取以下写法:
     internal var rephraseSymbols: [ChordSymbol] {
-        var result = [rephraseSeventh, rephraseSixNine].compactMap { $0 }
+        var result = [rephraseSeventh, rephraseSixNine, rephraseWrongTension].compactMap { $0 }
         if let altSymbols = rephraseAlt {
             result.append(contentsOf: altSymbols)
         }
@@ -188,16 +188,18 @@ extension ChordSymbol {
     /// Alt和弦（Altered Chord，变化和弦）是爵士乐中一类重要的属七和弦变体，其核心特征是通过降五音（♭5）和降九音（♭9）等变化音，制造出强烈的紧张感和解决倾向
     /// 在addition中包含任意 变化音 5/9/11/13，都认定为是一个Alt
     ///
-    private static let AlteredAdditionsContain: [ChordSymbolElement] = [ .flat5, .sharp5, .flat9, .sharp9, .sharp11, .flat13, .sharp13]
-    
+    private static let AlteredAdditionsContain: [ChordSymbolElement] = [
+        .flat5, .sharp5, .flat9, .sharp9, .sharp11, .flat13, .sharp13,
+    ]
+
     var canRephraseAlt: Bool {
-        (self.main == .seven) && ( additions.contains { Self.AlteredAdditionsContain.contains($0) } )
+        (self.main == .seven) && (additions.contains { Self.AlteredAdditionsContain.contains($0) })
     }
-   
+
     var rephraseAlt: [ChordSymbol]? {
-        
+
         guard canRephraseAlt else { return nil }
-        
+
         var sevenAlt = self
 
         // 把main替换为 7Alt
@@ -206,47 +208,59 @@ extension ChordSymbol {
         sevenAlt.additions.removeAll { addition in
             Self.AlteredAdditionsContain.contains(addition)
         }
-        
+
         var onlyAlt = self
-        
+
         // 把main替换为 7Alt
         onlyAlt.main = .alt
 
         onlyAlt.additions.removeAll { addition in
             Self.AlteredAdditionsContain.contains(addition)
         }
-        
+
         return [sevenAlt, onlyAlt]
-        
+
     }
-    //
-    //    /// 写法： **WrongTension**
-    //    /// 考虑到有的人会用 2来替代9， 4来替代11
-    //    var canRephraseWrongTension: Bool {
-    //        additions.contains { addition in
-    //            addition.contains(.number(.nine)) || addition.contains(.number(.eleven))
-    //        }
-    //    }
-    //
-    //    var rephraseWrongTension: ChordSymbol? {
-    //        guard canRephraseWrongTension else { return nil }
-    //        var result = self
-    //
-    //        result.additions = result.additions.map { addition in
-    //            addition.map { element in
-    //                switch element {
-    //                case .number(.nine):
-    //                    return .number(.two)
-    //                case .number(.eleven):
-    //                    return .number(.four)
-    //                default:
-    //                    return element
-    //                }
-    //            }
-    //        }
-    //
-    //        return result
-    //    }
+
+    /// 写法： **WrongTension**
+    /// 考虑到有的人会用 2来替代9， 4来替代11
+
+    var canRephraseWrongTension: Bool {
+        // 只针对 仅为 一个tension 的时候有效
+        (additions == [.nine]) || (additions == [.flat9]) || (additions == [.sharp9])
+            || (additions == [.eleven]) || (additions == [.sharp11])
+    }
+
+    var rephraseWrongTension: ChordSymbol? {
+
+        guard canRephraseWrongTension else { return nil }
+
+        var result = self
+
+        var addition = result.additions
+
+        if addition == [.nine] {
+            result.additions = [.two]
+        }
+
+        if addition == [.flat9] {
+            result.additions = [.flat2]
+        }
+
+        if addition == [.sharp9] {
+            result.additions = [.sharp2]
+        }
+
+        if addition == [.eleven] {
+            result.additions = [.four]
+        }
+
+        if addition == [.sharp11] {
+            result.additions = [.sharp4]
+        }
+
+        return result
+    }
 
 }
 

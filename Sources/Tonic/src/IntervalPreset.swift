@@ -141,7 +141,7 @@ public struct IntervalPreset {
 
     public let intervals: [Set<Interval>]
 
-    public init(type: BasicChordType = .all, sus: SusType? = .all, isWithTension: Bool = true) {
+    public init(type: BasicChordType, sus: SusType?, isWithTension: Bool) {
         let basicIntervals: [Set<Interval>] = IntervalPreset.intervalsFor(type: type, sus: sus)
         if isWithTension {
             var result: [Set<Interval>] = []

@@ -41,6 +41,9 @@ public enum ChordSymbolElement: Hashable, Sendable, CaseIterable, RendableChordS
         minorMajor13
     case alt
 
+    // Only For Wrong Tension
+    case two, flat2, sharp2, four, flat4, sharp4
+
     // 有这个符号的和弦可以写 69模式
     var canChangeToSixNineSymbol: Bool {
         [ChordSymbolElement.six, .major6, .minor6, .diminished6, .augmented6].contains(self)
@@ -239,6 +242,20 @@ public enum ChordSymbolElement: Hashable, Sendable, CaseIterable, RendableChordS
             [.minor, .major, .thirteen]
         case .alt:
             [.alt]
+
+        // Only For Wrong tension
+        case .two:
+            [.two]
+        case .flat2:
+            [.flat, .two]
+        case .sharp2:
+            [.sharp, .two]
+        case .four:
+            [.four]
+        case .flat4:
+            [.flat, .four]
+        case .sharp4:
+            [.sharp, .four]
         }
     }
 
@@ -295,13 +312,13 @@ public enum DisplayModeMainSus: CaseIterable, CustomStringConvertible {
     public var description: String {
         switch self {
         case .standard:
-            "Standard"
+            "M/m"
         case .min_maj:
-            "min&maj"
+            "min/maj"
         case .MIN_MAJ:
-            "MIN&MAJ"
+            "MIN/MAJ"
         case .graph:
-            "Graph"
+            "△/-"
         }
     }
 }
@@ -312,9 +329,9 @@ public enum DisplayModeAddition: CaseIterable, CustomStringConvertible {
     public var description: String {
         switch self {
         case .parentheses:
-            "Parentheses"
+            "()"
         case .add:
-            "Add"
+            "add"
         }
     }
 }
@@ -366,7 +383,7 @@ public enum ChordSymbolElementInput: CaseIterable, Sendable, RendableChordSymbol
             case .min_maj:
                 "aug"
             case .MIN_MAJ:
-                "aug"
+                "Aug"
             case .graph:
                 "+"
             }
@@ -377,9 +394,9 @@ public enum ChordSymbolElementInput: CaseIterable, Sendable, RendableChordSymbol
             case .min_maj:
                 "dim"
             case .MIN_MAJ:
-                "dim"
+                "Dim"
             case .graph:
-                "°"
+                "o"
             }
         case .halfDiminished:
             switch mode {
@@ -456,7 +473,8 @@ public struct ChordSymbolElementInputGroup: Sendable {
     // 最合适 chordSymbol  [ChordSymbolElement] 转化为 set 再 寻找最合适的匹配 ChordSymbol
     public var matchedChordSymbol: [ChordSymbol] {
         let matches =
-            ChordSymbol.ChordSymbolInputElementSetSearchChordSymbolDictionary[Set(self.validUserInput)]
+            ChordSymbol.ChordSymbolInputElementSetSearchChordSymbolDictionary[
+                Set(self.validUserInput)]
             ?? []
         guard let root = parsedRoot?.note else { return matches }
         return matches.map { symbol in
@@ -480,22 +498,51 @@ extension ChordSymbolElementInputGroup {
         guard !elements.isEmpty else { return [] }
 
         var result: [RendableChordSymbolElement] = []
-        let (root, remainingInput) = extractRootAndRemainingInput()
-        if let root {
-            result.append(root)
-        }
+        var index = 0
+        var hasParsedRoot = false
 
-        // 先按 separator 将输入切分成多个子组，对每个子组独立做贪心最长匹配
-        // separator 保留在结果中，以便 View 层渲染
-        let groups = remainingInput.split(separator: .separator, omittingEmptySubsequences: false)
+        while index < elements.count {
+            let current = elements[index]
 
-        for (index, group) in groups.enumerated() {
-            let groupElements = Array(group)
-            result.append(contentsOf: greedyMatch(groupElements))
+            if !hasParsedRoot, let letter = current.rootLetter {
+                var accidental: Accidental = 0
+                var cursor = index + 1
+                var accidentalCount = 0
 
-            // 在组之间插入 separator（最后一组之后不插入）
-            if index < groups.count - 1 {
-                result.append(ChordSymbolElementInput.separator)
+                while cursor < elements.count, accidentalCount < 2, elements[cursor].isAccidental {
+                    accidental += elements[cursor].accidentalValue
+                    accidentalCount += 1
+                    cursor += 1
+                }
+
+                result.append(ChordSymbolRoot(note: Note(letter: letter, accidental: accidental)))
+                hasParsedRoot = true
+                index = cursor
+                continue
+            }
+
+            // 从当前位置做贪心最长匹配（保持输入顺序）
+            var bestMatch: ChordSymbolElement? = nil
+            var bestMatchLength = 0
+
+            for candidate in ChordSymbolElement.allCases {
+                let candidateInputs = candidate.inputElements
+                let length = candidateInputs.count
+                guard length > bestMatchLength, index + length <= elements.count else { continue }
+
+                let slice = Array(elements[index..<(index + length)])
+                if slice == candidateInputs {
+                    bestMatch = candidate
+                    bestMatchLength = length
+                }
+            }
+
+            if let matched = bestMatch {
+                result.append(matched)
+                index += bestMatchLength
+            } else {
+                result.append(current)
+                index += 1
             }
         }
 
@@ -504,7 +551,7 @@ extension ChordSymbolElementInputGroup {
 
     /// 从整体输入中抽取根音：
     /// - 根音模式：一个字母 + 最多两个 accidental（# / b）
-    /// - 根音可以出现在输入序列任意位置，抽取后会在渲染时前置
+    /// - 根音可以出现在输入序列任意位置
     private func extractRootAndRemainingInput() -> (
         root: ChordSymbolRoot?, remaining: [ChordSymbolElementInput]
     ) {
@@ -530,42 +577,4 @@ extension ChordSymbolElementInputGroup {
         return (root, remaining)
     }
 
-    /// 对一组 ChordSymbolElementInput 做贪心最长匹配
-    private func greedyMatch(_ elements: [ChordSymbolElementInput]) -> [RendableChordSymbolElement]
-    {
-        guard !elements.isEmpty else { return [] }
-
-        var result: [RendableChordSymbolElement] = []
-        var i = 0
-
-        while i < elements.count {
-            // 尝试从当前位置找到最长匹配的 ChordSymbolElement
-            var bestMatch: ChordSymbolElement? = nil
-            var bestMatchLength = 0
-
-            for candidate in ChordSymbolElement.allCases {
-                let candidateInputs = candidate.inputElements
-                let length = candidateInputs.count
-
-                // 检查从位置 i 开始的子序列是否匹配
-                guard length > bestMatchLength, i + length <= elements.count else { continue }
-
-                let slice = Array(elements[i..<(i + length)])
-                if slice == candidateInputs {
-                    bestMatch = candidate
-                    bestMatchLength = length
-                }
-            }
-
-            if let matched = bestMatch {
-                result.append(matched)
-                i += bestMatchLength
-            } else {
-                // 没有匹配，保留原始的 ChordSymbolElementInput
-                result.append(elements[i])
-                i += 1
-            }
-        }
-        return result
-    }
 }

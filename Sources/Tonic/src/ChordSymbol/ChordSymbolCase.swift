@@ -63,7 +63,6 @@ public enum ChordSymbolCase: String, CaseIterable {
     case seventhDominantSusSharp5
     case seventhDoubleFlatSusSharp5
     
-    
     // 七和弦挂留 Sus2
     case seventhSus2Major
     case seventhDominantSus2
