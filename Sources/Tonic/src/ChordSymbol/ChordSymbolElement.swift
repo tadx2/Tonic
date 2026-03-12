@@ -9,6 +9,18 @@ public protocol RendableChordSymbolElement {
     func displayString(mode: DisplayModeMainSus) -> String
 }
 
+public struct ChordSymbolRoot: Hashable, Sendable, RendableChordSymbolElement {
+    public let note: Note
+
+    public init(note: Note) {
+        self.note = note
+    }
+
+    public func displayString(mode: DisplayModeMainSus = .standard) -> String {
+        note.description
+    }
+}
+
 public enum ChordSymbolElement: Hashable, Sendable, CaseIterable, RendableChordSymbolElement {
 
     case major, majorFlat5, majorSharp5, major6, major7, majorFlatFlat7, major9, major11, major13,
@@ -309,6 +321,7 @@ public enum DisplayModeAddition: CaseIterable, CustomStringConvertible {
 
 public enum ChordSymbolElementInput: CaseIterable, Sendable, RendableChordSymbolElement {
 
+    case C, D, E, F, G, A, B
     case major, minor, augmented, diminished, sus, halfDiminished
     case two, four, five, six, seven, nine, eleven, thirteen
     case flat, sharp
@@ -317,6 +330,13 @@ public enum ChordSymbolElementInput: CaseIterable, Sendable, RendableChordSymbol
 
     public func displayString(mode: DisplayModeMainSus = .standard) -> String {
         return switch self {
+        case .C: "C"
+        case .D: "D"
+        case .E: "E"
+        case .F: "F"
+        case .G: "G"
+        case .A: "A"
+        case .B: "B"
         case .major:
             switch mode {
             case .standard:
@@ -390,6 +410,36 @@ public enum ChordSymbolElementInput: CaseIterable, Sendable, RendableChordSymbol
 
 }
 
+extension ChordSymbolElementInput {
+    var rootLetter: Letter? {
+        switch self {
+        case .C: .C
+        case .D: .D
+        case .E: .E
+        case .F: .F
+        case .G: .G
+        case .A: .A
+        case .B: .B
+        default: nil
+        }
+    }
+
+    var isAccidental: Bool {
+        self == .flat || self == .sharp
+    }
+
+    var accidentalValue: Accidental {
+        switch self {
+        case .flat:
+            -1
+        case .sharp:
+            1
+        default:
+            0
+        }
+    }
+}
+
 public struct ChordSymbolElementInputGroup: Sendable {
 
     public let elements: [ChordSymbolElementInput]
@@ -405,8 +455,15 @@ public struct ChordSymbolElementInputGroup: Sendable {
 
     // 最合适 chordSymbol  [ChordSymbolElement] 转化为 set 再 寻找最合适的匹配 ChordSymbol
     public var matchedChordSymbol: [ChordSymbol] {
-        ChordSymbol.ChordSymbolInputElementSetSearchChordSymbolDictionary[Set(self.validUserInput)]
+        let matches =
+            ChordSymbol.ChordSymbolInputElementSetSearchChordSymbolDictionary[Set(self.validUserInput)]
             ?? []
+        guard let root = parsedRoot?.note else { return matches }
+        return matches.map { symbol in
+            var result = symbol
+            result.root = root
+            return result
+        }
     }
 
 }
@@ -414,17 +471,23 @@ public struct ChordSymbolElementInputGroup: Sendable {
 // 可渲染元素
 extension ChordSymbolElementInputGroup {
 
+    public var parsedRoot: ChordSymbolRoot? {
+        extractRootAndRemainingInput().root
+    }
+
     // 根据用户的 ChordSymbolElementInput 输入转化为 可渲染元素
     public var convertToRendableChordSymbolElement: [RendableChordSymbolElement] {
-        // 先按 separator 将输入切分成多个子组，对每个子组独立做贪心最长匹配
-        // separator 保留在结果中，以便 View 层渲染
-
         guard !elements.isEmpty else { return [] }
 
-        // 按 separator 切分成子组
-        let groups = elements.split(separator: .separator, omittingEmptySubsequences: false)
-
         var result: [RendableChordSymbolElement] = []
+        let (root, remainingInput) = extractRootAndRemainingInput()
+        if let root {
+            result.append(root)
+        }
+
+        // 先按 separator 将输入切分成多个子组，对每个子组独立做贪心最长匹配
+        // separator 保留在结果中，以便 View 层渲染
+        let groups = remainingInput.split(separator: .separator, omittingEmptySubsequences: false)
 
         for (index, group) in groups.enumerated() {
             let groupElements = Array(group)
@@ -437,6 +500,34 @@ extension ChordSymbolElementInputGroup {
         }
 
         return result
+    }
+
+    /// 从整体输入中抽取根音：
+    /// - 根音模式：一个字母 + 最多两个 accidental（# / b）
+    /// - 根音可以出现在输入序列任意位置，抽取后会在渲染时前置
+    private func extractRootAndRemainingInput() -> (
+        root: ChordSymbolRoot?, remaining: [ChordSymbolElementInput]
+    ) {
+        guard let rootLetterIndex = elements.firstIndex(where: { $0.rootLetter != nil }),
+            let letter = elements[rootLetterIndex].rootLetter
+        else {
+            return (nil, elements)
+        }
+
+        var accidental: Accidental = 0
+        var consumedAccidentalCount = 0
+        var cursor = rootLetterIndex + 1
+
+        while cursor < elements.count, consumedAccidentalCount < 2, elements[cursor].isAccidental {
+            accidental += elements[cursor].accidentalValue
+            consumedAccidentalCount += 1
+            cursor += 1
+        }
+
+        let root = ChordSymbolRoot(note: Note(letter: letter, accidental: accidental))
+        var remaining = elements
+        remaining.removeSubrange(rootLetterIndex..<cursor)
+        return (root, remaining)
     }
 
     /// 对一组 ChordSymbolElementInput 做贪心最长匹配

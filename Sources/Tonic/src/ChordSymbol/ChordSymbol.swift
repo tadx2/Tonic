@@ -9,6 +9,7 @@ import Foundation
 
 public struct ChordSymbol: Hashable, Sendable {
 
+    public var root: Note?
     public var main: ChordSymbolElement?
     public var sus: ChordSymbolElement?
     public var additions: [ChordSymbolElement]
@@ -16,8 +17,10 @@ public struct ChordSymbol: Hashable, Sendable {
     public init(
         _ main: ChordSymbolElement? = nil,
         sus: ChordSymbolElement? = nil,
-        additions: [ChordSymbolElement] = []
+        additions: [ChordSymbolElement] = [],
+        root: Note? = nil
     ) {
+        self.root = root
         self.main = main
         self.sus = sus
         self.additions = additions
