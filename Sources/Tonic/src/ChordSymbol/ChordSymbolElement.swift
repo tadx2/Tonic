@@ -289,7 +289,7 @@ public enum DisplayModeAddition: String, CaseIterable, CustomStringConvertible {
     }
 }
 
-public enum ChordSymbolElementInput: CaseIterable, Sendable {
+public enum ChordSymbolElement: CaseIterable, Sendable {
 
     // Rn
     case C, D, E, F, G, A, B

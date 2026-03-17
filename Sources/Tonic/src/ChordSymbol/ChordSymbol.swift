@@ -9,21 +9,21 @@ import Foundation
 
 public struct ChordSymbol: Hashable, Sendable {
     
-    public let rootNoteLetter: ChordSymbolElementInput?
-    public let rootNoteAcc: ChordSymbolElementInputGroup
+    public let rootNoteLetter: ChordSymbolElement?
+    public let rootNoteAcc: ChordSymbolElementGroup
 
-    public var main: ChordSymbolElementInputGroup
+    public var main: ChordSymbolElementGroup
     
-    public var sus: ChordSymbolElementInputGroup
+    public var sus: ChordSymbolElementGroup
     
-    public var additions: [ChordSymbolElementInputGroup]
+    public var additions: [ChordSymbolElementGroup]
 
     public init(
-        _ main: ChordSymbolElementInputGroup = [],
-        sus: ChordSymbolElementInputGroup = [],
-        additions: [ChordSymbolElementInputGroup] = [],
-        rootNoteLetter: ChordSymbolElementInput? = nil,
-        rootNoteAcc: ChordSymbolElementInputGroup = []
+        _ main: ChordSymbolElementGroup = [],
+        sus: ChordSymbolElementGroup = [],
+        additions: [ChordSymbolElementGroup] = [],
+        rootNoteLetter: ChordSymbolElement? = nil,
+        rootNoteAcc: ChordSymbolElementGroup = []
     ) {
         self.main = main
         self.sus = sus
