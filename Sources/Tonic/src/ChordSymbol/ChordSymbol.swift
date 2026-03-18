@@ -12,20 +12,20 @@ public struct ChordSymbol: Hashable, Sendable {
     public let rootNoteLetter: ChordSymbolElement?
     public let rootNoteAcc: ChordSymbolElementGroup
 
-    public var main: ChordSymbolElementGroup
+    public var quality: ChordSymbolElementGroup
     
     public var sus: ChordSymbolElementGroup
     
     public var additions: [ChordSymbolElementGroup]
 
     public init(
-        _ main: ChordSymbolElementGroup = [],
+        rootNoteLetter: ChordSymbolElement? = nil,
+        rootNoteAcc: ChordSymbolElementGroup = [],
+        quality: ChordSymbolElementGroup = [],
         sus: ChordSymbolElementGroup = [],
         additions: [ChordSymbolElementGroup] = [],
-        rootNoteLetter: ChordSymbolElement? = nil,
-        rootNoteAcc: ChordSymbolElementGroup = []
     ) {
-        self.main = main
+        self.quality = quality
         self.sus = sus
         self.additions = additions
         self.rootNoteLetter = rootNoteLetter

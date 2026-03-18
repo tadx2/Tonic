@@ -259,36 +259,6 @@
 //
 //}
 
-public enum DisplayModeMainSus: String, CaseIterable, CustomStringConvertible {
-    case standard, maj_min, Maj_Min, graph
-
-    public var description: String {
-        switch self {
-        case .standard:
-            "M/m"
-        case .maj_min:
-            "maj/min"
-        case .Maj_Min:
-            "Maj/Min"
-        case .graph:
-            "△/-"
-        }
-    }
-}
-
-public enum DisplayModeAddition: String, CaseIterable, CustomStringConvertible {
-    case parentheses, add
-
-    public var description: String {
-        switch self {
-        case .parentheses:
-            "()"
-        case .add:
-            "add"
-        }
-    }
-}
-
 public enum ChordSymbolElement: CaseIterable, Sendable {
 
     // Rn
@@ -326,91 +296,6 @@ public enum ChordSymbolElement: CaseIterable, Sendable {
             return true
         default:
             return false
-        }
-    }
-
-    public func displayString(mode: DisplayModeMainSus = .standard) -> String {
-        return switch self {
-        case .C: "C"
-        case .D: "D"
-        case .E: "E"
-        case .F: "F"
-        case .G: "G"
-        case .A: "A"
-        case .B: "B"
-        case .major:
-            switch mode {
-            case .standard:
-                "M"
-            case .maj_min:
-                "maj"
-            case .Maj_Min:
-                "Maj"
-            case .graph:
-                "△"
-            }
-        case .minor:
-            switch mode {
-            case .standard:
-                "m"
-            case .maj_min:
-                "min"
-            case .Maj_Min:
-                "Min"
-            case .graph:
-                "-"
-            }
-        case .augmented:
-            switch mode {
-            case .standard:
-                "aug"
-            case .maj_min:
-                "aug"
-            case .Maj_Min:
-                "Aug"
-            case .graph:
-                "+"
-            }
-        case .diminished:
-            switch mode {
-            case .standard:
-                "dim"
-            case .maj_min:
-                "dim"
-            case .Maj_Min:
-                "Dim"
-            case .graph:
-                "o"
-            }
-        case .halfDiminished:
-            switch mode {
-            case .standard:
-                "m7♭5"
-            case .maj_min:
-                "min7♭5"
-            case .Maj_Min:
-                "Min7♭5"
-            case .graph:
-                "ø"
-            }
-        case .sus:
-            switch mode {
-            case .Maj_Min: "Sus"
-            default: "sus"
-            }
-        case .dominent: "7"
-        case .two: "2"
-        case .four: "4"
-        case .five: "5"
-        case .six: "6"
-        case .seven: "7"
-        case .nine: "9"
-        case .eleven: "11"
-        case .thirteen: "13"
-        case .flat: "♭"
-        case .sharp: "♯"
-        case .alt: "Alt"
-        case .separator: "'"
         }
     }
 
