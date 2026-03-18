@@ -1,5 +1,5 @@
 //
-//  ChordSymbolBaseCase.swift
+//  ChordSymbolCase.swift
 //  Tonic
 //
 //  Created by 小汤汤 on 3/6/26.
@@ -614,7 +614,6 @@ public enum ChordSymbolCase: String, CaseIterable {
         case .sixthMajorSus4: return [.P4, .P5, .M6]
         case .sixthMajorSus4Sharp5: return [.P4, .A5, .M6]
         case .sixthMajorSus4Flat5: return [.P4, .d5, .M6]
-
         }
     }
 

@@ -5,20 +5,11 @@
 //  Created by 小汤汤 on 3/16/26.
 //
 
-
 public typealias ChordSymbolElementGroup = [ChordSymbolElement]
 
-//extension ChordSymbolElementInputGroup {
-//    public func displayString(mode: DisplayModeMainSus = .standard) -> String {
-//        self.map { input in
-//            input.displayString(mode: mode)
-//        }.joined()
-//    }
-//}
-
-
-// MainPreset
+// Quality Preset
 extension ChordSymbolElementGroup {
+
     public static let major: [ChordSymbolElement] = [.major]
     public static let majorFlat5: [ChordSymbolElement] = [.major, .flat, .five]
     public static let majorSharp5: [ChordSymbolElement] = [.major, .sharp, .five]
@@ -79,36 +70,44 @@ extension ChordSymbolElementGroup {
     public static let minorMajor13: [ChordSymbolElement] = [.minor, .major, .thirteen]
 
     public static let alt: [ChordSymbolElement] = [.alt]
+
 }
 
-// SusPreset
+// Preset Sus
 extension ChordSymbolElementGroup {
+
     public static let sus: [ChordSymbolElement] = [.sus]
     public static let sus2: [ChordSymbolElement] = [.sus, .two]
     public static let sus4: [ChordSymbolElement] = [.sus, .four]
+
 }
 
-// TensionPreset
+// Preset Tension
 extension ChordSymbolElementGroup {
-    public static let nine: [ChordSymbolElement] = [.nine]
+
     public static let flat9: [ChordSymbolElement] = [.flat, .nine]
     public static let sharp9: [ChordSymbolElement] = [.sharp, .nine]
-    public static let eleven: [ChordSymbolElement] = [.eleven]
+    public static let nine: [ChordSymbolElement] = [.nine]
+
+    public static let flat11: [ChordSymbolElement] = [.flat, .eleven]
     public static let sharp11: [ChordSymbolElement] = [.sharp, .eleven]
-    public static let thirteen: [ChordSymbolElement] = [.thirteen]
+    public static let eleven: [ChordSymbolElement] = [.eleven]
+
     public static let flat13: [ChordSymbolElement] = [.flat, .thirteen]
     public static let sharp13: [ChordSymbolElement] = [.sharp, .thirteen]
+    public static let thirteen: [ChordSymbolElement] = [.thirteen]
+
 }
 
-
-// RootNotePreset
+// Preset Note
 extension ChordSymbolElementGroup {
+
     public static let C: [ChordSymbolElement] = [.C]
     public static let Cb: [ChordSymbolElement] = [.C, .flat]
     public static let Cbb: [ChordSymbolElement] = [.C, .flat, .flat]
     public static let Cs: [ChordSymbolElement] = [.C, .sharp]
     public static let Css: [ChordSymbolElement] = [.C, .sharp, .sharp]
-    
+
     public static let D: [ChordSymbolElement] = [.D]
     public static let Db: [ChordSymbolElement] = [.D, .flat]
     public static let Dbb: [ChordSymbolElement] = [.D, .flat, .flat]
@@ -144,4 +143,13 @@ extension ChordSymbolElementGroup {
     public static let Bbb: [ChordSymbolElement] = [.B, .flat, .flat]
     public static let Bs: [ChordSymbolElement] = [.B, .sharp]
     public static let Bss: [ChordSymbolElement] = [.B, .sharp, .sharp]
+
 }
+
+//extension ChordSymbolElementInputGroup {
+//    public func displayString(mode: DisplayModeMainSus = .standard) -> String {
+//        self.map { input in
+//            input.displayString(mode: mode)
+//        }.joined()
+//    }
+//}
