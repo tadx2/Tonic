@@ -9,16 +9,16 @@ extension ChordSymbol {
 
     /// Alt 和弦变化扩展音集合
     ///
-    /// 包含常见的导致强烈紧张感和解决倾向的变化音（♭5, ♯5, ♭9, ♯9, ♯11, ♭13, ♯13）。
+    /// 包含常见的导致强烈紧张感和解决倾向的**变化音（♭5, ♯5, ♭9, ♯9, ♭11, ♯11, ♭13, ♯13）**
     private static let alteredAdditionsList: Set<ChordSymbolElementGroup> = [
-        .flat5, .sharp5, .flat9, .sharp9, .sharp11, .flat13, .sharp13
+        .flat5, .sharp5, .flat9, .sharp9, .flat11, .sharp11, .flat13, .sharp13
     ]
 
     /// 判断当前和弦是否具备改写为 **Alt 简写**（例如 `C7(b9, #11)` -> `C7alt` 或 `Calt`）的前置条件。
     ///
     /// 判定规则（必须同时满足）：
     /// 1. `quality` 必须是原生的属七和弦（即 `.seven`）。
-    /// 2. `additions` 中至少包含任意一个变化音（如 ♭5, ♯5, ♭9, ♯9, ♯11, ♭13, ♯13）。
+    /// 2. `additions` 中至少包含任意一个变化音
     public var canRephraseAlt: Bool {
         (self.quality == ChordSymbolElementGroup.seven) && 
         additions.contains { group in Self.alteredAdditionsList.contains(group) }

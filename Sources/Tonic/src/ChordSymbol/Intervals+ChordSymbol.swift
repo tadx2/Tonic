@@ -40,7 +40,7 @@ extension Intervals {
     ///
     /// - Returns:包含张力音的和弦符号(未加入改写)序列（基底 symbolShells + 张力后缀），若基底无法识别则返回 `nil`。
 
-    private var symbolRawSequence: [ChordSymbol]? {
+    internal var symbolRawSequence: [ChordSymbol]? {
         
         // - 获取对应的基础和弦种类`BasicCase`（若当前组成音不存在定义的基础各类，则无法转换）
         guard let chordBasicCase = self.chordBasicCase else { return nil }
