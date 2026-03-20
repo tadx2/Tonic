@@ -146,25 +146,3 @@ extension Interval {
             direction: rhs.direction == .up ? .down : .up)
     }
 }
-
-extension Set<Interval> {
-
-    public mutating func deleteInterval(by degreeInt: ChordDegreeInt) {
-        self = self.filter { $0.degreeInt != degreeInt }
-    }
-
-    public func hasInterval(of degreeInt: ChordDegreeInt) -> Bool {
-        self.contains { $0.degreeInt == degreeInt }
-    }
-
-    public func getInterval(of degreeInt: ChordDegreeInt) -> [Interval] {
-        self.filter { $0.degreeInt == degreeInt }
-    }
-
-    public mutating func changeInterval(of interval: Interval) {
-        guard self.hasInterval(of: interval.degreeInt) else { return }
-        self.deleteInterval(by: interval.degreeInt)
-        self.insert(interval)
-    }
-
-}

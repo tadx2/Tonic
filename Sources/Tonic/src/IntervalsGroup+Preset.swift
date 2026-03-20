@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct IntervalPreset {
+public struct IntervalsGroup {
 
     public static let thirdPos: [Interval] = [.M3, .m3]
     public static let fifthPos: [Interval] = [.P5, .d5, .A5]
@@ -17,14 +17,14 @@ public struct IntervalPreset {
     public static let elevenPos: [Interval?] = [nil, .P11, .A11]
     public static let thirteenPos: [Interval?] = [nil, .M13, .m13, .A13]
 
-    private static func makeSusVariants(from withoutSus: [Set<Interval>]) -> (
-        withoutSus: [Set<Interval>],
-        sus: [Set<Interval>],
-        sus2: [Set<Interval>],
-        sus4: [Set<Interval>],
-        all: [Set<Interval>]
+    private static func makeSusVariants(from withoutSus: [Intervals]) -> (
+        withoutSus: [Intervals],
+        sus: [Intervals],
+        sus2: [Intervals],
+        sus4: [Intervals],
+        all: [Intervals]
     ) {
-        var seen = Set<Set<Interval>>()
+        var seen = Set<Intervals>()
         let rawSus = withoutSus.map { $0.subtracting([.M3, .m3]) }
         let sus = rawSus.filter { seen.insert($0).inserted }
 
@@ -44,8 +44,8 @@ public struct IntervalPreset {
 
     // MARK: - 3和弦 (Triad)
 
-    public static let traidIntervalsNoSus: [Set<Interval>] = {
-        var result: [Set<Interval>] = []
+    public static let traidIntervalsNoSus: [Intervals] = {
+        var result: [Intervals] = []
         for fifthPo in fifthPos {
             for thirdPo in thirdPos {
                 result.append([thirdPo, fifthPo])
@@ -56,15 +56,15 @@ public struct IntervalPreset {
 
     private static let traidVariants = makeSusVariants(from: traidIntervalsNoSus)
 
-    public static let traidIntervalsSus: [Set<Interval>] = traidVariants.sus
-    public static let traidIntervalsSus2: [Set<Interval>] = traidVariants.sus2
-    public static let traidIntervalsSus4: [Set<Interval>] = traidVariants.sus4
-    public static let traidIntervals: [Set<Interval>] = traidVariants.all
+    public static let traidIntervalsSus: [Intervals] = traidVariants.sus
+    public static let traidIntervalsSus2: [Intervals] = traidVariants.sus2
+    public static let traidIntervalsSus4: [Intervals] = traidVariants.sus4
+    public static let traidIntervals: [Intervals] = traidVariants.all
 
     // MARK: - 7和弦 (Seventh)
 
-    public static let seventhIntervalsNoSus: [Set<Interval>] = {
-        var result: [Set<Interval>] = []
+    public static let seventhIntervalsNoSus: [Intervals] = {
+        var result: [Intervals] = []
         for seventhPo in seventhPos {
             for triadInterval in traidIntervalsNoSus {
                 var intervals = triadInterval
@@ -77,15 +77,15 @@ public struct IntervalPreset {
 
     private static let seventhVariants = makeSusVariants(from: seventhIntervalsNoSus)
 
-    public static let seventhIntervalsSus: [Set<Interval>] = seventhVariants.sus
-    public static let seventhIntervalsSus2: [Set<Interval>] = seventhVariants.sus2
-    public static let seventhIntervalsSus4: [Set<Interval>] = seventhVariants.sus4
-    public static let seventhIntervals: [Set<Interval>] = seventhVariants.all
+    public static let seventhIntervalsSus: [Intervals] = seventhVariants.sus
+    public static let seventhIntervalsSus2: [Intervals] = seventhVariants.sus2
+    public static let seventhIntervalsSus4: [Intervals] = seventhVariants.sus4
+    public static let seventhIntervals: [Intervals] = seventhVariants.all
 
     // MARK: - 6和弦 (Sixth)
 
-    public static let sixthIntervalsNoSus: [Set<Interval>] = {
-        var result: [Set<Interval>] = []
+    public static let sixthIntervalsNoSus: [Intervals] = {
+        var result: [Intervals] = []
         for triadInterval in traidIntervalsNoSus {
             var intervals = triadInterval
             intervals.insert(.M6)
@@ -96,25 +96,25 @@ public struct IntervalPreset {
 
     private static let sixthVariants = makeSusVariants(from: sixthIntervalsNoSus)
 
-    public static let sixthIntervalsSus: [Set<Interval>] = sixthVariants.sus
-    public static let sixthIntervalsSus2: [Set<Interval>] = sixthVariants.sus2
-    public static let sixthIntervalsSus4: [Set<Interval>] = sixthVariants.sus4
-    public static let sixthIntervals: [Set<Interval>] = sixthVariants.all
+    public static let sixthIntervalsSus: [Intervals] = sixthVariants.sus
+    public static let sixthIntervalsSus2: [Intervals] = sixthVariants.sus2
+    public static let sixthIntervalsSus4: [Intervals] = sixthVariants.sus4
+    public static let sixthIntervals: [Intervals] = sixthVariants.all
 
     // MARK: - 所有基础和弦（7音以及以下的音程组合）
 
-    public static let allBasicIntervals: [Set<Interval>] = {
+    public static let allBasicIntervals: [Intervals] = {
         traidIntervals + seventhIntervals + sixthIntervals
     }()
 
     // MARK: - 所有tension情况
 
-    public static let allTensionIntervals: [Set<Interval>] = {
-        var result: [Set<Interval>] = []
+    public static let allTensionIntervals: [Intervals] = {
+        var result: [Intervals] = []
         for thirteenPo in thirteenPos {
             for elevenPo in elevenPos {
                 for ninePo in ninePos {
-                    var intervals: Set<Interval> = []
+                    var intervals: Intervals = []
                     if let ninePo { intervals.insert(ninePo) }
                     if let elevenPo { intervals.insert(elevenPo) }
                     if let thirteenPo { intervals.insert(thirteenPo) }
@@ -127,8 +127,8 @@ public struct IntervalPreset {
 
     // MARK: - 所有interval情况
 
-    public static let allIntervals: [Set<Interval>] = {
-        var result: [Set<Interval>] = []
+    public static let allIntervals: [Intervals] = {
+        var result: [Intervals] = []
         for basicInterval in allBasicIntervals {
             for tensionInterval in allTensionIntervals {
                 result.append(basicInterval.union(tensionInterval))
@@ -139,14 +139,14 @@ public struct IntervalPreset {
 
     // MARK: - Instance
 
-    public let intervals: [Set<Interval>]
+    public let intervals: [Intervals]
 
     public init(type: BasicChordType, sus: SusType?, isWithTension: Bool) {
-        let basicIntervals: [Set<Interval>] = IntervalPreset.intervalsFor(type: type, sus: sus)
+        let basicIntervals: [Intervals] = IntervalsGroup.intervalsFor(type: type, sus: sus)
         if isWithTension {
-            var result: [Set<Interval>] = []
+            var result: [Intervals] = []
             for basic in basicIntervals {
-                for tension in IntervalPreset.allTensionIntervals {
+                for tension in IntervalsGroup.allTensionIntervals {
                     result.append(basic.union(tension))
                 }
             }
@@ -161,7 +161,7 @@ public struct IntervalPreset {
     private static func intervalsFor(
         type: BasicChordType = .traid,
         sus: SusType? = nil
-    ) -> [Set<Interval>] {
+    ) -> [Intervals] {
         switch type {
         case .traid:
             switch sus {
@@ -213,4 +213,8 @@ public struct IntervalPreset {
         case sus, sus2, sus4, all
     }
 
+}
+
+extension IntervalsGroup {
+    public static let all = IntervalsGroup(type: .all, sus: .all, isWithTension: true).intervals
 }

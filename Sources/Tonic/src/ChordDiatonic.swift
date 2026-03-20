@@ -8,13 +8,13 @@
 import Foundation
 
 public struct ChordDiatonic {
-    
+
     public let tonic: Note
-    
+
     public let modeType: any ModeType
-    
+
     public let type: ChordDiatonicType
-    
+
     public init(tonic: Note, modeType: any ModeType, type: ChordDiatonicType) {
         self.tonic = tonic
         self.modeType = modeType
@@ -22,11 +22,10 @@ public struct ChordDiatonic {
     }
 }
 
-
-
 public enum ChordDiatonicType: Hashable {
+
     case traid, seventh, sixth, ninth, eleventh, thirteenth
-    
+
     var modalClasses: [ModalClass] {
         switch self {
         case .traid:
@@ -46,36 +45,36 @@ public enum ChordDiatonicType: Hashable {
 }
 
 extension ChordDiatonic {
-    
+
     public typealias ChordDiatonicClass = Int
-    
-    public func getDiatonicChord(at: ChordDiatonicClass ) -> Chord {
-        
+
+    public func getDiatonicChord(at: ChordDiatonicClass) -> Chord {
+
         let modalScale = ModalScale(self.tonic, mode: self.modeType.mode)
-        
+
         let notes = self.type.modalClasses.map { modalClass in
             modalScale.getNote(scaleClass: at + modalClass - 1)
         }
-        
+
         let firstNote = notes.first ?? .C0
-        
+
         let intervals = notes.compactMap { componentNote in
             firstNote - componentNote
         }
-        
+
         return Chord(root: firstNote, intervals: Set(intervals))
     }
-    
+
     public func getDiatonicChordSequence() -> [Chord] {
-        
-        let sequenceRange = 0...(self.modeType.mode.intervals.count-1)
-        
+
+        let sequenceRange = 0...(self.modeType.mode.intervals.count - 1)
+
         var chords: [Chord] = []
         for index in sequenceRange {
             chords.append(getDiatonicChord(at: index + 1))
         }
-        
+
         return chords
     }
-    
+
 }

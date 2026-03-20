@@ -1,36 +1,36 @@
 //
-//  ChordSymbolCase.swift
+//  ChordBasicCase.swift
 //  Tonic
 //
 //  Created by 小汤汤 on 3/6/26.
 //
 
-public enum ChordSymbolCase: String, CaseIterable {
+public enum ChordBasicCase: String, CaseIterable {
 
     // 三和弦
-    case traidMajor
-    case traidAugmented
-    case traidMajorFlat5
+    case triadMajor
+    case triadAugmented
+    case triadMajorFlat5
 
-    case traidMinor
-    case traidMinorSharp5
-    case traidDiminished
+    case triadMinor
+    case triadMinorSharp5
+    case triadDiminished
 
     // 三和弦挂留
     // 三和弦挂留 Sus
-    case traidSus
-    case traidSusAugmented
-    case traidSusFlat5
+    case triadSus
+    case triadSusAugmented
+    case triadSusFlat5
 
     // 三和弦挂留 Sus2
-    case traidSus2
-    case traidSus2Flat5
-    case traidSus2Sharp5
+    case triadSus2
+    case triadSus2Flat5
+    case triadSus2Sharp5
 
     // 三和弦挂留 Sus4
-    case traidSus4
-    case traidSus4Flat5
-    case traidSus4Sharp5
+    case triadSus4
+    case triadSus4Flat5
+    case triadSus4Sharp5
 
     // 七和弦
     case sevnethMajor
@@ -109,37 +109,37 @@ public enum ChordSymbolCase: String, CaseIterable {
     case sixthMajorSus4Sharp5
     case sixthMajorSus4Flat5
 
-    public var chordSymbols: [ChordSymbol] {
+    public var symbolShells: [ChordSymbol] {
         switch self {
         // 三和弦
-        case .traidMajor:
+        case .triadMajor:
             return [
                 ChordSymbol(),
                 ChordSymbol(quality: .major),
             ]
-        case .traidAugmented:
+        case .triadAugmented:
             return [
                 ChordSymbol(quality: .augmented),
                 ChordSymbol(quality: .majorSharp5),
                 ChordSymbol(quality: .major, additions: [.sharp5]),
             ]
-        case .traidMajorFlat5:
+        case .triadMajorFlat5:
             return [
                 ChordSymbol(quality: .majorFlat5),
                 ChordSymbol(quality: .major, additions: [.flat5]),
             ]
 
-        case .traidMinor:
+        case .triadMinor:
             return [
                 ChordSymbol(quality: .minor)
             ]
-        case .traidMinorSharp5:
+        case .triadMinorSharp5:
             return [
                 ChordSymbol(quality: .minorSharp5),
                 ChordSymbol(quality: .minor, additions: [.sharp5]),
                 ChordSymbol(quality: .minorAugmented),
             ]
-        case .traidDiminished:
+        case .triadDiminished:
             return [
                 ChordSymbol(quality: .diminished),
                 ChordSymbol(quality: .minor, additions: [.flat5]),
@@ -147,46 +147,46 @@ public enum ChordSymbolCase: String, CaseIterable {
             ]
 
         // 三和弦挂留 sus
-        case .traidSus:
+        case .triadSus:
             return [
                 ChordSymbol(sus: .sus)
             ]
-        case .traidSusAugmented:
+        case .triadSusAugmented:
             return [
                 ChordSymbol(sus: .sus, additions: [.sharp5]),
                 ChordSymbol(quality: .augmented, sus: .sus),
             ]
 
-        case .traidSusFlat5:
+        case .triadSusFlat5:
             return [
                 ChordSymbol(sus: .sus, additions: [.flat5])
             ]
 
         // 三和弦挂留 sus2
 
-        case .traidSus2:
+        case .triadSus2:
             return [
                 ChordSymbol(sus: .sus2)
             ]
-        case .traidSus2Flat5:
+        case .triadSus2Flat5:
             return [
                 ChordSymbol(sus: .sus2, additions: [.flat5])
             ]
-        case .traidSus2Sharp5:
+        case .triadSus2Sharp5:
             return [
                 ChordSymbol(sus: .sus2, additions: [.sharp5])
             ]
 
         // 三和弦挂留 sus4
-        case .traidSus4:
+        case .triadSus4:
             return [
                 ChordSymbol(sus: .sus4)
             ]
-        case .traidSus4Flat5:
+        case .triadSus4Flat5:
             return [
                 ChordSymbol(sus: .sus4, additions: [.flat5])
             ]
-        case .traidSus4Sharp5:
+        case .triadSus4Sharp5:
             return [
                 ChordSymbol(sus: .sus4, additions: [.sharp5])
             ]
@@ -522,26 +522,26 @@ public enum ChordSymbolCase: String, CaseIterable {
     public var intervals: Set<Interval> {
         switch self {
         // 三和弦
-        case .traidMajor: return [.M3, .P5]
-        case .traidAugmented: return [.M3, .A5]
-        case .traidMajorFlat5: return [.M3, .d5]
+        case .triadMajor: return [.M3, .P5]
+        case .triadAugmented: return [.M3, .A5]
+        case .triadMajorFlat5: return [.M3, .d5]
 
-        case .traidMinor: return [.m3, .P5]
-        case .traidMinorSharp5: return [.m3, .A5]
-        case .traidDiminished: return [.m3, .d5]
+        case .triadMinor: return [.m3, .P5]
+        case .triadMinorSharp5: return [.m3, .A5]
+        case .triadDiminished: return [.m3, .d5]
 
-        case .traidSus: return [.P5]
-        case .traidSusAugmented: return [.A5]
-        case .traidSusFlat5: return [.d5]
+        case .triadSus: return [.P5]
+        case .triadSusAugmented: return [.A5]
+        case .triadSusFlat5: return [.d5]
 
         // 三和弦挂留
-        case .traidSus2: return [.M2, .P5]
-        case .traidSus2Flat5: return [.M2, .d5]
-        case .traidSus2Sharp5: return [.M2, .A5]
+        case .triadSus2: return [.M2, .P5]
+        case .triadSus2Flat5: return [.M2, .d5]
+        case .triadSus2Sharp5: return [.M2, .A5]
 
-        case .traidSus4: return [.P4, .P5]
-        case .traidSus4Flat5: return [.P4, .d5]
-        case .traidSus4Sharp5: return [.P4, .A5]
+        case .triadSus4: return [.P4, .P5]
+        case .triadSus4Flat5: return [.P4, .d5]
+        case .triadSus4Sharp5: return [.P4, .A5]
 
         // 七和弦
         case .sevnethMajor: return [.M3, .P5, .M7]
