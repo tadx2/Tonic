@@ -17,18 +17,28 @@ public struct ChordSymbol: Hashable, Sendable {
     public var sus: ChordSymbolElementGroup
     public var additions: [ChordSymbolElementGroup]
 
+    // Base Note
+    public let baseNoteLetter: ChordSymbolElement?
+    public let baseNoteAcc: ChordSymbolElementGroup
+
     public init(
         rootNoteLetter: ChordSymbolElement? = nil,
         rootNoteAcc: ChordSymbolElementGroup = [],
         quality: ChordSymbolElementGroup = [],
         sus: ChordSymbolElementGroup = [],
-        additions: [ChordSymbolElementGroup] = []
+        additions: [ChordSymbolElementGroup] = [],
+        baseNoteLetter: ChordSymbolElement? = nil,
+        baseNoteAcc: ChordSymbolElementGroup = []
     ) {
+        self.rootNoteLetter = rootNoteLetter
+        self.rootNoteAcc = rootNoteAcc
+        
         self.quality = quality
         self.sus = sus
         self.additions = additions
-        self.rootNoteLetter = rootNoteLetter
-        self.rootNoteAcc = rootNoteAcc
+        
+        self.baseNoteLetter = baseNoteLetter
+        self.baseNoteAcc = baseNoteAcc
     }
 
     /// 返回一个不包含 RN 的Symbol
@@ -39,11 +49,13 @@ public struct ChordSymbol: Hashable, Sendable {
             quality: quality,
             sus: sus,
             additions: additions
+            // baseNoteLetter: baseNoteLetter,
+            // baseNoteAcc: baseNoteAcc
         )
     }
 
     public var isEmpty: Bool {
-        rootNoteLetter == nil && quality.isEmpty && sus.isEmpty && additions.isEmpty
+        rootNoteLetter == nil && quality.isEmpty && sus.isEmpty && additions.isEmpty && baseNoteLetter == nil
     }
 
     public var toString: String {
@@ -60,6 +72,12 @@ public struct ChordSymbol: Hashable, Sendable {
         // Additions
         for group in additions {
             parts.append("(" + group.map(\.toString).joined() + ")")
+        }
+        // Base note (slash chord)
+        if let baseLetter = baseNoteLetter {
+            parts.append("/")
+            parts.append(baseLetter.toString)
+            parts.append(contentsOf: baseNoteAcc.map(\.toString))
         }
         return parts.joined()
     }
