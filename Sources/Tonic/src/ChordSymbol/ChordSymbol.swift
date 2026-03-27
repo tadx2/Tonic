@@ -32,26 +32,13 @@ public struct ChordSymbol: Hashable, Sendable {
     ) {
         self.rootNoteLetter = rootNoteLetter
         self.rootNoteAcc = rootNoteAcc
-        
+
         self.quality = quality
         self.sus = sus
         self.additions = additions
-        
+
         self.baseNoteLetter = baseNoteLetter
         self.baseNoteAcc = baseNoteAcc
-    }
-
-    /// 返回一个不包含 RN 的Symbol
-    public var body: ChordSymbol {
-        ChordSymbol(
-            rootNoteLetter: nil,
-            rootNoteAcc: [],
-            quality: quality,
-            sus: sus,
-            additions: additions
-            // baseNoteLetter: baseNoteLetter,
-            // baseNoteAcc: baseNoteAcc
-        )
     }
 
     public var isEmpty: Bool {
@@ -80,6 +67,87 @@ public struct ChordSymbol: Hashable, Sendable {
             parts.append(contentsOf: baseNoteAcc.map(\.toString))
         }
         return parts.joined()
+    }
+}
+
+// MARK: Valid
+
+public extension ChordSymbol {
+    // ACC
+
+    private static let validAccNote: Set<ChordSymbolElementGroup> = [.b, .bb, .s, .ss, []]
+
+    private static let validAccAddition: Set<ChordSymbolElementGroup> = [.b, .s, []]
+
+    var isRnAccValid: Bool {
+        Self.validAccNote.contains(rootNoteAcc)
+    }
+
+    var isBsAccValid: Bool {
+        Self.validAccNote.contains(baseNoteAcc)
+    }
+
+    func isAdditionItemAccValid(index: Int) -> Bool {
+        guard additions.indices.contains(index) else { return false }
+        let item = additions[index]
+        // 提取 acc 部分（非 number 的元素）
+        let acc = item.filter { $0.isAccidental }
+        return Self.validAccAddition.contains(acc)
+    }
+
+    func isAdditionItemNumberValid(index: Int) -> Bool {
+        guard additions.indices.contains(index) else { return false }
+        // 每个 addition item 必须包含恰好一个数字元素
+        return additions[index].filter { $0.isNumber }.count == 1
+    }
+
+    /// Letter
+    var isBsRnNoteSame: Bool {
+        guard rootNoteLetter != nil else { return true } // rootNoteLetter 不为 nil， 否则 bs letter 怎么样都是 valid
+        return ([rootNoteLetter] + rootNoteAcc) == ([baseNoteLetter] + baseNoteAcc)
+    }
+
+    /// Other
+    var isMainValid: Bool {
+        let qualitySusSymbol = main
+        return validSymbols.contains(qualitySusSymbol)
+    }
+
+    /// 验证 additions 中的 tension 是否按数字严格递增排列
+    /// 例如 (♭9)(♯11)(13) 合法，(♯11)(♭9) 不合法
+    var isAdditionOrderValid: Bool {
+        // 1. 提取每个 addition group 中的数字元素（如 .nine、.eleven、.thirteen），忽略无数字的 group
+        let numbers = additions.compactMap { group in
+            group.first(where: { $0.isNumber })
+        }
+        // 2. 0 或 1 个 tension 不存在排序问题，直接合法
+        guard numbers.count > 1 else { return true }
+        // 3. 逐对比较相邻元素的 numberOrder，前一个 >= 后一个则不是严格递增，返回 false
+        for i in 1 ..< numbers.count {
+            guard numbers[i - 1].numberOrder < numbers[i].numberOrder else { return false }
+        }
+        return true
+    }
+}
+
+/// Sub Class 分类
+public extension ChordSymbol {
+    /// Main = Quality + Sus
+    var main: ChordSymbol {
+        ChordSymbol(
+            quality: quality,
+            sus: sus
+        )
+    }
+
+    /// Body = Quality + Sus + Addiditons
+    ///      = Main + Addiditons
+    var body: ChordSymbol {
+        ChordSymbol(
+            quality: quality,
+            sus: sus,
+            additions: additions
+        )
     }
 }
 

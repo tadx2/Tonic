@@ -80,6 +80,8 @@ public extension ChordSymbolElementGroup {
 
 /// Convenient Body Tension
 public extension ChordSymbolElementGroup {
+    
+    // Valid
     static let flat9: [ChordSymbolElement] = [.flat, .nine]
     static let sharp9: [ChordSymbolElement] = [.sharp, .nine]
     static let nine: [ChordSymbolElement] = [.nine]
@@ -91,6 +93,9 @@ public extension ChordSymbolElementGroup {
     static let flat13: [ChordSymbolElement] = [.flat, .thirteen]
     static let sharp13: [ChordSymbolElement] = [.sharp, .thirteen]
     static let thirteen: [ChordSymbolElement] = [.thirteen]
+    
+    // Error
+    static let FlatFlatnine: [ChordSymbolElement] = bb + nine
 }
 
 /// Convenient Note
@@ -140,10 +145,19 @@ public extension ChordSymbolElementGroup {
 
 /// Convenient Note Acc
 public extension ChordSymbolElementGroup {
+    
+    // Valid
     static let b: [ChordSymbolElement] = [.flat]
     static let bb: [ChordSymbolElement] = [.flat, .flat]
     static let s: [ChordSymbolElement] = [.sharp]
     static let ss: [ChordSymbolElement] = [.sharp, .sharp]
+    
+    // Error
+    static let bbb: [ChordSymbolElement] = [.flat, .flat, .flat]
+    static let bbbb: [ChordSymbolElement] = [.flat, .flat, .flat, .flat]
+    static let sss: [ChordSymbolElement] = [.sharp, .sharp, .sharp]
+    static let ssss: [ChordSymbolElement] = [.sharp, .sharp, .sharp, .sharp]
+    
 }
 
 // extension ChordSymbolElementInputGroup {

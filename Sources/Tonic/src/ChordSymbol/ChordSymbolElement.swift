@@ -73,4 +73,18 @@ public enum ChordSymbolElement: Hashable, CaseIterable, Sendable {
         case .thirteen: "13"
         }
     }
+
+    var numberOrder: Int {
+        switch self {
+        case .two: return 2
+        case .four: return 4
+        case .five: return 5
+        case .six: return 6
+        case .seven: return 7
+        case .nine: return 9
+        case .eleven: return 11
+        case .thirteen: return 13
+        default: return 0
+        }
+    }
 }
