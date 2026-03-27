@@ -57,8 +57,8 @@ public extension ChordSymbol {
             quality: betterSymbolBody.quality,
             sus: betterSymbolBody.sus,
             additions: betterSymbolBody.additions,
-            baseNoteLetter: baseNoteLetter,
-            baseNoteAcc: baseNoteAcc
+            bassNoteLetter: bassNoteLetter,
+            bassNoteAcc: bassNoteAcc
         )
     }
 }

@@ -10,27 +10,26 @@ import Foundation
 public typealias ChordDegreeInt = Int
 
 public struct Chord: Sendable, Equatable, Hashable {
-
     // note
-    public var noteRoot: Note  // 根音
-    public var noteBase: Note?  // 基音
+    public var noteRoot: Note // 根音
+    public var noteBass: Note? // 低音
 
-    // intervals
-    public var intervalsRaw: Set<Interval>  // 原始音程 // 传入进来的原始音程，已经加上了 .P1(根音)
+    /// intervals
+    public var intervalsRaw: Set<Interval> // 原始音程 // 传入进来的原始音程，已经加上了 .P1(根音)
 
-    // degree
+    /// degree
     public var degreeInts: Set<ChordDegreeInt>
 
-    // pitch
+    /// pitch
     public var pitchIntsRaw: Set<PitchInt>
 
-    // noteToInterval
+    /// noteToInterval
     public var noteToIntervalRaw: [Note: Interval]
 
-    // 音程构造
+    /// 音程构造
     public init(
         root: Note = Note(), intervals: Set<Interval> = [.M3, .P5],
-        base: Note? = nil
+        bass: Note? = nil
     ) {
         var validatedIntervals = intervals
         let degreeInts = Set(intervals.map { $0.degreeInt })
@@ -41,7 +40,7 @@ public struct Chord: Sendable, Equatable, Hashable {
 //        }
 
         // 条件2. 6音与7音不能同时存在
-        if degreeInts.contains(6) && degreeInts.contains(7) {
+        if degreeInts.contains(6), degreeInts.contains(7) {
             validatedIntervals = []
         }
 
@@ -50,12 +49,12 @@ public struct Chord: Sendable, Equatable, Hashable {
             validatedIntervals = []
         }
 
-        self.noteRoot = root
-        self.noteBase = base
+        noteRoot = root
+        noteBass = bass
 
         let intervalsWithRoot = validatedIntervals.union([.P1])
 
-        self.intervalsRaw = intervalsWithRoot
+        intervalsRaw = intervalsWithRoot
         self.degreeInts = Set(intervalsWithRoot.map { $0.degreeInt })
 
         // noteToIntervalRaw
@@ -68,73 +67,70 @@ public struct Chord: Sendable, Equatable, Hashable {
         self.noteToIntervalRaw = noteToIntervalRaw
 
         // pitchInts
-        self.pitchIntsRaw = Set(noteToIntervalRaw.keys.map { $0.pitch })
+        pitchIntsRaw = Set(noteToIntervalRaw.keys.map { $0.pitch })
     }
-
 }
 
-// 判断和弦的类型
-extension Chord {
-
-    public var isSus2: Bool {
+/// 判断和弦的类型
+public extension Chord {
+    var isSus2: Bool {
         return degreeInts.contains(2)
     }
 
-    public var isSus4: Bool {
+    var isSus4: Bool {
         return degreeInts.contains(4)
     }
 
-    public var isSus: Bool {
+    var isSus: Bool {
         return isSus2 || isSus4
     }
 
-    public var isSixth: Bool {
+    var isSixth: Bool {
         return degreeInts.contains(6)
     }
 
-    public var isSeventh: Bool {
+    var isSeventh: Bool {
         return degreeInts.contains(7)
     }
 
-    public var isSixthOrSeventh: Bool {
+    var isSixthOrSeventh: Bool {
         return isSixth || isSeventh
     }
 
-    public var isTension: Bool {
+    var isTension: Bool {
         // 改成 包含 9/11/13中任何一个
         return degreeInts.contains(9) || degreeInts.contains(11) || degreeInts.contains(13)
     }
 }
 
-// Get Note
-extension Chord {
-
-    // 根据度数获取音符
-    public func getNote(by degreeInt: ChordDegreeInt) -> Note? {
+/// Get Note
+public extension Chord {
+    /// 根据度数获取音符
+    func getNote(by degreeInt: ChordDegreeInt) -> Note? {
         guard let interval = intervalsRaw.first(where: { $0.degreeInt == degreeInt }) else {
             return nil
         }
         return noteRoot + interval
     }
 
-    // 获取到修正后的BaseNote
-    public func getNoteBase() -> Note? {
+    /// 获取到修正后的BassNote
+    func getNoteBass() -> Note? {
+        // metaData中要设置BassNote
+        guard let noteBass else { return nil }
 
-        // metaData中要设置BaseNote
-        guard let noteBase else { return nil }
-
-        // 设置的noteBase要与 noteRoot不一样（letter与accidental都不一样）
-        guard (noteBase.letter != noteRoot.letter) || (noteBase.accidental != noteRoot.accidental)
+        // 设置的noteBass要与 noteRoot不一样（letter与accidental都不一样）
+        guard (noteBass.letter != noteRoot.letter) || (noteBass.accidental != noteRoot.accidental)
         else { return nil }
 
         var resultNote: Note?
 
-        // baseNote的pitch一定比 noteRoot的pitch小
-        // baseNote的可能性为 octave 0-8
-        // 从 octave == -1 开始试，一直试到 最大的 baseNote
-        for octave in -1...8 {
+        // bassNote的pitch一定比 noteRoot的pitch小
+        // bassNote的可能性为 octave 0-8
+        // 从 octave == -1 开始试，一直试到 最大的 bassNote
+        for octave in -1 ... 8 {
             let note = Note(
-                letter: noteBase.letter, accidental: noteBase.accidental, octave: octave)
+                letter: noteBass.letter, accidental: noteBass.accidental, octave: octave
+            )
             if note.pitch < noteRoot.pitch {
                 resultNote = note
             }
@@ -142,13 +138,11 @@ extension Chord {
 
         return resultNote
     }
-
 }
 
-// Dict
-extension Chord {
-
-    public func getPitchIntToIntervalStrRaw() -> [PitchInt: String] {
+/// Dict
+public extension Chord {
+    func getPitchIntToIntervalStrRaw() -> [PitchInt: String] {
         var result: [PitchInt: String] = [:]
         for (note, interval) in noteToIntervalRaw {
             result[note.pitch] = interval.description
@@ -156,7 +150,7 @@ extension Chord {
         return result
     }
 
-    public func getPitchIntToIntervalStrNumRaw() -> [PitchInt: String] {
+    func getPitchIntToIntervalStrNumRaw() -> [PitchInt: String] {
         var result: [PitchInt: String] = [:]
         for (note, interval) in noteToIntervalRaw {
             result[note.pitch] = interval.descriptionNumber
@@ -164,21 +158,19 @@ extension Chord {
         return result
     }
 
-    public func getPitchIntToNoteNameStrRaw() -> [PitchInt: String] {
+    func getPitchIntToNoteNameStrRaw() -> [PitchInt: String] {
         var result: [PitchInt: String] = [:]
         for (note, _) in noteToIntervalRaw {
             result[note.pitch] = note.description
         }
         return result
     }
-
 }
 
-extension Chord {
-
-    // 根据PitchInt获取NoteToIntervalRaw
-    // 结果不唯一，因为和弦音程中可能存在多个音程的音高相同
-    public func getNoteToIntervalRaw(by pitch: PitchInt) -> [Note: Interval] {
+public extension Chord {
+    /// 根据PitchInt获取NoteToIntervalRaw
+    /// 结果不唯一，因为和弦音程中可能存在多个音程的音高相同
+    func getNoteToIntervalRaw(by pitch: PitchInt) -> [Note: Interval] {
         var result: [Note: Interval] = [:]
         let targetPitchClass = pitch % 12
         for (note, interval) in noteToIntervalRaw {
@@ -190,29 +182,27 @@ extension Chord {
     }
 }
 
-// ChordName - Raw( 根据原始音程计算出来的和弦名)
-extension Chord {
-
-    // noteInterval 中 interval 过滤出来与 ChordBasicType 中符合条件的 name做比较找出 基本和弦名 ChordNameBasic
-    public var basicInfo: ChordBasicInfo? {
+/// ChordName - Raw( 根据原始音程计算出来的和弦名)
+public extension Chord {
+    /// noteInterval 中 interval 过滤出来与 ChordBasicType 中符合条件的 name做比较找出 基本和弦名 ChordNameBasic
+    var basicInfo: ChordBasicInfo? {
         let currentIntervals = Set(intervalsRaw.filter { $0.degreeInt != 1 && $0.degreeInt <= 7 })
         return ChordTypeBasic.allCases.first { $0.info.intervals == currentIntervals }?.info
     }
 
-    public var rawNameBasic: String? {
+    var rawNameBasic: String? {
         guard let basicInfo else { return nil }
         return basicInfo.basicName
     }
 
-    public var rawNameTension: [Interval] {
+    var rawNameTension: [Interval] {
         // 获取到 9/11/13度的音程
         // 返回 音程对应的数字音名 注意顺序/注意唯一
         let tensions = intervalsRaw.filter { $0.degreeInt > 7 }
         return Array(Set(tensions)).sorted { $0.degreeInt < $1.degreeInt }
     }
 
-    public var rawNameFull: String? {
-
+    var rawNameFull: String? {
         guard let rawNameBasic else { return nil }
 
         var name = rawNameBasic
@@ -243,40 +233,37 @@ extension Chord {
             name += "(\(additionStr))"
         }
 
-        if let noteBase = noteBase,
-            noteBase.letter != noteRoot.letter || noteBase.accidental != noteRoot.accidental
+        if let noteBass = noteBass,
+           noteBass.letter != noteRoot.letter || noteBass.accidental != noteRoot.accidental
         {
-            name += "/\(noteBase.description)"
+            name += "/\(noteBass.description)"
         }
 
         return name
     }
 
-    public var rawNameFullAndRootNote: String? {
+    var rawNameFullAndRootNote: String? {
         guard let rawNameFull else { return nil }
         return noteRoot.name + rawNameFull
     }
-
 }
 
-extension Chord {
-    static public let Empty: Chord = Chord(root: .C4, intervals: [])
+public extension Chord {
+    static let Empty: Chord = .init(root: .C4, intervals: [])
 }
 
-// Consider Base Note
-extension Chord {
-    public var pitchIntsRawWithBaseNote: Set<PitchInt> {
-        guard !isBaseEqualToRoot, let baseNote = getNoteBase() else { return pitchIntsRaw }
+/// Consider Bass Note
+public extension Chord {
+    var pitchIntsRawWithBassNote: Set<PitchInt> {
+        guard !isBassEqualToRoot, let bassNote = getNoteBass() else { return pitchIntsRaw }
         var result = pitchIntsRaw
         result.remove(noteRoot.pitch)
-        result.insert(baseNote.pitch)
+        result.insert(bassNote.pitch)
         return result
     }
 
-    public var isBaseEqualToRoot: Bool {
-        guard let noteBase else { return true }
-        return (noteBase.letter == noteRoot.letter) && (noteBase.accidental == noteRoot.accidental)
+    var isBassEqualToRoot: Bool {
+        guard let noteBass else { return true }
+        return (noteBass.letter == noteRoot.letter) && (noteBass.accidental == noteRoot.accidental)
     }
 }
-
-

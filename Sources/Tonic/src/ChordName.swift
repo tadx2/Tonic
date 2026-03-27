@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  ChordName.swift
 //  Tonic
 //
 //  Created by 小汤汤 on 2/2/26.
@@ -8,7 +8,6 @@
 import Foundation
 
 public struct ChordName: Sendable {
-
     private let basicName: String?
 
     private let basicNameShort: String?
@@ -17,46 +16,43 @@ public struct ChordName: Sendable {
 
     private let tensionAddition: [Interval]
 
-    private let baseNoteName: String?
+    private let bassNoteName: String?
 
     private let rootNote: Note
 
     public init(chord: Chord) {
-
         let currentIntervals = Set(
-            chord.intervalsRaw.filter { $0.degreeInt != 1 && $0.degreeInt <= 7 })
+            chord.intervalsRaw.filter { $0.degreeInt != 1 && $0.degreeInt <= 7 }
+        )
         let chordTypeBasic = ChordTypeBasic.allCases.first(where: {
             $0.info.intervals == currentIntervals
         })?.info
 
-        self.basicName = chordTypeBasic?.basicName
-        self.basicNameShort = chordTypeBasic?.shortName
-        self.basicNameAddition = chordTypeBasic?.basicNameAddition ?? []
+        basicName = chordTypeBasic?.basicName
+        basicNameShort = chordTypeBasic?.shortName
+        basicNameAddition = chordTypeBasic?.basicNameAddition ?? []
 
         let tensions = chord.intervalsRaw.filter { $0.degreeInt > 7 }
-        self.tensionAddition = Array(Set(tensions)).sorted { $0.degreeInt < $1.degreeInt }
+        tensionAddition = Array(Set(tensions)).sorted { $0.degreeInt < $1.degreeInt }
 
-        if chord.noteRoot.name != chord.noteBase?.name {
-            self.baseNoteName = chord.noteBase?.name
+        if chord.noteRoot.name != chord.noteBass?.name {
+            bassNoteName = chord.noteBass?.name
         } else {
-            self.baseNoteName = nil
+            bassNoteName = nil
         }
 
-        self.rootNote = chord.noteRoot
+        rootNote = chord.noteRoot
     }
-
 }
 
 extension ChordName {
-
-    // 是否能被简写？
+    /// 是否能被简写？
     var canMerged: Bool {
-        ["M7", "7", "m7", "7sus2", "7sus4", "dim7"].contains(self.basicName)
+        ["M7", "7", "m7", "7sus2", "7sus4", "dim7"].contains(basicName)
     }
 
-    // 可以用来简写的tension
+    /// 可以用来简写的tension
     var canMergedTension: [Interval]? {
-
         guard basicName != nil else { return nil }
 
         guard !tensionAddition.isEmpty else { return nil }
@@ -68,18 +64,16 @@ extension ChordName {
         } else {
             return nil
         }
-
     }
 
-    // 最大简写的目标
+    /// 最大简写的目标
     var maxMergedTension: Interval? {
         guard let canMergedTension else { return nil }
         return canMergedTension.max(by: { $0.degreeInt < $1.degreeInt })
     }
 
-    // 1. 基本和弦名
+    /// 1. 基本和弦名
     func getBasicName(isMergeTension: Bool, isShort: Bool) -> String? {
-
         guard let basicName else { return nil }
 
         var _basicName = basicName
@@ -93,31 +87,26 @@ extension ChordName {
         }
 
         return _basicName
-
     }
 
-    // 2. 括号中的音程
+    /// 2. 括号中的音程
     func getAddition(isMergeTension: Bool) -> [Interval] {
-
         var _tensionAddition = tensionAddition
 
         if isMergeTension, let canMergedTension {
             _tensionAddition.removeAll(where: { canMergedTension.contains($0) })
         }
 
-        return basicNameAddition + _tensionAddition  // 括号里面最终的音程
+        return basicNameAddition + _tensionAddition // 括号里面最终的音程
     }
-
 }
 
-extension ChordName {
-
-    public func getChordNameString(
+public extension ChordName {
+    func getChordNameString(
         isShowRootNote: Bool = true,
         isMergeTension: Bool = false,
-        isShort: Bool = false,
+        isShort: Bool = false
     ) -> String {
-
         guard let _basicName = getBasicName(isMergeTension: isMergeTension, isShort: isShort) else {
             return "nil"
         }
@@ -127,7 +116,6 @@ extension ChordName {
         var result: String = _basicName
 
         if isShort {
-
             // 特殊情况，如果是大七简写后 “△7” 参与 merged 后还是 “△7” 一般直接写 “△” 就好了
             // if result == "△7" {
             //     result = "△"
@@ -142,11 +130,10 @@ extension ChordName {
             if result == "ø7" {
                 additions.removeAll(where: { $0 == Interval.d5 })
             }
-
         }
 
         if isShowRootNote {
-            result = self.rootNote.name + result
+            result = rootNote.name + result
         }
 
         if !additions.isEmpty {
@@ -154,21 +141,19 @@ extension ChordName {
             result += "(\(additionStr))"
         }
 
-        if let baseNoteName {
-            result += "/\(baseNoteName)"
+        if let bassNoteName {
+            result += "/\(bassNoteName)"
         }
 
         return result
-
     }
 
-    public func getChordNameRawData(
+    func getChordNameRawData(
         isShowRootNote: Bool = true,
         isMergeTension: Bool = false,
         isShort: Bool = false,
-        isShowBaseNote: Bool = false
-    ) -> (rootNote: Note?, basicName: String, addition: [Interval], baseNote: String?)? {
-
+        isShowBassNote: Bool = false
+    ) -> (rootNote: Note?, basicName: String, addition: [Interval], bassNote: String?)? {
         guard let _basicName = getBasicName(isMergeTension: isMergeTension, isShort: isShort) else {
             return nil
         }
@@ -178,14 +163,13 @@ extension ChordName {
         var additions = getAddition(isMergeTension: isMergeTension)
 
         if isShort {
-
             // 特殊情况，如果是大七简写后 “△7” 参与 merged 后还是 “△7” 一般直接写 “△” 就好了
             if basicName == "△7" {
                 basicName = "△"
             }
 
             // 如果是大三和弦，可以进一步简写把 大M去掉
-            if basicName == "M" && additions.isEmpty {
+            if basicName == "M", additions.isEmpty {
                 basicName = ""
             }
 
@@ -193,7 +177,6 @@ extension ChordName {
             if basicName == "ø7" {
                 additions.removeAll(where: { $0 == Interval.d5 })
             }
-
         }
 
         var rootNote: Note? = nil
@@ -201,13 +184,11 @@ extension ChordName {
             rootNote = self.rootNote
         }
 
-        var baseNote: String? = nil
-        if isShowBaseNote {
-            baseNote = self.baseNoteName
+        var bassNote: String? = nil
+        if isShowBassNote {
+            bassNote = bassNoteName
         }
 
-        return (rootNote: rootNote, basicName: basicName, addition: additions, baseNote: baseNote)
-
+        return (rootNote: rootNote, basicName: basicName, addition: additions, bassNote: bassNote)
     }
-
 }

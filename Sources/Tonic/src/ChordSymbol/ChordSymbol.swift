@@ -17,9 +17,9 @@ public struct ChordSymbol: Hashable, Sendable {
     public var sus: ChordSymbolElementGroup
     public var additions: [ChordSymbolElementGroup]
 
-    // Base Note
-    public let baseNoteLetter: ChordSymbolElement?
-    public let baseNoteAcc: ChordSymbolElementGroup
+    // Bass Note
+    public let bassNoteLetter: ChordSymbolElement?
+    public let bassNoteAcc: ChordSymbolElementGroup
 
     public init(
         rootNoteLetter: ChordSymbolElement? = nil,
@@ -27,8 +27,8 @@ public struct ChordSymbol: Hashable, Sendable {
         quality: ChordSymbolElementGroup = [],
         sus: ChordSymbolElementGroup = [],
         additions: [ChordSymbolElementGroup] = [],
-        baseNoteLetter: ChordSymbolElement? = nil,
-        baseNoteAcc: ChordSymbolElementGroup = []
+        bassNoteLetter: ChordSymbolElement? = nil,
+        bassNoteAcc: ChordSymbolElementGroup = []
     ) {
         self.rootNoteLetter = rootNoteLetter
         self.rootNoteAcc = rootNoteAcc
@@ -37,12 +37,12 @@ public struct ChordSymbol: Hashable, Sendable {
         self.sus = sus
         self.additions = additions
 
-        self.baseNoteLetter = baseNoteLetter
-        self.baseNoteAcc = baseNoteAcc
+        self.bassNoteLetter = bassNoteLetter
+        self.bassNoteAcc = bassNoteAcc
     }
 
     public var isEmpty: Bool {
-        rootNoteLetter == nil && quality.isEmpty && sus.isEmpty && additions.isEmpty && baseNoteLetter == nil
+        rootNoteLetter == nil && quality.isEmpty && sus.isEmpty && additions.isEmpty && bassNoteLetter == nil
     }
 
     public var toString: String {
@@ -60,11 +60,11 @@ public struct ChordSymbol: Hashable, Sendable {
         for group in additions {
             parts.append("(" + group.map(\.toString).joined() + ")")
         }
-        // Base note (slash chord)
-        if let baseLetter = baseNoteLetter {
+        // Bass note (slash chord)
+        if let bassLetter = bassNoteLetter {
             parts.append("/")
-            parts.append(baseLetter.toString)
-            parts.append(contentsOf: baseNoteAcc.map(\.toString))
+            parts.append(bassLetter.toString)
+            parts.append(contentsOf: bassNoteAcc.map(\.toString))
         }
         return parts.joined()
     }
@@ -84,7 +84,7 @@ public extension ChordSymbol {
     }
 
     var isBsAccValid: Bool {
-        Self.validAccNote.contains(baseNoteAcc)
+        Self.validAccNote.contains(bassNoteAcc)
     }
 
     func isAdditionItemAccValid(index: Int) -> Bool {
@@ -104,7 +104,7 @@ public extension ChordSymbol {
     /// Letter
     var isBsRnNoteSame: Bool {
         guard rootNoteLetter != nil else { return true } // rootNoteLetter 不为 nil， 否则 bs letter 怎么样都是 valid
-        return ([rootNoteLetter] + rootNoteAcc) == ([baseNoteLetter] + baseNoteAcc)
+        return ([rootNoteLetter] + rootNoteAcc) == ([bassNoteLetter] + bassNoteAcc)
     }
 
     /// Other
