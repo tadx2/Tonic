@@ -156,6 +156,12 @@ public extension ChordSymbol {
     static let Cmaj7 = ChordSymbol(rootNoteLetter: .C, quality: .major7)
     static let Dmin7 = ChordSymbol(rootNoteLetter: .D, quality: .minor7)
     static let G7 = ChordSymbol(rootNoteLetter: .G, quality: .seven)
+
+    static let Asharp12flat9 = ChordSymbol(rootNoteLetter: .A, additions: [.sharp13, .flat9])
+
+    static let errorSymbol = ChordSymbol(rootNoteLetter: .A,
+                                         quality: [.sus, .sus],
+                                         additions: [.sharp13, .sharp13, .flat9])
 }
 
 /// Random
