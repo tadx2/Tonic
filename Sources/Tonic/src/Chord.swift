@@ -267,3 +267,15 @@ public extension Chord {
         return (noteBass.letter == noteRoot.letter) && (noteBass.accidental == noteRoot.accidental)
     }
 }
+
+/// PitchString
+public extension Chord {
+    /// 返回和弦内每个音的音高与音名
+    var pitchString: [PitchString] {
+        noteToIntervalRaw.keys.map { note in
+            let pitchInt: PitchInt = note.pitch
+            let noteName = note.name
+            return PitchString(pitchInt: pitchInt, noteName: noteName)
+        }
+    }
+}

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct ChordSymbol: Hashable, Sendable {
+public struct ChordSymbol: Hashable, Sendable, CustomDebugStringConvertible {
     // Root Note
     public let rootNoteLetter: ChordSymbolElement?
     public let rootNoteAcc: ChordSymbolElementGroup
@@ -45,7 +45,7 @@ public struct ChordSymbol: Hashable, Sendable {
         rootNoteLetter == nil && quality.isEmpty && sus.isEmpty && additions.isEmpty && bassNoteLetter == nil
     }
 
-    public var toString: String {
+    public var debugDescription: String {
         var parts: [String] = []
         // Root note letter + accidentals
         if let letter = rootNoteLetter {
