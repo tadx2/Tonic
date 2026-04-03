@@ -132,11 +132,11 @@ extension ChordSymbol {
     }
 
     /// 尝试在当前和弦结构的基础之上增添一个 9 音配属元素。
-    /// 只有在新的和弦被判定为符合音乐法则合法（即能在 validSymbols 系统库中找到）时，才会将其作为合法的推荐供上层显示。
+    /// 只有在新的和弦被判定为符合音乐法则合法（即能在 `validSymbolsBody` 系统库中找到）时，才会将其作为合法的推荐供上层显示。
     private var similarSymbolsWhenAdd9: ChordSymbol? {
         var thisSymbol = body
         thisSymbol.additions.append(.nine)
-        guard validSymbols.contains(thisSymbol) else { return nil }
+        guard validSymbolsBody.contains(thisSymbol) else { return nil }
         return thisSymbol
     }
 
@@ -145,7 +145,7 @@ extension ChordSymbol {
     private var similarSymbolsWhenAdd13: ChordSymbol? {
         var thisSymbol = body
         thisSymbol.additions.append(.thirteen)
-        guard validSymbols.contains(thisSymbol) else { return nil }
+        guard validSymbolsBody.contains(thisSymbol) else { return nil }
         return thisSymbol
     }
 }

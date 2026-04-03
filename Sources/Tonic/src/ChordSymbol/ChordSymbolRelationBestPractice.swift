@@ -18,7 +18,7 @@ public extension ChordSymbol {
     /// - Returns: 如果存在更好的写法，则返回包含原根音的完整更好写法的 `ChordSymbol`；如果当前已经是最好写法或无法识别，则返回 `nil`。
     var bestPractice: ChordSymbol? {
         // 先检查当前和弦符号（不带根音的 body）是否合法
-        guard validSymbols.contains(body) else { return nil }
+        guard validSymbolsBody.contains(body) else { return nil }
 
         // alt 和弦不在本次的比较中
         guard !body.quality.contains(.alt) else { return nil }

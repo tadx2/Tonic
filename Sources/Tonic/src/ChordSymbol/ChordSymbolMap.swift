@@ -39,10 +39,11 @@ public let chordSymbolToIntervalsMap: [ChordSymbol: Intervals] = {
             // 这是多映射情况，只考虑两种情况
 
             if chordSymbol.quality.contains(.alt) { // 1. Alt
-                // 这个时候，判断标准是，第一个 #5音的最少的那个音程
+                // 这个时候，判断标准是，第一个是#5，且音程数量最少的那组音程
                 let intervals = sortedByCount.first(where: { $0.contains(.A5) })
                 result[chordSymbol] = intervals
             } else { // 2. 非Alt，就是简写情况。导致 例如 13 可以表示 N 个和弦
+                // 因为按照个数排序了，导致现在返回的就是 只加这个音的音程
                 result[chordSymbol] = sortedByCount.first
             }
         }
@@ -51,9 +52,13 @@ public let chordSymbolToIntervalsMap: [ChordSymbol: Intervals] = {
     return result
 }()
 
-/// **All Valid Chord Symbols**
-/// chordSymbolToIntervalsDictionary 的 keys 作为合法 symbol集合
-public let validSymbols: Set<ChordSymbol> = Set(chordSymbolToIntervalsSetMap.keys)
+/// **All Valid Chord Symbol Bodies**
+/// `chordSymbolToIntervalsDictionary` 的 keys 作为合法 body 集合
+public let validSymbolsBody: Set<ChordSymbol> = Set(chordSymbolToIntervalsSetMap.keys)
+
+/// **All Valid Chord Symbol Mains**
+/// 从合法 body 投影出 `quality + sus` 组成的 main 集合
+public let validSymbolsMain: Set<ChordSymbol> = Set(validSymbolsBody.map(\.main))
 
 // MARK: - BlurBody（模糊匹配）
 
@@ -117,5 +122,5 @@ public extension ChordSymbol {
     }
 }
 
-/// 所有合法和弦符号的模糊 body 集合（由 `validSymbols` 映射生成）
-public let validSymbolsBluredBody: Set<ChordSymbol.ChordSymbolBlurBody> = Set(validSymbols.map { $0.bluredBody })
+/// 所有合法和弦符号的模糊 body 集合（由 `validSymbolsBody` 映射生成）
+public let validSymbolsBluredBody: Set<ChordSymbol.ChordSymbolBlurBody> = Set(validSymbolsBody.map { $0.bluredBody })
