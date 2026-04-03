@@ -618,3 +618,167 @@ public enum ChordBasicCase: String, CaseIterable {
     }
 
 }
+
+public extension ChordBasicCase {
+    
+    enum Attribute {
+        case triad, seventh, sixth
+        case major, minor, sus, augmented, diminished, halfDiminished
+        case flatFive, sharpFive, doubleFlatSeventh
+    }
+    
+    var attributes: [Attribute] {
+        switch self {
+        case .triadMajor:
+            [.triad, .major]
+        case .triadAugmented:
+            [.triad, .augmented]
+        case .triadMajorFlat5:
+            [.triad, .major, .flatFive]
+        case .triadMinor:
+            [.triad, .minor]
+        case .triadMinorSharp5:
+            [.triad, .minor, .sharpFive]
+        case .triadDiminished:
+            [.triad, .diminished]
+        case .triadSus:
+            [.triad, .sus]
+        case .triadSusAugmented:
+            [.triad, .sus, .augmented]
+        case .triadSusFlat5:
+            [.triad, .sus, .flatFive]
+        case .triadSus2:
+            [.triad, .sus]
+        case .triadSus2Flat5:
+            [.triad, .sus, .flatFive]
+        case .triadSus2Sharp5:
+            [.triad, .sus, .sharpFive]
+        case .triadSus4:
+            [.triad, .sus]
+        case .triadSus4Flat5:
+            [.triad, .sus, .flatFive]
+        case .triadSus4Sharp5:
+            [.triad, .sus, .sharpFive]
+        case .sevnethMajor:
+            [.seventh, .major]
+        case .sevnethMinor:
+            [.seventh, .minor]
+        case .sevnethDominant:
+            [.seventh]
+        case .sevnethHalfDiminished:
+            [.seventh, .halfDiminished]
+        case .sevnethDiminished:
+            [.seventh, .diminished, .doubleFlatSeventh]
+        case .sevnethMajorFlat5:
+            [.seventh, .major, .flatFive]
+        case .sevnethMinorMajor:
+            [.seventh, .minor, .major]
+        case .sevnethMajorDoubleFlat7:
+            [.seventh, .major, .doubleFlatSeventh]
+        case .sevnethDominantFlat5:
+            [.seventh, .flatFive]
+        case .sevnethMajorFlat5DoubleFlat7:
+            [.seventh, .major, .flatFive, .doubleFlatSeventh]
+        case .sevnethMajorSharp5:
+            [.seventh, .major, .sharpFive]
+        case .sevnethDominantSharp5:
+            [.seventh, .sharpFive]
+        case .sevnethMajorSharp5DoubleFlat7:
+            [.seventh, .major, .sharpFive, .doubleFlatSeventh]
+        case .sevnethMinorDoubleFlat7:
+            [.seventh, .minor, .doubleFlatSeventh]
+        case .sevnethMinorMajorFlat5:
+            [.seventh, .minor, .major, .flatFive]
+        case .sevnethMinorMajorSharp5:
+            [.seventh, .minor, .major, .sharpFive]
+        case .sevnethMinorSharp5:
+            [.seventh, .minor, .sharpFive]
+        case .sevnethMinorSharp5DoubleFlat7:
+            [.seventh, .minor, .sharpFive, .doubleFlatSeventh]
+        case .seventhSus:
+            [.seventh, .major, .sus]
+        case .seventhDominantSus:
+            [.seventh, .sus]
+        case .seventhDoubleFlatSus:
+            [.seventh, .sus, .doubleFlatSeventh]
+        case .seventhMajorSusFlat5:
+            [.seventh, .major, .sus, .flatFive]
+        case .seventhDominantSusFlat5:
+            [.seventh, .sus, .flatFive]
+        case .seventhDoubleFlatSusFlat5:
+            [.seventh, .sus, .flatFive, .doubleFlatSeventh]
+        case .seventhMajorSusSharp5:
+            [.seventh, .major, .sus, .sharpFive]
+        case .seventhDominantSusSharp5:
+            [.seventh, .sus, .sharpFive]
+        case .seventhDoubleFlatSusSharp5:
+            [.seventh, .sus, .sharpFive, .doubleFlatSeventh]
+        case .seventhSus2Major:
+            [.seventh, .major, .sus]
+        case .seventhDominantSus2:
+            [.seventh, .sus]
+        case .seventhDoubleFlatSus2:
+            [.seventh, .sus, .doubleFlatSeventh]
+        case .seventhMajorSus2Flat5:
+            [.seventh, .major, .sus, .flatFive]
+        case .seventhDominantSus2Flat5:
+            [.seventh, .sus, .flatFive]
+        case .seventhDoubleFlatSus2Flat5:
+            [.seventh, .sus, .flatFive, .doubleFlatSeventh]
+        case .seventhMajorSus2Sharp5:
+            [.seventh, .major, .sus, .sharpFive]
+        case .seventhDominantSus2Sharp5:
+            [.seventh, .sus, .sharpFive]
+        case .seventhDoubleFlatSus2Sharp5:
+            [.seventh, .sus, .sharpFive, .doubleFlatSeventh]
+        case .seventhSus4Major:
+            [.seventh, .major, .sus]
+        case .seventhDominantSus4:
+            [.seventh, .sus]
+        case .seventhDoubleFlatSus4:
+            [.seventh, .sus, .doubleFlatSeventh]
+        case .seventhMajorSus4Flat5:
+            [.seventh, .major, .sus, .flatFive]
+        case .seventhDominantSus4Flat5:
+            [.seventh, .sus, .flatFive]
+        case .seventhDoubleFlatSus4Flat5:
+            [.seventh, .sus, .flatFive, .doubleFlatSeventh]
+        case .seventhMajorSus4Sharp5:
+            [.seventh, .major, .sus, .sharpFive]
+        case .seventhDominantSus4Sharp5:
+            [.seventh, .sus, .sharpFive]
+        case .seventhDoubleFlatSus4Sharp5:
+            [.seventh, .sus, .sharpFive, .doubleFlatSeventh]
+        case .sixthMajor:
+            [.sixth, .major]
+        case .sixthAugmented:
+            [.sixth, .augmented]
+        case .sixthMajorFlat5:
+            [.sixth, .major, .flatFive]
+        case .sixthMinor:
+            [.sixth, .minor]
+        case .sixthMinorSharp5:
+            [.sixth, .minor, .sharpFive]
+        case .sixthDiminished:
+            [.sixth, .diminished]
+        case .sixthSus:
+            [.sixth, .sus]
+        case .sixthSusSharp5:
+            [.sixth, .sus, .sharpFive]
+        case .sixthSusFlat5:
+            [.sixth, .sus, .flatFive]
+        case .sixthMajorSus2:
+            [.sixth, .major, .sus]
+        case .sixthMajorSus2Sharp5:
+            [.sixth, .major, .sus, .sharpFive]
+        case .sixthMajorSus2Flat5:
+            [.sixth, .major, .sus, .flatFive]
+        case .sixthMajorSus4:
+            [.sixth, .major, .sus]
+        case .sixthMajorSus4Sharp5:
+            [.sixth, .major, .sus, .sharpFive]
+        case .sixthMajorSus4Flat5:
+            [.sixth, .major, .sus, .flatFive]
+        }
+    }
+}
