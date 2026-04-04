@@ -1,5 +1,5 @@
 //
-//  Intervals+ChordSymbol.swift
+//  ChordSymbol+Intervals.swift
 //  Tonic
 //
 //  Created by 小汤汤 on 12/31/25.
@@ -72,12 +72,12 @@ public extension Intervals {
     var allSymbolsSet: Set<ChordSymbol> {
         return Set<ChordSymbol>(symbolsRephrasedSequence)
     }
+}
 
-    /// **Best Chord Symbol  最优和弦符号**
-    /// 优先返回首个基础写法在完成改写后的第一个符号；若不存在可改写结果，则退回该基础写法本身。
-    /// 当当前音程集合无法映射为任何和弦基础类型时，返回 `nil`。
+// **Best Chord Symbol  最优和弦符号**
+// 优先返回首个基础写法在完成改写后的第一个符号；若不存在可改写结果，则退回该基础写法本身。
+// 当当前音程集合无法映射为任何和弦基础类型时，返回 `nil`。
 //    var bestSymbol: ChordSymbol? {
 //        guard let firstRawSymbol = symbolRawSequence?.first else { return nil }
 //        return firstRawSymbol.rephrasedSymbolsSequence.first ?? firstRawSymbol
 //    }
-}

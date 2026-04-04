@@ -44,8 +44,32 @@ public struct ChordSymbol: Hashable, Sendable, CustomDebugStringConvertible {
     public var isEmpty: Bool {
         rootNoteLetter == nil && quality.isEmpty && sus.isEmpty && additions.isEmpty && bassNoteLetter == nil
     }
+}
 
-    public var debugDescription: String {
+/// Sub Class 分类
+public extension ChordSymbol {
+    /// Main = Quality + Sus
+    var main: ChordSymbol {
+        ChordSymbol(
+            quality: quality,
+            sus: sus
+        )
+    }
+
+    /// Body = Quality + Sus + Addiditons
+    ///      = Main + Addiditons
+    var body: ChordSymbol {
+        ChordSymbol(
+            quality: quality,
+            sus: sus,
+            additions: additions
+        )
+    }
+}
+
+/// To String
+public extension ChordSymbol {
+    var debugDescription: String {
         var parts: [String] = []
         // Root note letter + accidentals
         if let letter = rootNoteLetter {
@@ -70,27 +94,6 @@ public struct ChordSymbol: Hashable, Sendable, CustomDebugStringConvertible {
             parts.append(contentsOf: bassNoteAcc.map(\.toString))
         }
         return parts.joined()
-    }
-}
-
-/// Sub Class 分类
-public extension ChordSymbol {
-    /// Main = Quality + Sus
-    var main: ChordSymbol {
-        ChordSymbol(
-            quality: quality,
-            sus: sus
-        )
-    }
-
-    /// Body = Quality + Sus + Addiditons
-    ///      = Main + Addiditons
-    var body: ChordSymbol {
-        ChordSymbol(
-            quality: quality,
-            sus: sus,
-            additions: additions
-        )
     }
 }
 

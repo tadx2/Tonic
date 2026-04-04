@@ -18,15 +18,6 @@ public enum ChordSymbolElement: Hashable, CaseIterable, Sendable {
     /// Number
     case two, four, five, six, seven, nine, eleven, thirteen
 
-    public var isLetter: Bool {
-        switch self {
-        case .C, .D, .E, .F, .G, .A, .B:
-            return true
-        default:
-            return false
-        }
-    }
-
     public var isNumber: Bool {
         switch self {
         case .two, .four, .five, .six, .seven, .nine, .eleven, .thirteen:
