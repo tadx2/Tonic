@@ -33,19 +33,27 @@ public struct Note: Sendable {
 // MARK: - Class: Pitch & Letter
 
 public extension Note {
-    /// Pitch = PitchClass = MidiNumber
+    /// Pitch = PitchClass = MidiNumber = PitchInt
     var pitch: PitchInt {
         pitchClass
     }
 
+    /// Note 对应的音高: PitchClass = Pitch =  PitchInt = MidiNumber
     var miniNumber: Int {
         pitchClass
     }
 
+    /// Note 对应的音高: PitchClass = Pitch =  PitchInt = MidiNumber
+    var pitchInt: PitchInt {
+        pitchClass
+    }
+
+    /// Note 对应的音高: PitchClass = Pitch =  PitchInt = MidiNumber
     var pitchClass: PitchClassInt {
         (octave + 1) * 12 + noteClass.pitchClass
     }
 
+    /// Note Letter 对应的级数。要与 pitchClass 做区分
     var letterClass: LetterClassInt {
         (octave + 1) * 7 + noteClass.letterClass
     }
