@@ -268,14 +268,11 @@ public extension Chord {
     }
 }
 
-/// PitchString
+/// For ChordBasicCase
 public extension Chord {
-    /// 返回和弦内每个音的音高与音名
-    var pitchString: [PitchString] {
-        noteToIntervalRaw.keys.map { note in
-            let pitchInt: PitchInt = note.pitch
-            let noteName = note.name
-            return PitchString(pitchInt: pitchInt, noteName: noteName)
-        }
+    /// - Returns: 从 chord intervals 过滤出 1-7度的音，与 ChordBasicCase 中符合条件的 case 做比较，并返回
+    var basicCase: ChordBasicCase? {
+        let currentBaiscIntervals = Set(intervalsRaw.filter { $0.degreeInt != 1 && $0.degreeInt <= 7 })
+        return ChordBasicCase.allCases.first { $0.intervals == currentBaiscIntervals }
     }
 }

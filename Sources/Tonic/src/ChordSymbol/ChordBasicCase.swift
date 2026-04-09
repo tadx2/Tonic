@@ -5,7 +5,7 @@
 //  Created by 小汤汤 on 3/6/26.
 //
 
-public enum ChordBasicCase: String, CaseIterable {
+public enum ChordBasicCase: String, CaseIterable, Sendable {
     // 三和弦
     case triadMajor
     case triadAugmented
