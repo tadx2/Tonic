@@ -781,3 +781,339 @@ public extension ChordBasicCase {
         }
     }
 }
+
+public extension ChordBasicCase {
+    var enName: String {
+        switch self {
+        // 三和弦
+        case .triadMajor:
+            return "Major"
+        case .triadAugmented:
+            return "Augmented"
+        case .triadMajorFlat5:
+            return "Major Flat 5"
+        case .triadMinor:
+            return "Minor"
+        case .triadMinorSharp5:
+            return "Minor Sharp 5"
+        case .triadDiminished:
+            return "Diminished"
+        // 三和弦挂留 Sus
+        case .triadSus:
+            return "Suspended"
+        case .triadSusAugmented:
+            return "Suspended Augmented"
+        case .triadSusFlat5:
+            return "Suspended Flat 5"
+        // 三和弦挂留 Sus2
+        case .triadSus2:
+            return "Suspended 2"
+        case .triadSus2Flat5:
+            return "Suspended 2 Flat 5"
+        case .triadSus2Sharp5:
+            return "Suspended 2 Sharp 5"
+        // 三和弦挂留 Sus4
+        case .triadSus4:
+            return "Suspended 4"
+        case .triadSus4Flat5:
+            return "Suspended 4 Flat 5"
+        case .triadSus4Sharp5:
+            return "Suspended 4 Sharp 5"
+        // 七和弦
+        case .sevnethMajor:
+            return "Major 7th"
+        case .sevnethMinor:
+            return "Minor 7th"
+        case .sevnethDominant:
+            return "Dominant 7th"
+        case .sevnethHalfDiminished:
+            return "Half Diminished 7th"
+        case .sevnethDiminished:
+            return "Diminished 7th"
+        case .sevnethMajorFlat5:
+            return "Major 7th Flat 5"
+        case .sevnethMinorMajor:
+            return "Minor Major 7th"
+        case .sevnethMajorDoubleFlat7:
+            return "Major 7th Double Flat 7"
+        case .sevnethDominantFlat5:
+            return "Dominant 7th Flat 5"
+        case .sevnethMajorFlat5DoubleFlat7:
+            return "Major 7th Flat 5 Double Flat 7"
+        case .sevnethMajorSharp5:
+            return "Major 7th Sharp 5"
+        case .sevnethDominantSharp5:
+            return "Dominant 7th Sharp 5"
+        case .sevnethMajorSharp5DoubleFlat7:
+            return "Major 7th Sharp 5 Double Flat 7"
+        case .sevnethMinorDoubleFlat7:
+            return "Minor 7th Double Flat 7"
+        case .sevnethMinorMajorFlat5:
+            return "Minor Major 7th Flat 5"
+        case .sevnethMinorMajorSharp5:
+            return "Minor Major 7th Sharp 5"
+        case .sevnethMinorSharp5:
+            return "Minor 7th Sharp 5"
+        case .sevnethMinorSharp5DoubleFlat7:
+            return "Minor 7th Sharp 5 Double Flat 7"
+        // 七和弦挂留 Sus
+        case .seventhSus:
+            return "Suspended 7th"
+        case .seventhDominantSus:
+            return "Dominant Suspended 7th"
+        case .seventhDoubleFlatSus:
+            return "Double Flat Suspended 7th"
+        case .seventhMajorSusFlat5:
+            return "Major Suspended 7th Flat 5"
+        case .seventhDominantSusFlat5:
+            return "Dominant Suspended 7th Flat 5"
+        case .seventhDoubleFlatSusFlat5:
+            return "Double Flat Suspended 7th Flat 5"
+        case .seventhMajorSusSharp5:
+            return "Major Suspended 7th Sharp 5"
+        case .seventhDominantSusSharp5:
+            return "Dominant Suspended 7th Sharp 5"
+        case .seventhDoubleFlatSusSharp5:
+            return "Double Flat Suspended 7th Sharp 5"
+        // 七和弦挂留 Sus2
+        case .seventhSus2Major:
+            return "Suspended 2 Major 7th"
+        case .seventhDominantSus2:
+            return "Dominant Suspended 2 7th"
+        case .seventhDoubleFlatSus2:
+            return "Double Flat Suspended 2 7th"
+        case .seventhMajorSus2Flat5:
+            return "Suspended 2 Major 7th Flat 5"
+        case .seventhDominantSus2Flat5:
+            return "Dominant Suspended 2 7th Flat 5"
+        case .seventhDoubleFlatSus2Flat5:
+            return "Double Flat Suspended 2 7th Flat 5"
+        case .seventhMajorSus2Sharp5:
+            return "Suspended 2 Major 7th Sharp 5"
+        case .seventhDominantSus2Sharp5:
+            return "Dominant Suspended 2 7th Sharp 5"
+        case .seventhDoubleFlatSus2Sharp5:
+            return "Double Flat Suspended 2 7th Sharp 5"
+        // 七和弦挂留 Sus4
+        case .seventhSus4Major:
+            return "Suspended 4 Major 7th"
+        case .seventhDominantSus4:
+            return "Dominant Suspended 4 7th"
+        case .seventhDoubleFlatSus4:
+            return "Double Flat Suspended 4 7th"
+        case .seventhMajorSus4Flat5:
+            return "Suspended 4 Major 7th Flat 5"
+        case .seventhDominantSus4Flat5:
+            return "Dominant Suspended 4 7th Flat 5"
+        case .seventhDoubleFlatSus4Flat5:
+            return "Double Flat Suspended 4 7th Flat 5"
+        case .seventhMajorSus4Sharp5:
+            return "Suspended 4 Major 7th Sharp 5"
+        case .seventhDominantSus4Sharp5:
+            return "Dominant Suspended 4 7th Sharp 5"
+        case .seventhDoubleFlatSus4Sharp5:
+            return "Double Flat Suspended 4 7th Sharp 5"
+        // 六和弦
+        case .sixthMajor:
+            return "Major 6th"
+        case .sixthAugmented:
+            return "Augmented 6th"
+        case .sixthMajorFlat5:
+            return "Major 6th Flat 5"
+        case .sixthMinor:
+            return "Minor 6th"
+        case .sixthMinorSharp5:
+            return "Minor 6th Sharp 5"
+        case .sixthDiminished:
+            return "Diminished 6th"
+        // 六和弦挂留 Sus
+        case .sixthSus:
+            return "Suspended 6th"
+        case .sixthSusSharp5:
+            return "Suspended 6th Sharp 5"
+        case .sixthSusFlat5:
+            return "Suspended 6th Flat 5"
+        // 六和弦挂留 Sus2
+        case .sixthMajorSus2:
+            return "Major 6th Suspended 2"
+        case .sixthMajorSus2Sharp5:
+            return "Major 6th Suspended 2 Sharp 5"
+        case .sixthMajorSus2Flat5:
+            return "Major 6th Suspended 2 Flat 5"
+        // 六和弦挂留 Sus4
+        case .sixthMajorSus4:
+            return "Major 6th Suspended 4"
+        case .sixthMajorSus4Sharp5:
+            return "Major 6th Suspended 4 Sharp 5"
+        case .sixthMajorSus4Flat5:
+            return "Major 6th Suspended 4 Flat 5"
+        }
+    }
+
+    var cnName: String {
+        switch self {
+        // 三和弦
+        case .triadMajor:
+            return "大三和弦"
+        case .triadAugmented:
+            return "增三和弦"
+        case .triadMajorFlat5:
+            return "大三和弦降5"
+        case .triadMinor:
+            return "小三和弦"
+        case .triadMinorSharp5:
+            return "小三和弦升5"
+        case .triadDiminished:
+            return "减三和弦"
+        // 三和弦挂留 Sus
+        case .triadSus:
+            return "挂留和弦"
+        case .triadSusAugmented:
+            return "挂留增和弦"
+        case .triadSusFlat5:
+            return "挂留降5和弦"
+        // 三和弦挂留 Sus2
+        case .triadSus2:
+            return "挂留2和弦"
+        case .triadSus2Flat5:
+            return "挂留2降5和弦"
+        case .triadSus2Sharp5:
+            return "挂留2升5和弦"
+        // 三和弦挂留 Sus4
+        case .triadSus4:
+            return "挂留4和弦"
+        case .triadSus4Flat5:
+            return "挂留4降5和弦"
+        case .triadSus4Sharp5:
+            return "挂留4升5和弦"
+        // 七和弦
+        case .sevnethMajor:
+            return "大七和弦"
+        case .sevnethMinor:
+            return "小七和弦"
+        case .sevnethDominant:
+            return "属七和弦"
+        case .sevnethHalfDiminished:
+            return "半减七和弦"
+        case .sevnethDiminished:
+            return "减七和弦"
+        case .sevnethMajorFlat5:
+            return "大七降5和弦"
+        case .sevnethMinorMajor:
+            return "小大七和弦"
+        case .sevnethMajorDoubleFlat7:
+            return "大七双重降7和弦"
+        case .sevnethDominantFlat5:
+            return "属七降5和弦"
+        case .sevnethMajorFlat5DoubleFlat7:
+            return "大七降5双重降7和弦"
+        case .sevnethMajorSharp5:
+            return "大七升5和弦"
+        case .sevnethDominantSharp5:
+            return "属七升5和弦"
+        case .sevnethMajorSharp5DoubleFlat7:
+            return "大七升5双重降7和弦"
+        case .sevnethMinorDoubleFlat7:
+            return "小七双重降7和弦"
+        case .sevnethMinorMajorFlat5:
+            return "小大七降5和弦"
+        case .sevnethMinorMajorSharp5:
+            return "小大七升5和弦"
+        case .sevnethMinorSharp5:
+            return "小七升5和弦"
+        case .sevnethMinorSharp5DoubleFlat7:
+            return "小七升5双重降7和弦"
+        // 七和弦挂留 Sus
+        case .seventhSus:
+            return "挂留七和弦"
+        case .seventhDominantSus:
+            return "属七挂留和弦"
+        case .seventhDoubleFlatSus:
+            return "双重降7挂留和弦"
+        case .seventhMajorSusFlat5:
+            return "大七挂留降5和弦"
+        case .seventhDominantSusFlat5:
+            return "属七挂留降5和弦"
+        case .seventhDoubleFlatSusFlat5:
+            return "双重降7挂留降5和弦"
+        case .seventhMajorSusSharp5:
+            return "大七挂留升5和弦"
+        case .seventhDominantSusSharp5:
+            return "属七挂留升5和弦"
+        case .seventhDoubleFlatSusSharp5:
+            return "双重降7挂留升5和弦"
+        // 七和弦挂留 Sus2
+        case .seventhSus2Major:
+            return "挂留2大七和弦"
+        case .seventhDominantSus2:
+            return "挂留2属七和弦"
+        case .seventhDoubleFlatSus2:
+            return "挂留2双重降7和弦"
+        case .seventhMajorSus2Flat5:
+            return "挂留2大七降5和弦"
+        case .seventhDominantSus2Flat5:
+            return "挂留2属七降5和弦"
+        case .seventhDoubleFlatSus2Flat5:
+            return "挂留2双重降7降5和弦"
+        case .seventhMajorSus2Sharp5:
+            return "挂留2大七升5和弦"
+        case .seventhDominantSus2Sharp5:
+            return "挂留2属七升5和弦"
+        case .seventhDoubleFlatSus2Sharp5:
+            return "挂留2双重降7升5和弦"
+        // 七和弦挂留 Sus4
+        case .seventhSus4Major:
+            return "挂留4大七和弦"
+        case .seventhDominantSus4:
+            return "挂留4属七和弦"
+        case .seventhDoubleFlatSus4:
+            return "挂留4双重降7和弦"
+        case .seventhMajorSus4Flat5:
+            return "挂留4大七降5和弦"
+        case .seventhDominantSus4Flat5:
+            return "挂留4属七降5和弦"
+        case .seventhDoubleFlatSus4Flat5:
+            return "挂留4双重降7降5和弦"
+        case .seventhMajorSus4Sharp5:
+            return "挂留4大七升5和弦"
+        case .seventhDominantSus4Sharp5:
+            return "挂留4属七升5和弦"
+        case .seventhDoubleFlatSus4Sharp5:
+            return "挂留4双重降7升5和弦"
+        // 六和弦
+        case .sixthMajor:
+            return "大六和弦"
+        case .sixthAugmented:
+            return "增六和弦"
+        case .sixthMajorFlat5:
+            return "大六降5和弦"
+        case .sixthMinor:
+            return "小六和弦"
+        case .sixthMinorSharp5:
+            return "小六升5和弦"
+        case .sixthDiminished:
+            return "减六和弦"
+        // 六和弦挂留 Sus
+        case .sixthSus:
+            return "挂留六和弦"
+        case .sixthSusSharp5:
+            return "挂留六升5和弦"
+        case .sixthSusFlat5:
+            return "挂留六降5和弦"
+        // 六和弦挂留 Sus2
+        case .sixthMajorSus2:
+            return "大六挂留2和弦"
+        case .sixthMajorSus2Sharp5:
+            return "大六挂留2升5和弦"
+        case .sixthMajorSus2Flat5:
+            return "大六挂留2降5和弦"
+        // 六和弦挂留 Sus4
+        case .sixthMajorSus4:
+            return "大六挂留4和弦"
+        case .sixthMajorSus4Sharp5:
+            return "大六挂留4升5和弦"
+        case .sixthMajorSus4Flat5:
+            return "大六挂留4降5和弦"
+        }
+    }
+}
