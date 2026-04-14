@@ -95,6 +95,29 @@ public extension ChordSymbol {
         }
         return parts.joined()
     }
+    
+    // 一个没有Letter信息的Description，如果是空的返回这大三和弦标记
+    var descriptionWithoutRnBn: String {
+        var parts: [String] = []
+        // Quality
+        parts.append(contentsOf: quality.map(\.toString))
+        // Sus
+        parts.append(contentsOf: sus.map(\.toString))
+        // Additions
+        if !additions.isEmpty {
+            let additionsText = additions
+                .map { $0.map(\.toString).joined() }
+                .joined(separator: " ")
+            parts.append("(\(additionsText))")
+        }
+        
+        if parts.isEmpty {
+            return "M"
+        }
+        
+        return parts.joined()
+    }
+    
 }
 
 /// Convinent
