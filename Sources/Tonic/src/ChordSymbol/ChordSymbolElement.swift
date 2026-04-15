@@ -5,7 +5,7 @@
 //  Created by 小汤汤 on 3/6/26.
 //
 
-public enum ChordSymbolElement: Hashable, CaseIterable, Sendable {
+public enum ChordSymbolElement: Hashable, CaseIterable, Sendable, Codable {
     /// note
     case C, D, E, F, G, A, B
 

@@ -5,7 +5,7 @@
 //  Created by 小汤汤 on 2025/5/2.
 //
 
-public enum Letter: Int, Equatable, CaseIterable, Sendable {
+public enum Letter: Int, Equatable, CaseIterable, Sendable, Codable {
     case C = 0
     case D, E, F, G, A, B
 }

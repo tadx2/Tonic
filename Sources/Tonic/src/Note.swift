@@ -4,7 +4,7 @@ import Foundation
 ///
 /// 乐理系统中的核心结构，包含音名、升降号和八度信息。
 /// 能够计算其音高 (Pitch) 并支持乐理运算。
-public struct Note: Sendable {
+public struct Note: Sendable, Codable {
     public var noteClass: NoteClass
 
     public var letter: Letter {
@@ -190,5 +190,28 @@ extension Note: CustomStringConvertible {
     /// 默认的字符串描述，返回不带八度的音符名称。
     public var description: String {
         name
+    }
+}
+
+// MARK: - Codable
+
+public extension Note {
+    internal enum CodingKeys: String, CodingKey {
+        case letter, accidental, octave
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let letter = try container.decode(Letter.self, forKey: .letter)
+        let accidental = try container.decode(Accidental.self, forKey: .accidental)
+        let octave = try container.decode(Octave.self, forKey: .octave)
+        self.init(letter: letter, accidental: accidental, octave: octave)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(letter, forKey: .letter)
+        try container.encode(accidental, forKey: .accidental)
+        try container.encode(octave, forKey: .octave)
     }
 }
