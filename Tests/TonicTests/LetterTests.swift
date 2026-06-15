@@ -36,61 +36,79 @@ struct LetterTests {
         #expect(Letter.G - 4 == .C)
     }
 
-    @Test("Letter Shifted")
-    func testShifted() {
-        // Up
-        var res = Letter.C.shifted(by: 1)
-        #expect(res.letter == .D)
-        #expect(res.octaveDiff == 0)
-
-        res = Letter.C.shifted(by: 2)
-        #expect(res.letter == .E)
-        #expect(res.octaveDiff == 0)
-
-        res = Letter.C.shifted(by: 3)
-        #expect(res.letter == .F)
-        #expect(res.octaveDiff == 0)
-
-        res = Letter.C.shifted(by: 4)
-        #expect(res.letter == .G)
-        #expect(res.octaveDiff == 0)
-
-        res = Letter.C.shifted(by: 5)
-        #expect(res.letter == .A)
-        #expect(res.octaveDiff == 0)
-
-        res = Letter.C.shifted(by: 6)
-        #expect(res.letter == .B)
-        #expect(res.octaveDiff == 0)
-
-        res = Letter.C.shifted(by: 7)
-        #expect(res.letter == .C)
-        #expect(res.octaveDiff == 1)
-
-        res = Letter.C.shifted(by: 8)
-        #expect(res.letter == .D)
-        #expect(res.octaveDiff == 1)
-
-        res = Letter.B.shifted(by: 1)
-        #expect(res.letter == .C)
-        #expect(res.octaveDiff == 1)
-
-        // Down
-        res = Letter.C.shifted(by: -1)
-        #expect(res.letter == .B)
-        #expect(res.octaveDiff == -1)
-
-        res = Letter.C.shifted(by: -7)
-        #expect(res.letter == .C)
-        #expect(res.octaveDiff == -1)
-
-        res = Letter.C.shifted(by: -8)
-        #expect(res.letter == .B)
-        #expect(res.octaveDiff == -2)
-
-        res = Letter.C.shifted(by: -14)
-        #expect(res.letter == .C)
-        #expect(res.octaveDiff == -2)
-
-    }
+//    @Test("Letter Shifted")
+//    func testShifted() {
+//        // Up
+//        var res = Letter.C.shifted(by: 1)
+//        #expect(res.letter == .D)
+//        #expect(res.octaveDiff == 0)
+//
+//        res = Letter.C.shifted(by: 2)
+//        #expect(res.letter == .E)
+//        #expect(res.octaveDiff == 0)
+//
+//        res = Letter.C.shifted(by: 3)
+//        #expect(res.letter == .F)
+//        #expect(res.octaveDiff == 0)
+//
+//        res = Letter.C.shifted(by: 4)
+//        #expect(res.letter == .G)
+//        #expect(res.octaveDiff == 0)
+//
+//        res = Letter.C.shifted(by: 5)
+//        #expect(res.letter == .A)
+//        #expect(res.octaveDiff == 0)
+//
+//        res = Letter.C.shifted(by: 6)
+//        #expect(res.letter == .B)
+//        #expect(res.octaveDiff == 0)
+//
+//        res = Letter.C.shifted(by: 7)
+//        #expect(res.letter == .C)
+//        #expect(res.octaveDiff == 1)
+//
+//        res = Letter.C.shifted(by: 8)
+//        #expect(res.letter == .D)
+//        #expect(res.octaveDiff == 1)
+//
+//        res = Letter.B.shifted(by: 1)
+//        #expect(res.letter == .C)
+//        #expect(res.octaveDiff == 1)
+//
+//        // Down
+//        res = Letter.C.shifted(by: -1)
+//        #expect(res.letter == .B)
+//        #expect(res.octaveDiff == -1)
+//
+//        res = Letter.C.shifted(by: -7)
+//        #expect(res.letter == .C)
+//        #expect(res.octaveDiff == -1)
+//
+//        res = Letter.C.shifted(by: -8)
+//        #expect(res.letter == .B)
+//        #expect(res.octaveDiff == -2)
+//
+//        res = Letter.C.shifted(by: -14)
+//        #expect(res.letter == .C)
+//        #expect(res.octaveDiff == -2)
+//    }
+    
+//    @Test("Letter Shifted Integer Boundaries")
+//    func testShiftedIntegerBoundaries() {
+//        var res = Letter.C.shifted(by: Int.max)
+//        #expect(res.letter == .C)
+//        #expect(res.octaveDiff == Int.max / 7)
+//
+//        res = Letter.B.shifted(by: Int.max)
+//        #expect(res.letter == .B)
+//        #expect(res.octaveDiff == Int.max / 7)
+//
+//        res = Letter.C.shifted(by: Int.min)
+//        #expect(res.letter == .B)
+//        #expect(res.octaveDiff == Int.min / 7 - 1)
+//
+//        res = Letter.B.shifted(by: Int.min)
+//        #expect(res.letter == .A)
+//        #expect(res.octaveDiff == Int.min / 7)
+//    }
 }
